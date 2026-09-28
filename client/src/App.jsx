@@ -86,7 +86,7 @@ function App() {
               <Route path="/andriod" element={<AndriodDevelopers />} />
               <Route path="/frontend" element={<FrontendDeveloprs />} />
               <Route path="/backend" element={<BackendDeveloper />} />
-              <Route path="/video-editor" element={<VideoEditor />} />
+              {/* <Route path="/video-editor" element={<VideoEditor />} /> */}
               <Route path="/videoEditor" element={<VideoEditor />} />
 
               <Route path="/contact" element={<ContactUs />} />

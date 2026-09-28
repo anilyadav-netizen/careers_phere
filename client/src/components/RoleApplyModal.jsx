@@ -28,41 +28,44 @@ import {
 const ROLE_META = {
   "Frontend Developer": {
     icon: Code2,
-    badgeColor: "bg-sky-50 text-sky-700 border-sky-200",
+    badgeColor: "bg-[#30AFFF]/10 text-[#0B6F9F] border-[#30AFFF]/30",
     themeColor: "#30AFFF",
     skillsPlaceholder: "React, JavaScript, TypeScript, Next.js, Tailwind, HTML/CSS...",
     aboutPlaceholder: "Tell us about your frontend experience, favorite projects, and why this opportunity interests you...",
   },
+
   "Backend Developer": {
     icon: Server,
-    badgeColor: "bg-amber-50 text-amber-800 border-amber-200",
-    themeColor: "#d97706",
+    badgeColor: "bg-[#30AFFF]/10 text-[#0B6F9F] border-[#30AFFF]/30",
+    themeColor: "#30AFFF",
     skillsPlaceholder: "Node.js, Express, Python, PostgreSQL, MongoDB, Redis, Docker, REST APIs...",
     aboutPlaceholder: "Tell us about your backend systems, database design experience, API architecture, and achievements...",
   },
+
   "Full Stack Developer": {
     icon: Layers,
-    badgeColor: "bg-indigo-50 text-indigo-700 border-indigo-200",
-    themeColor: "#4f46e5",
+    badgeColor: "bg-[#30AFFF]/10 text-[#0B6F9F] border-[#30AFFF]/30",
+    themeColor: "#30AFFF",
     skillsPlaceholder: "React, Node.js, Express, MongoDB/SQL, TypeScript, REST/GraphQL, Cloud...",
     aboutPlaceholder: "Tell us about end-to-end applications you've architected, your tech stack preferences, and experience...",
   },
+
   "Android Developer": {
     icon: Smartphone,
-    badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
-    themeColor: "#059669",
+    badgeColor: "bg-[#30AFFF]/10 text-[#0B6F9F] border-[#30AFFF]/30",
+    themeColor: "#30AFFF",
     skillsPlaceholder: "Kotlin, Java, Android SDK, Jetpack Compose, Coroutines, MVVM, Retrofit...",
     aboutPlaceholder: "Tell us about Android apps you've built, Play Store releases, architecture patterns, and experience...",
   },
+
   "Video Editor": {
     icon: Film,
-    badgeColor: "bg-fuchsia-50 text-fuchsia-700 border-fuchsia-200",
-    themeColor: "#c026d3",
+    badgeColor: "bg-[#30AFFF]/10 text-[#0B6F9F] border-[#30AFFF]/30",
+    themeColor: "#30AFFF",
     skillsPlaceholder: "Premiere Pro, After Effects, DaVinci Resolve, Motion Design, Blender, Sound Design...",
     aboutPlaceholder: "Tell us about your video editing style, pacing philosophy, biggest projects, and favorite tools...",
   },
 };
-
 const initialFormState = {
   fullName: "",
   email: "",

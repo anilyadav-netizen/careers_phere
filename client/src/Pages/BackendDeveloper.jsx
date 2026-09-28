@@ -193,7 +193,7 @@ const BackendDeveloper = () => {
                 <div className="absolute -top-28 -left-20 w-80 h-80 rounded-full bg-[#30AFFF]/8 blur-[110px]" />
                 <div className="absolute top-28 right-0 w-96 h-96 rounded-full bg-[#30AFFF]/5 blur-[120px]" />
 
-                <div className="max-w-[90rem] mx-auto px-5 sm:px-6 lg:px-8 pt-10 pb-10 lg:pt-14 lg:pb-12 relative">
+                <div className="max-w-[90rem] mx-auto px-5 sm:px-6 lg:px-8 pt-4 pb-10 lg:pt-14 lg:pb-12 relative">
                     <div className="grid lg:grid-cols-[1fr_0.92fr] gap-8 lg:gap-12 items-center">
                         <div>
                             <div className="inline-flex items-center gap-2 rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/5 px-3 py-1.5 text-[10px] uppercase tracking-[0.18em] font-bold text-[#159FEF] mb-3 shadow-sm">

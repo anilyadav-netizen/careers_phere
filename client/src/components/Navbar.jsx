@@ -79,8 +79,8 @@ const Navbar = () => {
       icon: Search,
     },
     {
-      name: "Subscription",
-      path: "/subscription",
+      name: "Video Editor",
+      path: "/videoEditor",
       icon: CreditCard,
     },
     {

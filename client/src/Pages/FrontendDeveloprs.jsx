@@ -402,7 +402,7 @@ const FrontendDeveloprs = () => {
         <div className="absolute -top-28 -left-20 w-80 h-80 rounded-full bg-[#30AFFF]/8 blur-[110px]" />
         <div className="absolute top-28 right-0 w-96 h-96 rounded-full bg-[#30AFFF]/5 blur-[120px]" />
 
-        <div className="relative max-w-[90rem] mx-auto px-5 sm:px-6 lg:px-8 pt-10 pb-10 lg:pt-14 lg:pb-12">
+        <div className="relative max-w-[90rem] mx-auto px-5 sm:px-6 lg:px-8 pt-4 pb-10 lg:pt-14 lg:pb-12">
           <div className="grid lg:grid-cols-[1fr_0.92fr] gap-8 lg:gap-12 items-center">
             <motion.div
               initial="hidden"

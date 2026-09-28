@@ -355,121 +355,13 @@ const VideoEditor = () => {
         }
       `}</style>
 
-      {/* HEADER / NAVBAR */}
-      <motion.header
-        initial={{ opacity: 0, y: -25 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.55, ease: "easeOut" }}
-        className="sticky top-0 z-50 border-b border-[#17202A]/15 bg-[#F5F7F9]/95 backdrop-blur-xl"
-      >
-        <div className="max-w-[90rem] mx-auto px-5 sm:px-6 lg:px-8 h-[68px] flex items-center justify-between">
-          <a href="#" className="flex items-center gap-2.5">
-            <motion.div
-              whileHover={{ rotate: -5, scale: 1.05 }}
-              transition={{ duration: 0.2 }}
-              className="w-9 h-9 rounded-xl bg-[#17202A] flex items-center justify-center text-white font-black"
-            >
-              <Film size={18} className="text-[#30AFFF]" />
-            </motion.div>
-
-            <div>
-              <div className="font-black tracking-[-0.04em] text-[15px] text-[#17202A]">
-                VIDEO<span className="text-[#30AFFF]">//</span>EDITOR
-              </div>
-
-              <div className="text-[8px] text-[#17202A]/50 uppercase tracking-[0.25em]">
-                Creative Studio Hiring
-              </div>
-            </div>
-          </a>
-
-          <nav className="hidden md:flex items-center gap-7 text-[13px] text-[#17202A]/65">
-            <a href="#role" className="hover:text-[#30AFFF] transition">
-              Role
-            </a>
-            <a href="#global" className="hover:text-[#30AFFF] transition">
-              Global Opportunity
-            </a>
-            <a href="#stack" className="hover:text-[#30AFFF] transition">
-              Software Stack
-            </a>
-            <a href="#requirements" className="hover:text-[#30AFFF] transition">
-              Requirements
-            </a>
-            <a href="#process" className="hover:text-[#30AFFF] transition">
-              Process
-            </a>
-            <a href="#faq" className="hover:text-[#30AFFF] transition">
-              FAQ
-            </a>
-          </nav>
-
-          <motion.button
-            onClick={scrollToApply}
-            whileHover={{ y: -2, scale: 1.02 }}
-            whileTap={{ scale: 0.97 }}
-            className="hidden sm:flex items-center gap-2 rounded-full bg-[#17202A] text-white px-4 py-2 text-[12px] font-bold hover:bg-[#30AFFF] transition"
-          >
-            Apply now
-            <ArrowRight size={14} />
-          </motion.button>
-
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="md:hidden w-9 h-9 rounded-lg border border-[#17202A]/25 flex items-center justify-center text-[#17202A]"
-          >
-            {menuOpen ? <X size={18} /> : <Menu size={18} />}
-          </button>
-        </div>
-
-        <AnimatePresence>
-          {menuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.25 }}
-              className="md:hidden border-t border-[#17202A]/15 bg-[#F5F7F9] overflow-hidden"
-            >
-              <div className="max-w-[90rem] mx-auto px-5 py-4 flex flex-col gap-3 text-sm text-[#17202A]/75">
-                <a onClick={() => setMenuOpen(false)} href="#role">
-                  Role
-                </a>
-                <a onClick={() => setMenuOpen(false)} href="#global">
-                  Global Opportunity
-                </a>
-                <a onClick={() => setMenuOpen(false)} href="#stack">
-                  Software Stack
-                </a>
-                <a onClick={() => setMenuOpen(false)} href="#requirements">
-                  Requirements
-                </a>
-                <a onClick={() => setMenuOpen(false)} href="#process">
-                  Process
-                </a>
-                <a onClick={() => setMenuOpen(false)} href="#faq">
-                  FAQ
-                </a>
-
-                <button
-                  onClick={scrollToApply}
-                  className="mt-1 w-full rounded-xl bg-[#17202A] text-white py-2.5 font-bold"
-                >
-                  Apply now
-                </button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.header>
-
       {/* HERO SECTION */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 video-grid opacity-70" />
         <div className="absolute -top-28 -left-20 w-80 h-80 rounded-full bg-[#30AFFF]/15 blur-[110px]" />
         <div className="absolute top-28 right-0 w-96 h-96 rounded-full bg-[#75D9FF]/20 blur-[120px]" />
 
-        <div className="relative max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-8 lg:pt-12 lg:pb-12">
+        <div className="relative max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 lg:pt-12 lg:pb-12">
           <div className="grid lg:grid-cols-[1fr_0.92fr] gap-8 lg:gap-12 items-center">
             {/* Left Content */}
             <motion.div initial="hidden" animate="visible" variants={softReveal}>
