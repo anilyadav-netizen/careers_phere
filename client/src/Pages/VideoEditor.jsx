@@ -36,49 +36,14 @@ import {
   FaBehance,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  submitFrontendApplication,
-  resetSubmitState,
-} from "../redux/slicer/frontendApplicationSlice";
+import RoleApplyModal from "../components/RoleApplyModal";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
-const initialFormState = {
-  fullName: "",
-  email: "",
-  phone: "",
-  experience: "",
-  currentCountry: "",
-  currentLocation: "",
-  preferredRegion: "",
-  preferredJobMarket: "",
-  preferredWorkMode: "",
-  relocationPreference: "",
-  workAuthorization: "",
-  expectedSalary: "",
-  salaryCurrency: "",
-  noticePeriod: "",
-  preferredTimezone: "",
-  countryFlexibility: "",
-  portfolio: "",
-  linkedin: "",
-  frontendSkills: "",
-  aboutYou: "",
-};
-
 const VideoEditor = () => {
-  const dispatch = useDispatch();
-  const { submitLoading, submitSuccess, submitError } = useSelector(
-    (state) => state.frontendApplications || {}
-  );
-
   const [menuOpen, setMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState(-1);
-  const [submitted, setSubmitted] = useState(false);
-  const [formData, setFormData] = useState(initialFormState);
-  const [resumeFile, setResumeFile] = useState(null);
-  const [localError, setLocalError] = useState("");
+  const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
 
   useEffect(() => {
     const initAOS = () => {
@@ -103,61 +68,8 @@ const VideoEditor = () => {
     };
   }, []);
 
-  useEffect(() => {
-    if (submitSuccess) {
-      setSubmitted(true);
-      setFormData(initialFormState);
-      setResumeFile(null);
-      setLocalError("");
-    }
-  }, [submitSuccess]);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleFileChange = (e) => {
-    const file = e.target.files?.[0] || null;
-    setResumeFile(file);
-    if (file) {
-      setLocalError("");
-    }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!resumeFile) {
-      setLocalError("Please upload your resume (.pdf, .doc, or .docx)");
-      return;
-    }
-
-    setLocalError("");
-    const data = new FormData();
-    data.append("role", "Video Editor");
-    Object.keys(formData).forEach((key) => {
-      data.append(key, formData[key]);
-    });
-    data.append("resume", resumeFile);
-
-    dispatch(submitFrontendApplication(data));
-  };
-
-  const handleResetForm = () => {
-    dispatch(resetSubmitState());
-    setSubmitted(false);
-    setFormData(initialFormState);
-    setResumeFile(null);
-    setLocalError("");
-  };
-
   const scrollToApply = () => {
-    document.getElementById("apply")?.scrollIntoView({
-      behavior: "smooth",
-    });
+    setIsApplyModalOpen(true);
     setMenuOpen(false);
   };
 
@@ -1150,511 +1062,48 @@ const VideoEditor = () => {
               </div>
             </motion.div>
 
-            {/* Right Form Column */}
-            <motion.div data-aos="fade-left" className="border-t-2 border-[#17202A] pt-5">
-              <AnimatePresence mode="wait">
-                {submitted ? (
-                  <motion.div
-                    key="success"
-                    initial={{ opacity: 0, scale: 0.96 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.35 }}
-                    className="min-h-[420px] flex items-center justify-center text-center"
+            {/* Right CTA Column */}
+            <motion.div
+              data-aos="fade-left"
+              className="bg-white rounded-3xl border border-[#17202A]/15 p-8 sm:p-12 shadow-xl shadow-slate-200/50 text-center relative overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 w-64 h-64 bg-[#30AFFF]/10 rounded-full blur-3xl pointer-events-none" />
+              <div className="max-w-xl mx-auto">
+                <div className="w-16 h-16 rounded-2xl bg-[#17202A] text-[#30AFFF] mx-auto flex items-center justify-center mb-6 shadow-md">
+                  <Film size={32} />
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-black text-[#17202A] tracking-tight">
+                  Ready to Apply as Video Editor?
+                </h3>
+                <p className="text-sm text-[#17202A]/70 mt-3 leading-relaxed">
+                  Click the button below to launch our official application popup.
+                  Submit your contact info, showreel & portfolio links, editing suite
+                  proficiencies, and upload your CV directly to our production lead.
+                </p>
+                <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setIsApplyModalOpen(true)}
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#17202A] text-white font-bold text-sm shadow-lg shadow-[#17202A]/20 hover:bg-[#30AFFF] transition-all transform hover:-translate-y-0.5 active:translate-y-0"
                   >
-                    <div className="max-w-md">
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{
-                          duration: 0.45,
-                          type: "spring",
-                          stiffness: 180,
-                        }}
-                        className="mx-auto w-14 h-14 rounded-2xl bg-[#17202A] flex items-center justify-center"
-                      >
-                        <Check size={25} className="text-[#30AFFF]" />
-                      </motion.div>
-
-                      <h3 className="text-2xl font-black mt-5 text-[#17202A]">
-                        Showreel & Application received.
-                      </h3>
-
-                      <p className="text-sm leading-6 text-[#17202A]/60 mt-2">
-                        Thanks for applying! Your creative portfolio and global opportunity
-                        preferences have been submitted to our production team.
-                      </p>
-
-                      <button
-                        onClick={handleResetForm}
-                        className="mt-5 text-xs font-bold text-[#0B6F9F] hover:text-[#30AFFF] transition"
-                      >
-                        Submit another application
-                      </button>
-                    </div>
-                  </motion.div>
-                ) : (
-                  <motion.form
-                    key="form"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                    onSubmit={handleSubmit}
-                  >
-                    <div className="mb-5 rounded-2xl border border-[#30AFFF]/25 bg-[#30AFFF]/[0.08] p-4">
-                      <div className="flex items-start gap-3">
-                        <div className="w-9 h-9 rounded-lg bg-[#17202A] flex items-center justify-center shrink-0">
-                          <Film size={16} className="text-[#30AFFF]" />
-                        </div>
-
-                        <div>
-                          <h3 className="text-sm font-black text-[#17202A]">
-                            Tell us where you want to edit.
-                          </h3>
-                          <p className="text-[10px] sm:text-xs leading-5 text-[#17202A]/60 mt-1">
-                            Your location, target market, editing software, showreel link,
-                            and salary expectations help us match you with the right creators
-                            and international studios.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {(localError || submitError) && (
-                      <div className="mb-5 rounded-xl border border-red-500/30 bg-red-50 p-3.5 flex items-start gap-2.5 text-xs text-red-700">
-                        <AlertCircle size={16} className="shrink-0 text-red-500 mt-0.5" />
-                        <span>{localError || submitError}</span>
-                      </div>
-                    )}
-
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="text-[11px] font-semibold text-[#17202A]/65">
-                          Full name *
-                        </label>
-                        <input
-                          required
-                          type="text"
-                          name="fullName"
-                          value={formData.fullName}
-                          onChange={handleInputChange}
-                          placeholder="Your name"
-                          className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A] outline-none placeholder:text-[#17202A]/30 focus:border-[#30AFFF]"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-[#17202A]/65">
-                          Email *
-                        </label>
-                        <input
-                          required
-                          type="email"
-                          name="email"
-                          value={formData.email}
-                          onChange={handleInputChange}
-                          placeholder="you@example.com"
-                          className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A] outline-none placeholder:text-[#17202A]/30 focus:border-[#30AFFF]"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-[#17202A]/65">
-                          Phone *
-                        </label>
-                        <input
-                          required
-                          type="tel"
-                          name="phone"
-                          value={formData.phone}
-                          onChange={handleInputChange}
-                          placeholder="+91 00000 00000"
-                          className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A] outline-none placeholder:text-[#17202A]/30 focus:border-[#30AFFF]"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-[#17202A]/65">
-                          Experience *
-                        </label>
-                        <select
-                          required
-                          name="experience"
-                          value={formData.experience}
-                          onChange={handleInputChange}
-                          className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A]/75 outline-none focus:border-[#30AFFF]"
-                        >
-                          <option value="">Select experience</option>
-                          <option>0–1 years</option>
-                          <option>1–2 years</option>
-                          <option>2–4 years</option>
-                          <option>4–6 years</option>
-                          <option>6+ years</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-[#17202A]/65">
-                          Current country *
-                        </label>
-                        <select
-                          required
-                          name="currentCountry"
-                          value={formData.currentCountry}
-                          onChange={handleInputChange}
-                          className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A]/75 outline-none focus:border-[#30AFFF]"
-                        >
-                          <option value="">Select country</option>
-                          <option>India</option>
-                          <option>United States</option>
-                          <option>United Kingdom</option>
-                          <option>Canada</option>
-                          <option>Australia</option>
-                          <option>Germany</option>
-                          <option>France</option>
-                          <option>Netherlands</option>
-                          <option>Singapore</option>
-                          <option>United Arab Emirates</option>
-                          <option>Other</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-[#17202A]/65">
-                          Current location
-                        </label>
-                        <input
-                          type="text"
-                          name="currentLocation"
-                          value={formData.currentLocation}
-                          onChange={handleInputChange}
-                          placeholder="City / State"
-                          className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A] outline-none placeholder:text-[#17202A]/30 focus:border-[#30AFFF]"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-[#17202A]/65">
-                          Preferred region *
-                        </label>
-                        <select
-                          required
-                          name="preferredRegion"
-                          value={formData.preferredRegion}
-                          onChange={handleInputChange}
-                          className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A]/75 outline-none focus:border-[#30AFFF]"
-                        >
-                          <option value="">Select region</option>
-                          <option>North America</option>
-                          <option>Europe</option>
-                          <option>Asia-Pacific</option>
-                          <option>Middle East</option>
-                          <option>Any global region</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-[#17202A]/65">
-                          Preferred job market *
-                        </label>
-                        <select
-                          required
-                          name="preferredJobMarket"
-                          value={formData.preferredJobMarket}
-                          onChange={handleInputChange}
-                          className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A]/75 outline-none focus:border-[#30AFFF]"
-                        >
-                          <option value="">Select market</option>
-                          <option>🇺🇸 United States</option>
-                          <option>🇬🇧 United Kingdom</option>
-                          <option>🇨🇦 Canada</option>
-                          <option>🇩🇪 Germany</option>
-                          <option>🇦🇺 Australia</option>
-                          <option>🇳🇱 Netherlands</option>
-                          <option>🇸🇬 Singapore</option>
-                          <option>🇦🇪 United Arab Emirates</option>
-                          <option>Any global market</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-[#17202A]/65">
-                          Preferred work mode *
-                        </label>
-                        <select
-                          required
-                          name="preferredWorkMode"
-                          value={formData.preferredWorkMode}
-                          onChange={handleInputChange}
-                          className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A]/75 outline-none focus:border-[#30AFFF]"
-                        >
-                          <option value="">Select work mode</option>
-                          <option>Remote</option>
-                          <option>Hybrid</option>
-                          <option>On-site</option>
-                          <option>Remote or Hybrid</option>
-                          <option>Flexible / Any</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-[#17202A]/65">
-                          Relocation preference
-                        </label>
-                        <select
-                          name="relocationPreference"
-                          value={formData.relocationPreference}
-                          onChange={handleInputChange}
-                          className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A]/75 outline-none focus:border-[#30AFFF]"
-                        >
-                          <option value="">Select preference</option>
-                          <option>Yes — open to relocation</option>
-                          <option>Yes — only with relocation support</option>
-                          <option>No — remote preferred</option>
-                          <option>Maybe — depends on opportunity</option>
-                        </select>
-                      </div>
-
-                      <div className="sm:col-span-2">
-                        <label className="text-[11px] font-semibold text-[#17202A]/65">
-                          Work authorization / sponsorship
-                        </label>
-                        <select
-                          name="workAuthorization"
-                          value={formData.workAuthorization}
-                          onChange={handleInputChange}
-                          className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A]/75 outline-none focus:border-[#30AFFF]"
-                        >
-                          <option value="">Select status</option>
-                          <option>
-                            Authorized to work in my preferred market
-                          </option>
-                          <option>Need employer sponsorship</option>
-                          <option>Open to employer sponsorship</option>
-                          <option>Remote only / no local authorization needed</option>
-                          <option>Not sure</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-[#17202A]/65">
-                          Expected annual salary *
-                        </label>
-                        <input
-                          required
-                          type="number"
-                          min="0"
-                          name="expectedSalary"
-                          value={formData.expectedSalary}
-                          onChange={handleInputChange}
-                          placeholder="e.g. 75000"
-                          className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A] outline-none placeholder:text-[#17202A]/30 focus:border-[#30AFFF]"
-                        />
-                        <p className="text-[9px] text-[#17202A]/35 mt-1">
-                          Enter your target annual compensation.
-                        </p>
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-[#17202A]/65">
-                          Salary currency *
-                        </label>
-                        <select
-                          required
-                          name="salaryCurrency"
-                          value={formData.salaryCurrency}
-                          onChange={handleInputChange}
-                          className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A]/75 outline-none focus:border-[#30AFFF]"
-                        >
-                          <option value="">Select currency</option>
-                          <option>USD — US Dollar</option>
-                          <option>GBP — British Pound</option>
-                          <option>CAD — Canadian Dollar</option>
-                          <option>EUR — Euro</option>
-                          <option>AUD — Australian Dollar</option>
-                          <option>SGD — Singapore Dollar</option>
-                          <option>AED — UAE Dirham</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-[#17202A]/65">
-                          Availability / notice period *
-                        </label>
-                        <select
-                          required
-                          name="noticePeriod"
-                          value={formData.noticePeriod}
-                          onChange={handleInputChange}
-                          className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A]/75 outline-none focus:border-[#30AFFF]"
-                        >
-                          <option value="">Select availability</option>
-                          <option>Immediately available</option>
-                          <option>Within 15 days</option>
-                          <option>Within 30 days</option>
-                          <option>30–60 days</option>
-                          <option>60+ days</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-[#17202A]/65">
-                          Preferred working timezone
-                        </label>
-                        <select
-                          name="preferredTimezone"
-                          value={formData.preferredTimezone}
-                          onChange={handleInputChange}
-                          className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A]/75 outline-none focus:border-[#30AFFF]"
-                        >
-                          <option value="">Select timezone</option>
-                          <option>IST — India</option>
-                          <option>GMT — United Kingdom</option>
-                          <option>EST — US Eastern</option>
-                          <option>CST — US Central</option>
-                          <option>PST — US Pacific</option>
-                          <option>CET — Central Europe</option>
-                          <option>AEST — Australia Eastern</option>
-                          <option>Flexible / Any timezone</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-[#17202A]/65">
-                          Country flexibility
-                        </label>
-                        <select
-                          name="countryFlexibility"
-                          value={formData.countryFlexibility}
-                          onChange={handleInputChange}
-                          className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A]/75 outline-none focus:border-[#30AFFF]"
-                        >
-                          <option value="">Select flexibility</option>
-                          <option>Only my preferred country</option>
-                          <option>Open to nearby countries</option>
-                          <option>Open to any global market</option>
-                          <option>Depends on compensation</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-[#17202A]/65">
-                          Showreel / Portfolio Link *
-                        </label>
-                        <input
-                          required
-                          type="url"
-                          name="portfolio"
-                          value={formData.portfolio}
-                          onChange={handleInputChange}
-                          placeholder="https://youtube.com/watch?v=... or Vimeo / Drive"
-                          className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A] outline-none placeholder:text-[#17202A]/30 focus:border-[#30AFFF]"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-[#17202A]/65">
-                          LinkedIn / Social Profile
-                        </label>
-                        <input
-                          type="url"
-                          name="linkedin"
-                          value={formData.linkedin}
-                          onChange={handleInputChange}
-                          placeholder="https://linkedin.com/in/yourname or Instagram"
-                          className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A] outline-none placeholder:text-[#17202A]/30 focus:border-[#30AFFF]"
-                        />
-                      </div>
-
-                      <div className="sm:col-span-2">
-                        <label className="text-[11px] font-semibold text-[#17202A]/65">
-                          Editing & Motion Tools
-                        </label>
-                        <input
-                          type="text"
-                          name="frontendSkills"
-                          value={formData.frontendSkills}
-                          onChange={handleInputChange}
-                          placeholder="Premiere Pro, After Effects, DaVinci Resolve, Motion Design, Blender, Sound Design..."
-                          className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A] outline-none placeholder:text-[#17202A]/30 focus:border-[#30AFFF]"
-                        />
-                      </div>
-
-                      <div className="sm:col-span-2">
-                        <label className="text-[11px] font-semibold text-[#17202A]/65">
-                          Resume / CV *
-                        </label>
-
-                        <input
-                          required
-                          type="file"
-                          accept=".pdf,.doc,.docx"
-                          onChange={handleFileChange}
-                          className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-xs text-[#17202A]/60 file:mr-3 file:rounded-lg file:border-0 file:bg-[#17202A] file:px-3 file:py-2 file:text-xs file:text-white"
-                        />
-                        {resumeFile && (
-                          <p className="mt-1 text-[11px] text-[#0B6F9F] font-medium">
-                            Selected: {resumeFile.name} ({(resumeFile.size / 1024).toFixed(1)} KB)
-                          </p>
-                        )}
-                      </div>
-
-                      <div className="sm:col-span-2">
-                        <label className="text-[11px] font-semibold text-[#17202A]/65">
-                          Tell us about your creative style & experience *
-                        </label>
-
-                        <textarea
-                          required
-                          rows="5"
-                          name="aboutYou"
-                          value={formData.aboutYou}
-                          onChange={handleInputChange}
-                          placeholder="Tell us about your favorite editing styles, biggest videos edited, pacing philosophy, and why this opportunity excites you..."
-                          className="mt-1.5 w-full resize-none rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A] outline-none placeholder:text-[#17202A]/30 focus:border-[#30AFFF]"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-5 pt-5 border-t border-[#17202A]/15">
-                      <p className="text-[10px] leading-4 text-[#17202A]/40 max-w-sm">
-                        By submitting this application, you confirm that your showreel and
-                        information are authentic. Global opportunities and sponsorships depend
-                        on employer requirements.
-                      </p>
-
-                      <motion.button
-                        type="submit"
-                        disabled={submitLoading}
-                        whileHover={submitLoading ? {} : { y: -3 }}
-                        whileTap={submitLoading ? {} : { scale: 0.97 }}
-                        className={`group inline-flex items-center justify-center gap-2 rounded-xl bg-[#17202A] text-white px-6 py-3.5 text-sm font-bold transition shadow-md ${
-                          submitLoading ? "opacity-75 cursor-not-allowed" : "hover:bg-[#30AFFF]"
-                        }`}
-                      >
-                        {submitLoading ? (
-                          <>
-                            <Loader2 size={16} className="animate-spin text-white" />
-                            Submitting application...
-                          </>
-                        ) : (
-                          <>
-                            Send application
-                            <Send
-                              size={14}
-                              className="group-hover:translate-x-0.5 transition"
-                            />
-                          </>
-                        )}
-                      </motion.button>
-                    </div>
-                  </motion.form>
-                )}
-              </AnimatePresence>
+                    <span>Open Application Form</span>
+                    <ArrowRight size={16} className="text-[#30AFFF]" />
+                  </button>
+                </div>
+                <p className="text-[11px] text-[#17202A]/50 mt-4">
+                  ⚡ Takes less than 2 minutes · PDF / DOC / DOCX resume supported
+                </p>
+              </div>
             </motion.div>
           </div>
         </div>
       </section>
+
+      <RoleApplyModal
+        isOpen={isApplyModalOpen}
+        onClose={() => setIsApplyModalOpen(false)}
+        role="Video Editor"
+      />
 
       {/* FOOTER */}
       <footer className="border-t border-[#17202A]/20 bg-white">

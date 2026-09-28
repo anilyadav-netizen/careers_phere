@@ -1,4 +1,5 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useReducer, useState } from "react";
+import RoleApplyModal from "../components/RoleApplyModal";
 import {
     ArrowRight,
     Check,
@@ -54,6 +55,7 @@ const reducer = (state, action) => {
 const AndroidDeveloper = () => {
     const [state, dispatch] = useReducer(reducer, initialState);
     const { openFaq, resumeName, selectedOpportunity } = state;
+    const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
 
     useEffect(() => {
         AOS.init({
@@ -249,6 +251,10 @@ const AndroidDeveloper = () => {
     ];
 
     const scrollToSection = (id) => {
+        if (id === "apply") {
+            setIsApplyModalOpen(true);
+            return;
+        }
         document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
     };
 
@@ -262,7 +268,7 @@ const AndroidDeveloper = () => {
 
     const handleOpportunitySelect = (opportunity) => {
         dispatch({ type: "SET_OPPORTUNITY", payload: opportunity });
-        scrollToSection("apply");
+        setIsApplyModalOpen(true);
     };
 
     return (
@@ -1138,420 +1144,55 @@ const AndroidDeveloper = () => {
                             </div>
                         </div>
 
-                        {/* FORM */}
-                        <motion.form
+                        {/* CTA Card */}
+                        <motion.div
                             initial={{ opacity: 0, y: 70 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true, amount: 0.15 }}
                             transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-                            onSubmit={(e) => {
-                                e.preventDefault();
-                                alert("Global application submitted successfully!");
-                            }}
-                            className="rounded-3xl border border-slate-100 bg-white p-5 sm:p-7 shadow-[0_15px_45px_rgba(15,23,42,0.10)]"
+                            className="rounded-3xl border border-slate-100 bg-white p-8 sm:p-12 shadow-[0_15px_45px_rgba(15,23,42,0.10)] text-center relative overflow-hidden"
                         >
-                            <div className="mb-5 rounded-2xl border border-[#30AFFF]/20 bg-[#30AFFF]/[0.04] p-4">
-                                <div className="flex items-start gap-3">
-                                    <div className="w-9 h-9 rounded-lg bg-[#30AFFF]/10 text-[#30AFFF] flex items-center justify-center shrink-0">
-                                        <Globe2 size={18} />
-                                    </div>
-
-                                    <div>
-                                        <h3 className="text-sm font-bold text-slate-800">
-                                            Global Opportunity Preferences
-                                        </h3>
-                                        <p className="text-xs text-slate-500 leading-5 mt-1">
-                                            Tell us where you want to work, how you
-                                            want to work and what compensation you
-                                            expect.
-                                        </p>
-                                    </div>
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-[#30AFFF]/5 rounded-full blur-3xl pointer-events-none" />
+                            <div className="max-w-xl mx-auto">
+                                <div className="w-16 h-16 rounded-2xl bg-[#30AFFF]/10 text-[#30AFFF] mx-auto flex items-center justify-center mb-6 shadow-inner">
+                                    <Smartphone size={32} />
                                 </div>
+                                <h3 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+                                    Ready to Apply as Android Developer?
+                                </h3>
+                                <p className="text-sm text-slate-500 mt-3 leading-relaxed">
+                                    Click the button below to launch the official Android application popup.
+                                    Provide your Kotlin / Jetpack Compose skills, Play Store links, compensation
+                                    expectations, and upload your resume.
+                                </p>
+                                <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsApplyModalOpen(true)}
+                                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#30AFFF] text-white font-bold text-sm shadow-lg shadow-[#30AFFF]/25 hover:bg-[#159FEF] transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+                                    >
+                                        <span>Open Application Form</span>
+                                        <ArrowRight size={16} />
+                                    </button>
+                                </div>
+                                <p className="text-[11px] text-slate-400 mt-4">
+                                    ⚡ Takes less than 2 minutes · PDF / DOC / DOCX resume supported
+                                </p>
                             </div>
-
-                            <div className="grid sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                                        Full Name *
-                                    </label>
-                                    <input
-                                        required
-                                        name="fullName"
-                                        type="text"
-                                        placeholder="John Doe"
-                                        className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10 transition"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                                        Email Address *
-                                    </label>
-                                    <input
-                                        required
-                                        name="email"
-                                        type="email"
-                                        placeholder="john@example.com"
-                                        className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10 transition"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                                        Phone Number *
-                                    </label>
-                                    <input
-                                        required
-                                        name="phone"
-                                        type="tel"
-                                        placeholder="+91 98765 43210"
-                                        className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10 transition"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                                        Experience *
-                                    </label>
-                                    <select
-                                        required
-                                        name="experience"
-                                        className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                                    >
-                                        <option value="">Select experience</option>
-                                        <option>0 - 1 Year</option>
-                                        <option>1 - 3 Years</option>
-                                        <option>3 - 5 Years</option>
-                                        <option>5+ Years</option>
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                                        Current Country *
-                                    </label>
-                                    <select
-                                        required
-                                        name="currentCountry"
-                                        className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                                    >
-                                        <option value="">Select current country</option>
-                                        <option>India</option>
-                                        <option>United States</option>
-                                        <option>United Kingdom</option>
-                                        <option>Canada</option>
-                                        <option>Australia</option>
-                                        <option>Germany</option>
-                                        <option>France</option>
-                                        <option>Netherlands</option>
-                                        <option>United Arab Emirates</option>
-                                        <option>Singapore</option>
-                                        <option>Other</option>
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                                        Current Location *
-                                    </label>
-                                    <input
-                                        required
-                                        name="currentLocation"
-                                        type="text"
-                                        placeholder="Delhi, India"
-                                        className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10 transition"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                                        Preferred Country *
-                                    </label>
-                                    <select
-                                        required
-                                        name="preferredCountry"
-                                        defaultValue={selectedOpportunity?.country || ""}
-                                        className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                                    >
-                                        <option value="">Select preferred country</option>
-                                        <option>United States</option>
-                                        <option>United Kingdom</option>
-                                        <option>Germany</option>
-                                        <option>Canada</option>
-                                        <option>Australia</option>
-                                        <option>Netherlands</option>
-                                        <option>France</option>
-                                        <option>Singapore</option>
-                                        <option>United Arab Emirates</option>
-                                        <option>Japan</option>
-                                        <option>Any Country</option>
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                                        Preferred Work Mode *
-                                    </label>
-                                    <select
-                                        required
-                                        name="workMode"
-                                        defaultValue={
-                                            selectedOpportunity?.mode === "Fully Remote" ? "Remote" : ""
-                                        }
-                                        className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                                    >
-                                        <option value="">Select work mode</option>
-                                        <option>Remote</option>
-                                        <option>Hybrid</option>
-                                        <option>On-site</option>
-                                        <option>Remote or Hybrid</option>
-                                        <option>Remote or On-site</option>
-                                        <option>Any</option>
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                                        Country Flexibility *
-                                    </label>
-                                    <select
-                                        required
-                                        name="countryFlexibility"
-                                        className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                                    >
-                                        <option value="">Select flexibility</option>
-                                        <option>Only my preferred country</option>
-                                        <option>Open to nearby countries</option>
-                                        <option>Open to multiple countries</option>
-                                        <option>Open to any country</option>
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                                        Relocation Preference *
-                                    </label>
-                                    <select
-                                        required
-                                        name="relocation"
-                                        className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                                    >
-                                        <option value="">Select relocation preference</option>
-                                        <option>Yes, I am open to relocation</option>
-                                        <option>Yes, with employer support</option>
-                                        <option>Only for selected countries</option>
-                                        <option>No, remote preferred</option>
-                                        <option>Maybe, depending on opportunity</option>
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                                        Sponsorship Requirement *
-                                    </label>
-                                    <select
-                                        required
-                                        name="sponsorship"
-                                        className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                                    >
-                                        <option value="">Select requirement</option>
-                                        <option>I don't need sponsorship</option>
-                                        <option>I need employer sponsorship</option>
-                                        <option>Open to sponsorship opportunities</option>
-                                        <option>Remote only</option>
-                                        <option>Not sure</option>
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                                        Expected Salary *
-                                    </label>
-                                    <input
-                                        required
-                                        name="expectedSalary"
-                                        type="number"
-                                        min="0"
-                                        placeholder="80000"
-                                        className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10 transition"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                                        Salary Currency *
-                                    </label>
-                                    <select
-                                        required
-                                        name="salaryCurrency"
-                                        className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                                    >
-                                        <option value="">Select currency</option>
-                                        <option>USD - US Dollar</option>
-                                        <option>EUR - Euro</option>
-                                        <option>GBP - British Pound</option>
-                                        <option>CAD - Canadian Dollar</option>
-                                        <option>AUD - Australian Dollar</option>
-                                        <option>INR - Indian Rupee</option>
-                                        <option>AED - UAE Dirham</option>
-                                        <option>SGD - Singapore Dollar</option>
-                                        <option>JPY - Japanese Yen</option>
-                                        <option>Other</option>
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                                        Compensation Preference *
-                                    </label>
-                                    <select
-                                        required
-                                        name="compensationType"
-                                        className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                                    >
-                                        <option value="">Select preference</option>
-                                        <option>Annual Salary</option>
-                                        <option>Monthly Salary</option>
-                                        <option>Hourly Rate</option>
-                                        <option>Contract / Project Based</option>
-                                        <option>Flexible</option>
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                                        Availability / Notice Period *
-                                    </label>
-                                    <select
-                                        required
-                                        name="noticePeriod"
-                                        className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                                    >
-                                        <option value="">Select availability</option>
-                                        <option>Immediately</option>
-                                        <option>Within 15 days</option>
-                                        <option>Within 30 days</option>
-                                        <option>Within 60 days</option>
-                                        <option>Within 90 days</option>
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                                        Preferred Working Time Zone
-                                    </label>
-                                    <select
-                                        name="timezone"
-                                        className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                                    >
-                                        <option value="">Select time zone</option>
-                                        <option>IST - India</option>
-                                        <option>GMT - United Kingdom</option>
-                                        <option>EST - US Eastern</option>
-                                        <option>CST - US Central</option>
-                                        <option>PST - US Pacific</option>
-                                        <option>CET - Central Europe</option>
-                                        <option>AEST - Australia Eastern</option>
-                                        <option>Flexible / Any</option>
-                                    </select>
-                                </div>
-
-                                <div className="sm:col-span-2">
-                                    <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                                        Android Skills *
-                                    </label>
-                                    <input
-                                        required
-                                        name="skills"
-                                        type="text"
-                                        placeholder="Kotlin, Jetpack Compose, Firebase, Retrofit, Room, MVVM..."
-                                        className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10 transition"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                                        Portfolio / GitHub
-                                    </label>
-                                    <input
-                                        name="portfolio"
-                                        type="url"
-                                        placeholder="https://github.com/username"
-                                        className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10 transition"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                                        LinkedIn Profile
-                                    </label>
-                                    <input
-                                        name="linkedin"
-                                        type="url"
-                                        placeholder="https://linkedin.com/in/username"
-                                        className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10 transition"
-                                    />
-                                </div>
-
-                                <div className="sm:col-span-2">
-                                    <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                                        Tell us about yourself
-                                    </label>
-                                    <textarea
-                                        name="additionalInfo"
-                                        rows="4"
-                                        placeholder="Tell us about your Android experience, projects, preferred countries, work mode, relocation plans and the kind of international opportunity you're looking for..."
-                                        className="w-full resize-none rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10 transition"
-                                    />
-                                </div>
-
-                                <div className="sm:col-span-2">
-                                    <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                                        Resume *
-                                    </label>
-                                    <label className="flex items-center justify-between gap-4 rounded-xl border border-dashed border-slate-200 bg-white px-4 py-3.5 cursor-pointer hover:bg-[#30AFFF]/[0.04] hover:border-[#30AFFF]/40 transition">
-                                        <div className="flex items-center gap-3 min-w-0">
-                                            <div className="w-9 h-9 rounded-lg bg-[#30AFFF]/10 text-[#30AFFF] flex items-center justify-center shrink-0">
-                                                <BriefcaseBusiness size={17} />
-                                            </div>
-                                            <span className="text-sm text-slate-500 truncate">
-                                                {resumeName || "Upload your resume"}
-                                            </span>
-                                        </div>
-                                        <span className="text-xs text-[#30AFFF] font-bold shrink-0">
-                                            PDF / DOC
-                                        </span>
-                                        <input
-                                            required
-                                            name="resume"
-                                            type="file"
-                                            accept=".pdf,.doc,.docx"
-                                            onChange={handleResumeChange}
-                                            className="hidden"
-                                        />
-                                    </label>
-                                </div>
-                            </div>
-
-                            <motion.button
-                                whileHover={{ y: -3, scale: 1.01 }}
-                                whileTap={{ scale: 0.98 }}
-                                type="submit"
-                                className="w-full mt-5 flex items-center justify-center gap-2 rounded-full bg-[#30AFFF] px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#30AFFF]/30 hover:bg-[#159FEF] transition"
-                            >
-                                Submit Global Application
-                                <Send size={16} />
-                            </motion.button>
-
-                            <p className="text-[11px] text-center text-slate-400 mt-3">
-                                By submitting this form, you agree to let us
-                                review your application and consider you for
-                                suitable global opportunities.
-                            </p>
-                        </motion.form>
+                        </motion.div>
                     </div>
                 </div>
             </section>
+
+            <RoleApplyModal
+                isOpen={isApplyModalOpen}
+                onClose={() => setIsApplyModalOpen(false)}
+                role="Android Developer"
+                initialData={selectedOpportunity ? {
+                    preferredJobMarket: selectedOpportunity.country,
+                    preferredWorkMode: selectedOpportunity.mode,
+                } : {}}
+            />
 
             {/* FOOTER */}
             <footer

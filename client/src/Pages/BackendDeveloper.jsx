@@ -1,4 +1,5 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useState } from "react";
+import RoleApplyModal from "../components/RoleApplyModal";
 import {
     ArrowDownRight,
     ArrowRight,
@@ -56,6 +57,7 @@ const reducer = (state, action) => {
 const BackendDeveloper = () => {
     const [state, dispatch] = useReducer(reducer, initialState);
     const { openFaq } = state;
+    const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
 
     const responsibilities = [
         {
@@ -211,7 +213,7 @@ const BackendDeveloper = () => {
 
                             <div className="mt-6 flex flex-row gap-2 sm:gap-3 w-full">
                                 <a
-                                    href="#apply"
+                                    href="#apply" onClick={(e) => { e.preventDefault(); setIsApplyModalOpen(true); }}
                                     className="min-w-0 flex-1 inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-full bg-[#30AFFF] px-4 sm:px-6 py-3 text-sm font-bold text-white shadow-lg shadow-[#30AFFF]/30 hover:bg-[#159FEF] transition whitespace-nowrap"
                                 >
                                     <span>Apply for this role</span>
@@ -626,7 +628,7 @@ const BackendDeveloper = () => {
                             </p>
                         </div>
 
-                        <a href="#apply" className="shrink-0 inline-flex items-center gap-2 text-xs font-black text-[#30AFFF] hover:text-[#159FEF] transition">
+                        <a href="#apply" onClick={(e) => { e.preventDefault(); setIsApplyModalOpen(true); }} className="shrink-0 inline-flex items-center gap-2 text-xs font-black text-[#30AFFF] hover:text-[#159FEF] transition">
                             Explore & apply
                             <ArrowRight size={14} />
                         </a>
@@ -799,7 +801,7 @@ const BackendDeveloper = () => {
                                 </p>
 
                                 <a
-                                    href="#apply"
+                                    href="#apply" onClick={(e) => { e.preventDefault(); setIsApplyModalOpen(true); }}
                                     className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#30AFFF] text-white px-6 py-3 text-sm font-black shadow-lg shadow-[#30AFFF]/30 hover:bg-[#159FEF] transition"
                                 >
                                     Apply for this role
@@ -906,177 +908,44 @@ const BackendDeveloper = () => {
                             </div>
                         </div>
 
-                        <form
-                            onSubmit={(e) => e.preventDefault()}
-                            className="rounded-3xl border border-slate-100 bg-white p-5 sm:p-7 shadow-[0_15px_45px_rgba(15,23,42,0.10)]"
-                        >
-                            <div className="grid sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label className="text-[10px] uppercase tracking-[0.14em] font-black text-slate-500">Full name</label>
-                                    <input
-                                        type="text"
-                                        placeholder="Your name"
-                                        className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10 transition"
-                                    />
+                        <div className="rounded-3xl border border-slate-100 bg-white p-8 sm:p-12 shadow-[0_15px_45px_rgba(15,23,42,0.10)] text-center relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-[#30AFFF]/5 rounded-full blur-3xl pointer-events-none" />
+                            <div className="max-w-xl mx-auto">
+                                <div className="w-16 h-16 rounded-2xl bg-[#30AFFF]/10 text-[#30AFFF] mx-auto flex items-center justify-center mb-6 shadow-inner">
+                                    <Server size={32} />
                                 </div>
-
-                                <div>
-                                    <label className="text-[10px] uppercase tracking-[0.14em] font-black text-slate-500">Email</label>
-                                    <input
-                                        type="email"
-                                        placeholder="you@example.com"
-                                        className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10 transition"
-                                    />
+                                <h3 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+                                    Ready to Apply as Backend Developer?
+                                </h3>
+                                <p className="text-sm text-slate-500 mt-3 leading-relaxed">
+                                    Click the button below to launch the official backend application popup.
+                                    Share your system architecture experience, database & API specializations,
+                                    salary expectations, and upload your resume.
+                                </p>
+                                <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsApplyModalOpen(true)}
+                                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#30AFFF] text-white font-bold text-sm shadow-lg shadow-[#30AFFF]/25 hover:bg-[#159FEF] transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+                                    >
+                                        <span>Open Application Form</span>
+                                        <ArrowRight size={16} />
+                                    </button>
                                 </div>
-
-                                <div>
-                                    <label className="text-[10px] uppercase tracking-[0.14em] font-black text-slate-500">Phone</label>
-                                    <input
-                                        type="tel"
-                                        placeholder="+91 98765 43210"
-                                        className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10 transition"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="text-[10px] uppercase tracking-[0.14em] font-black text-slate-500">Experience</label>
-                                    <select className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10">
-                                        <option value="">Select experience</option>
-                                        <option>0–1 years</option>
-                                        <option>1–2 years</option>
-                                        <option>2–4 years</option>
-                                        <option>4–6 years</option>
-                                        <option>6–8 years</option>
-                                        <option>8+ years</option>
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label className="text-[10px] uppercase tracking-[0.14em] font-black text-slate-500">Preferred country</label>
-                                    <select className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10">
-                                        <option value="">Select country</option>
-                                        <option>United States</option>
-                                        <option>United Kingdom</option>
-                                        <option>Canada</option>
-                                        <option>Australia</option>
-                                        <option>Germany</option>
-                                        <option>Netherlands</option>
-                                        <option>France</option>
-                                        <option>Ireland</option>
-                                        <option>Singapore</option>
-                                        <option>United Arab Emirates</option>
-                                        <option>Any country</option>
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label className="text-[10px] uppercase tracking-[0.14em] font-black text-slate-500">Preferred work mode</label>
-                                    <select className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10">
-                                        <option value="">Select work mode</option>
-                                        <option>Remote</option>
-                                        <option>Hybrid</option>
-                                        <option>Onsite</option>
-                                        <option>Remote or Hybrid</option>
-                                        <option>Any mode</option>
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label className="text-[10px] uppercase tracking-[0.14em] font-black text-slate-500">Expected payout</label>
-                                    <div className="mt-2 flex gap-2">
-                                        <select className="w-[34%] rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10">
-                                            <option>USD</option>
-                                            <option>EUR</option>
-                                            <option>GBP</option>
-                                            <option>CAD</option>
-                                            <option>AUD</option>
-                                            <option>INR</option>
-                                        </select>
-
-                                        <input
-                                            type="number"
-                                            placeholder="e.g. 60000"
-                                            className="w-[66%] rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10 transition"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label className="text-[10px] uppercase tracking-[0.14em] font-black text-slate-500">Payout period</label>
-                                    <select className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10">
-                                        <option value="">Select period</option>
-                                        <option>Per year</option>
-                                        <option>Per month</option>
-                                        <option>Per hour</option>
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label className="text-[10px] uppercase tracking-[0.14em] font-black text-slate-500">Open to relocation?</label>
-                                    <select className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10">
-                                        <option value="">Select preference</option>
-                                        <option>Yes, I can relocate</option>
-                                        <option>No, remote only</option>
-                                        <option>Depends on the opportunity</option>
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label className="text-[10px] uppercase tracking-[0.14em] font-black text-slate-500">Work authorization</label>
-                                    <select className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10">
-                                        <option value="">Select status</option>
-                                        <option>Already authorized</option>
-                                        <option>Need visa sponsorship</option>
-                                        <option>Open to sponsorship</option>
-                                        <option>Not sure</option>
-                                    </select>
-                                </div>
-
-                                <div className="sm:col-span-2">
-                                    <label className="text-[10px] uppercase tracking-[0.14em] font-black text-slate-500">Portfolio / GitHub / LinkedIn</label>
-                                    <input
-                                        type="url"
-                                        placeholder="https://github.com/yourname"
-                                        className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10 transition"
-                                    />
-                                </div>
-
-                                <div className="sm:col-span-2">
-                                    <label className="text-[10px] uppercase tracking-[0.14em] font-black text-slate-500">Resume</label>
-                                    <input
-                                        type="file"
-                                        accept=".pdf,.doc,.docx"
-                                        className="mt-2 w-full rounded-xl border border-dashed border-slate-200 bg-white px-4 py-3 text-sm text-slate-600 file:mr-3 file:rounded-full file:border-0 file:bg-[#30AFFF] file:px-3 file:py-2 file:text-xs file:font-bold file:text-white file:shadow-md file:shadow-[#30AFFF]/30"
-                                    />
-                                    <p className="mt-1 text-[10px] text-slate-400">PDF, DOC or DOCX recommended</p>
-                                </div>
-
-                                <div className="sm:col-span-2">
-                                    <label className="text-[10px] uppercase tracking-[0.14em] font-black text-slate-500">Tell us about yourself</label>
-                                    <textarea
-                                        rows="5"
-                                        placeholder="Tell us about your experience, strongest skills, the type of global opportunity you are looking for and the kind of work you enjoy..."
-                                        className="mt-2 w-full resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10 transition"
-                                    />
-                                </div>
+                                <p className="text-[11px] text-slate-400 mt-4">
+                                    ⚡ Takes less than 2 minutes · PDF / DOC / DOCX resume supported
+                                </p>
                             </div>
-
-                            <button
-                                type="submit"
-                                className="mt-5 w-full rounded-full bg-[#30AFFF] text-white px-5 py-3.5 text-sm font-black flex items-center justify-center gap-2 shadow-lg shadow-[#30AFFF]/30 hover:bg-[#159FEF] transition"
-                            >
-                                Submit application
-                                <ArrowRight size={16} />
-                            </button>
-
-                            <p className="mt-3 text-[10px] text-center text-slate-400">
-                                Your preferences help us match you with relevant global
-                                opportunities, work modes and compensation ranges.
-                            </p>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </section>
+
+            <RoleApplyModal
+                isOpen={isApplyModalOpen}
+                onClose={() => setIsApplyModalOpen(false)}
+                role="Backend Developer"
+            />
 
             {/* FOOTER */}
             <footer className="bg-white border-t border-slate-100">
@@ -1106,7 +975,7 @@ const BackendDeveloper = () => {
                             </a>
 
                             <a
-                                href="#apply"
+                                href="#apply" onClick={(e) => { e.preventDefault(); setIsApplyModalOpen(true); }}
                                 className="inline-flex items-center gap-2 rounded-full bg-[#30AFFF] text-white px-4 py-2 text-[11px] font-black shadow-md shadow-[#30AFFF]/30 hover:bg-[#159FEF] transition"
                             >
                                 Apply now

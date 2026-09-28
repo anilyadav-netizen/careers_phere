@@ -1,4 +1,5 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useReducer, useState } from "react";
+import RoleApplyModal from "../components/RoleApplyModal";
 import {
   ArrowRight,
   Check,
@@ -142,7 +143,13 @@ const FullStackDeveloper = () => {
     },
   ];
 
+  const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
+
   const scrollToSection = (id) => {
+    if (id === "apply") {
+      setIsApplyModalOpen(true);
+      return;
+    }
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
 
@@ -1136,243 +1143,50 @@ const FullStackDeveloper = () => {
               </motion.div>
             </motion.div>
 
-            <motion.form
+            <motion.div
               variants={imageRight}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.1 }}
-              onSubmit={(e) => {
-                e.preventDefault();
-                alert("Application submitted successfully!");
-              }}
-              className="rounded-3xl border border-slate-100 bg-white p-5 sm:p-7 shadow-[0_15px_45px_rgba(15,23,42,0.10)]"
+              className="rounded-3xl border border-slate-100 bg-white p-8 sm:p-12 shadow-[0_15px_45px_rgba(15,23,42,0.10)] text-center relative overflow-hidden"
             >
-              <div className="mb-5 rounded-2xl border border-[#30AFFF]/20 bg-[#30AFFF]/[0.04] p-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-9 h-9 shrink-0 rounded-lg bg-[#30AFFF]/10 text-[#30AFFF] flex items-center justify-center">
-                    <Globe2 size={17} />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-bold text-slate-800">
-                      Tell us about your global job preference
-                    </h3>
-                    <p className="text-xs text-slate-500 leading-5 mt-1">
-                      Choose your preferred country, work model and salary
-                      expectation so we can better understand the opportunity
-                      you're looking for.
-                    </p>
-                  </div>
+              <div className="absolute top-0 right-0 w-64 h-64 bg-[#30AFFF]/5 rounded-full blur-3xl pointer-events-none" />
+              <div className="max-w-xl mx-auto">
+                <div className="w-16 h-16 rounded-2xl bg-[#30AFFF]/10 text-[#30AFFF] mx-auto flex items-center justify-center mb-6 shadow-inner">
+                  <Layers3 size={32} />
                 </div>
+                <h3 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+                  Ready to Apply as Full Stack Developer?
+                </h3>
+                <p className="text-sm text-slate-500 mt-3 leading-relaxed">
+                  Click the button below to open the application popup. Share your
+                  stack expertise across frontend, backend, databases, and APIs,
+                  set your target global market, and attach your resume.
+                </p>
+                <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setIsApplyModalOpen(true)}
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#30AFFF] text-white font-bold text-sm shadow-lg shadow-[#30AFFF]/25 hover:bg-[#159FEF] transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+                  >
+                    <span>Open Application Form</span>
+                    <ArrowRight size={16} />
+                  </button>
+                </div>
+                <p className="text-[11px] text-slate-400 mt-4">
+                  ⚡ Takes less than 2 minutes · PDF / DOC / DOCX resume supported
+                </p>
               </div>
-
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                    Full Name *
-                  </label>
-                  <input
-                    required
-                    type="text"
-                    placeholder="John Doe"
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10 transition"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                    Email Address *
-                  </label>
-                  <input
-                    required
-                    type="email"
-                    placeholder="john@example.com"
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10 transition"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                    Phone Number
-                  </label>
-                  <input
-                    type="tel"
-                    placeholder="+91 98765 43210"
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10 transition"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                    Experience *
-                  </label>
-                  <select
-                    required
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                  >
-                    <option value="">Select experience</option>
-                    <option>0 - 1 Year</option>
-                    <option>1 - 3 Years</option>
-                    <option>3 - 5 Years</option>
-                    <option>5+ Years</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                    Preferred Country *
-                  </label>
-                  <select
-                    required
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                  >
-                    <option value="">Select preferred country</option>
-                    <option value="United States">🇺🇸 United States</option>
-                    <option value="Canada">🇨🇦 Canada</option>
-                    <option value="United Kingdom">🇬🇧 United Kingdom</option>
-                    <option value="Australia">🇦🇺 Australia</option>
-                    <option value="Germany">🇩🇪 Germany</option>
-                    <option value="Netherlands">🇳🇱 Netherlands</option>
-                    <option value="Singapore">🇸🇬 Singapore</option>
-                    <option value="UAE">🇦🇪 UAE</option>
-                    <option value="Other">🌍 Other</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                    Work Preference *
-                  </label>
-                  <select
-                    required
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                  >
-                    <option value="">Select work preference</option>
-                    <option value="Remote">Remote</option>
-                    <option value="Hybrid">Hybrid</option>
-                    <option value="On-site">On-site</option>
-                    <option value="Relocation">Relocation</option>
-                    <option value="Remote or Hybrid">Remote or Hybrid</option>
-                    <option value="Open to all">Open to all</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                    Current Location *
-                  </label>
-                  <input
-                    required
-                    type="text"
-                    placeholder="Delhi, India"
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10 transition"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                    Expected Salary *
-                  </label>
-                  <select
-                    required
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                  >
-                    <option value="">Select expected salary</option>
-                    <option>$40K - $60K / year</option>
-                    <option>$60K - $80K / year</option>
-                    <option>$80K - $100K / year</option>
-                    <option>$100K - $125K / year</option>
-                    <option>$125K - $150K / year</option>
-                    <option>$150K+ / year</option>
-                    <option>Open to discussion</option>
-                  </select>
-                </div>
-
-                <div className="sm:col-span-2">
-                  <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                    Work Authorization *
-                  </label>
-                  <select
-                    required
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                  >
-                    <option value="">Select work authorization status</option>
-                    <option>Citizen / Permanent Resident</option>
-                    <option>Valid Work Visa</option>
-                    <option>Eligible to obtain a Work Visa</option>
-                    <option>Require Employer Sponsorship</option>
-                    <option>Open to Relocation / Visa Sponsorship</option>
-                  </select>
-                </div>
-
-                <div className="sm:col-span-2">
-                  <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                    Portfolio / GitHub
-                  </label>
-                  <input
-                    type="url"
-                    placeholder="https://github.com/username"
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10 transition"
-                  />
-                </div>
-
-                <div className="sm:col-span-2">
-                  <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                    Technical Skills *
-                  </label>
-                  <input
-                    required
-                    type="text"
-                    placeholder="React, Node.js, MongoDB, Express..."
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10 transition"
-                  />
-                </div>
-
-                <div className="sm:col-span-2">
-                  <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                    Tell us about yourself
-                  </label>
-                  <textarea
-                    rows="4"
-                    placeholder="Tell us about your experience, projects and the kind of global opportunity you're looking for..."
-                    className="w-full resize-none rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10 transition"
-                  />
-                </div>
-
-                <div className="sm:col-span-2">
-                  <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
-                    Resume *
-                  </label>
-                  <label className="flex items-center justify-between gap-4 rounded-xl border border-dashed border-slate-200 bg-white px-4 py-3.5 cursor-pointer hover:bg-[#30AFFF]/[0.04] hover:border-[#30AFFF]/40 transition">
-                    <span className="text-sm text-slate-500">Upload your resume</span>
-                    <span className="text-xs text-[#30AFFF] font-bold">PDF / DOC</span>
-                    <input
-                      required
-                      type="file"
-                      accept=".pdf,.doc,.docx"
-                      className="hidden"
-                    />
-                  </label>
-                </div>
-              </div>
-
-              <motion.button
-                type="submit"
-                className="w-full mt-5 flex items-center justify-center gap-2 rounded-full bg-[#30AFFF] px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#30AFFF]/30 hover:bg-[#159FEF] transition"
-                whileHover={{ y: -3, scale: 1.01 }}
-                whileTap={{ scale: 0.97 }}
-              >
-                Submit Application
-                <Send size={16} />
-              </motion.button>
-
-              <p className="text-[11px] text-center text-slate-400 mt-3">
-                By submitting this form, you agree to let us review your
-                application for global opportunities matching your profile.
-              </p>
-            </motion.form>
+            </motion.div>
           </div>
         </div>
       </section>
+
+      <RoleApplyModal
+        isOpen={isApplyModalOpen}
+        onClose={() => setIsApplyModalOpen(false)}
+        role="Full Stack Developer"
+      />
 
       {/* FOOTER */}
       <footer className="border-t border-slate-100 bg-white">

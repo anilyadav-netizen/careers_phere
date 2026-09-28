@@ -30,47 +30,12 @@ import {
   FaLinkedinIn,
   FaReact,
 } from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  resetSubmitState,
-  submitFrontendApplication,
-} from "../redux/slicer/frontendApplicationSlice";
-
-const initialFormState = {
-  fullName: "",
-  email: "",
-  phone: "",
-  experience: "",
-  currentCountry: "",
-  currentLocation: "",
-  preferredRegion: "",
-  preferredJobMarket: "",
-  preferredWorkMode: "",
-  relocationPreference: "",
-  workAuthorization: "",
-  expectedSalary: "",
-  salaryCurrency: "",
-  noticePeriod: "",
-  preferredTimezone: "",
-  countryFlexibility: "",
-  portfolio: "",
-  linkedin: "",
-  frontendSkills: "",
-  aboutYou: "",
-};
+import RoleApplyModal from "../components/RoleApplyModal";
 
 const FrontendDeveloprs = () => {
-  const dispatch = useDispatch();
-  const { submitLoading, submitSuccess, submitError } = useSelector(
-    (state) => state.frontendApplications || {},
-  );
-
   const [menuOpen, setMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState(-1);
-  const [submitted, setSubmitted] = useState(false);
-  const [formData, setFormData] = useState(initialFormState);
-  const [resumeFile, setResumeFile] = useState(null);
-  const [localError, setLocalError] = useState("");
+  const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
 
   useEffect(() => {
     const initAOS = () => {
@@ -402,61 +367,8 @@ const FrontendDeveloprs = () => {
   ];
 
   const scrollToApply = () => {
-    document.getElementById("apply")?.scrollIntoView({
-      behavior: "smooth",
-    });
+    setIsApplyModalOpen(true);
     setMenuOpen(false);
-  };
-
-  useEffect(() => {
-    if (submitSuccess) {
-      setSubmitted(true);
-      setFormData(initialFormState);
-      setResumeFile(null);
-      setLocalError("");
-    }
-  }, [submitSuccess]);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleFileChange = (e) => {
-    const file = e.target.files?.[0] || null;
-    setResumeFile(file);
-    if (file) {
-      setLocalError("");
-    }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!resumeFile) {
-      setLocalError("Please upload your resume (.pdf, .doc, or .docx)");
-      return;
-    }
-
-    setLocalError("");
-    const data = new FormData();
-    data.append("role", "Frontend Developer");
-    Object.keys(formData).forEach((key) => {
-      data.append(key, formData[key]);
-    });
-    data.append("resume", resumeFile);
-
-    dispatch(submitFrontendApplication(data));
-  };
-
-  const handleResetForm = () => {
-    dispatch(resetSubmitState());
-    setSubmitted(false);
-    setFormData(initialFormState);
-    setResumeFile(null);
-    setLocalError("");
   };
 
   const softReveal = {
@@ -1435,464 +1347,45 @@ const FrontendDeveloprs = () => {
 
             <motion.div
               data-aos="fade-left"
-              className="border-t-2 border-[#30AFFF] pt-5"
+              className="bg-white rounded-3xl border border-slate-100 p-8 sm:p-12 shadow-xl shadow-slate-100 text-center relative overflow-hidden"
             >
-              <AnimatePresence mode="wait">
-                {submitted ? (
-                  <motion.div
-                    key="success"
-                    initial={{ opacity: 0, scale: 0.96 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.35 }}
-                    className="min-h-[420px] flex items-center justify-center text-center"
+              <div className="absolute top-0 right-0 w-64 h-64 bg-[#30AFFF]/5 rounded-full blur-3xl pointer-events-none" />
+              <div className="max-w-xl mx-auto">
+                <div className="w-16 h-16 rounded-2xl bg-[#30AFFF]/10 text-[#30AFFF] mx-auto flex items-center justify-center mb-6 shadow-inner">
+                  <Code2 size={32} />
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+                  Ready to Apply as Frontend Developer?
+                </h3>
+                <p className="text-sm text-slate-500 mt-3 leading-relaxed">
+                  Click the button below to open the official application popup.
+                  Provide your contact details, work preferences, compensation,
+                  tech skills, and upload your resume directly to our review pipeline.
+                </p>
+                <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setIsApplyModalOpen(true)}
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#30AFFF] text-white font-bold text-sm shadow-lg shadow-[#30AFFF]/25 hover:bg-[#159FEF] transition-all transform hover:-translate-y-0.5 active:translate-y-0"
                   >
-                    <div className="max-w-md">
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{
-                          duration: 0.45,
-                          type: "spring",
-                          stiffness: 180,
-                        }}
-                        className="mx-auto w-14 h-14 rounded-2xl bg-[#30AFFF] flex items-center justify-center shadow-lg shadow-[#30AFFF]/30"
-                      >
-                        <Check size={25} className="text-white" />
-                      </motion.div>
-
-                      <h3 className="text-2xl font-black mt-5 text-slate-900">
-                        Application received.
-                      </h3>
-
-                      <p className="text-sm leading-6 text-slate-500 mt-2">
-                        Thanks for applying. Your global opportunity preferences
-                        have been submitted along with your profile.
-                      </p>
-
-                      <button
-                        onClick={() => setSubmitted(false)}
-                        className="mt-5 text-xs font-bold text-[#30AFFF] hover:text-[#159FEF]"
-                      >
-                        Submit another application
-                      </button>
-                    </div>
-                  </motion.div>
-                ) : (
-                  <motion.form
-                    key="form"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                    onSubmit={handleSubmit}
-                  >
-                    <div className="mb-5 rounded-2xl border border-[#30AFFF]/20 bg-[#30AFFF]/[0.04] p-4">
-                      <div className="flex items-start gap-3">
-                        <div className="w-9 h-9 rounded-lg bg-[#30AFFF]/10 flex items-center justify-center shrink-0">
-                          <Globe2 size={16} className="text-[#30AFFF]" />
-                        </div>
-
-                        <div>
-                          <h3 className="text-sm font-black text-slate-800">
-                            Tell us where you want to go.
-                          </h3>
-                          <p className="text-[10px] sm:text-xs leading-5 text-slate-500 mt-1">
-                            Your location, target market, preferred work mode,
-                            salary expectations and relocation preferences help
-                            us understand the right international opportunity
-                            for you.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {(localError || submitError) && (
-                      <div className="mb-5 rounded-xl border border-red-500/30 bg-red-50 p-3.5 flex items-start gap-2.5 text-xs text-red-700">
-                        <AlertCircle
-                          size={16}
-                          className="shrink-0 text-red-500 mt-0.5"
-                        />
-                        <span>{localError || submitError}</span>
-                      </div>
-                    )}
-
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="text-[11px] font-semibold text-slate-600">
-                          Full name *
-                        </label>
-                        <input
-                          required
-                          type="text"
-                          name="fullName"
-                          value={formData.fullName}
-                          onChange={handleInputChange}
-                          placeholder="Your name"
-                          className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-slate-600">
-                          Email *
-                        </label>
-                        <input
-                          required
-                          type="email"
-                          name="email"
-                          value={formData.email}
-                          onChange={handleInputChange}
-                          placeholder="you@example.com"
-                          className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-slate-600">
-                          Phone *
-                        </label>
-                        <input
-                          required
-                          type="tel"
-                          name="phone"
-                          value={formData.phone}
-                          onChange={handleInputChange}
-                          placeholder="+91 00000 00000"
-                          className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-slate-600">
-                          Experience *
-                        </label>
-                        <select
-                          required
-                          className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                        >
-                          <option value="">Select experience</option>
-                          <option>0–1 years</option>
-                          <option>1–2 years</option>
-                          <option>2–4 years</option>
-                          <option>4–6 years</option>
-                          <option>6+ years</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-slate-600">
-                          Current country *
-                        </label>
-                        <select
-                          required
-                          className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                        >
-                          <option value="">Select country</option>
-                          <option>India</option>
-                          <option>United States</option>
-                          <option>United Kingdom</option>
-                          <option>Canada</option>
-                          <option>Australia</option>
-                          <option>Germany</option>
-                          <option>France</option>
-                          <option>Netherlands</option>
-                          <option>Singapore</option>
-                          <option>United Arab Emirates</option>
-                          <option>Other</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-slate-600">
-                          Current location
-                        </label>
-                        <input
-                          type="text"
-                          name="currentLocation"
-                          value={formData.currentLocation}
-                          onChange={handleInputChange}
-                          placeholder="City / State"
-                          className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-slate-600">
-                          Preferred region *
-                        </label>
-                        <select
-                          required
-                          className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                        >
-                          <option value="">Select region</option>
-                          <option>North America</option>
-                          <option>Europe</option>
-                          <option>Asia-Pacific</option>
-                          <option>Middle East</option>
-                          <option>Any global region</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-slate-600">
-                          Preferred job market *
-                        </label>
-                        <select
-                          required
-                          className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                        >
-                          <option value="">Select market</option>
-                          <option>🇺🇸 United States</option>
-                          <option>🇬🇧 United Kingdom</option>
-                          <option>🇨🇦 Canada</option>
-                          <option>🇩🇪 Germany</option>
-                          <option>🇦🇺 Australia</option>
-                          <option>🇳🇱 Netherlands</option>
-                          <option>🇸🇬 Singapore</option>
-                          <option>🇦🇪 United Arab Emirates</option>
-                          <option>Any global market</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-slate-600">
-                          Preferred work mode *
-                        </label>
-                        <select
-                          required
-                          className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                        >
-                          <option value="">Select work mode</option>
-                          <option>Remote</option>
-                          <option>Hybrid</option>
-                          <option>On-site</option>
-                          <option>Remote or Hybrid</option>
-                          <option>Flexible / Any</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-slate-600">
-                          Relocation preference
-                        </label>
-                        <select className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10">
-                          <option value="">Select preference</option>
-                          <option>Yes — open to relocation</option>
-                          <option>Yes — only with relocation support</option>
-                          <option>No — remote preferred</option>
-                          <option>Maybe — depends on opportunity</option>
-                        </select>
-                      </div>
-
-                      <div className="sm:col-span-2">
-                        <label className="text-[11px] font-semibold text-slate-600">
-                          Work authorization / sponsorship
-                        </label>
-                        <select className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10">
-                          <option value="">Select status</option>
-                          <option>
-                            Authorized to work in my preferred market
-                          </option>
-                          <option>Need employer sponsorship</option>
-                          <option>Open to employer sponsorship</option>
-                          <option>
-                            Remote only / no local authorization needed
-                          </option>
-                          <option>Not sure</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-slate-600">
-                          Expected annual salary *
-                        </label>
-                        <input
-                          required
-                          type="number"
-                          min="0"
-                          name="expectedSalary"
-                          value={formData.expectedSalary}
-                          onChange={handleInputChange}
-                          placeholder="e.g. 80000"
-                          className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                        />
-                        <p className="text-[9px] text-slate-400 mt-1">
-                          Enter your target annual compensation.
-                        </p>
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-slate-600">
-                          Salary currency *
-                        </label>
-                        <select
-                          required
-                          className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                        >
-                          <option value="">Select currency</option>
-                          <option>USD — US Dollar</option>
-                          <option>GBP — British Pound</option>
-                          <option>CAD — Canadian Dollar</option>
-                          <option>EUR — Euro</option>
-                          <option>AUD — Australian Dollar</option>
-                          <option>SGD — Singapore Dollar</option>
-                          <option>AED — UAE Dirham</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-slate-600">
-                          Availability / notice period *
-                        </label>
-                        <select
-                          required
-                          className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                        >
-                          <option value="">Select availability</option>
-                          <option>Immediately available</option>
-                          <option>Within 15 days</option>
-                          <option>Within 30 days</option>
-                          <option>30–60 days</option>
-                          <option>60+ days</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-slate-600">
-                          Preferred working timezone
-                        </label>
-                        <select className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10">
-                          <option value="">Select timezone</option>
-                          <option>IST — India</option>
-                          <option>GMT — United Kingdom</option>
-                          <option>EST — US Eastern</option>
-                          <option>CST — US Central</option>
-                          <option>PST — US Pacific</option>
-                          <option>CET — Central Europe</option>
-                          <option>AEST — Australia Eastern</option>
-                          <option>Flexible / Any timezone</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-slate-600">
-                          Country flexibility
-                        </label>
-                        <select className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-700 outline-none focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10">
-                          <option value="">Select flexibility</option>
-                          <option>Only my preferred country</option>
-                          <option>Open to nearby countries</option>
-                          <option>Open to any global market</option>
-                          <option>Depends on compensation</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-slate-600">
-                          Portfolio / GitHub
-                        </label>
-                        <input
-                          type="url"
-                          name="portfolio"
-                          value={formData.portfolio}
-                          onChange={handleInputChange}
-                          placeholder="https://yourportfolio.com"
-                          className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-semibold text-slate-600">
-                          LinkedIn
-                        </label>
-                        <input
-                          type="url"
-                          name="linkedin"
-                          value={formData.linkedin}
-                          onChange={handleInputChange}
-                          placeholder="https://linkedin.com/in/yourname"
-                          className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                        />
-                      </div>
-
-                      <div className="sm:col-span-2">
-                        <label className="text-[11px] font-semibold text-slate-600">
-                          Frontend skills
-                        </label>
-                        <input
-                          type="text"
-                          name="frontendSkills"
-                          value={formData.frontendSkills}
-                          onChange={handleInputChange}
-                          placeholder="React, JavaScript, TypeScript, Next.js, Tailwind..."
-                          className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                        />
-                      </div>
-
-                      <div className="sm:col-span-2">
-                        <label className="text-[11px] font-semibold text-slate-600">
-                          Resume *
-                        </label>
-
-                        <input
-                          required
-                          type="file"
-                          accept=".pdf,.doc,.docx"
-                          className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-xs text-slate-600 file:mr-3 file:rounded-full file:border-0 file:bg-[#30AFFF] file:px-3 file:py-2 file:text-xs file:font-bold file:text-white file:shadow-md file:shadow-[#30AFFF]/30"
-                        />
-                        {resumeFile && (
-                          <p className="mt-1 text-[11px] text-[#0B6F9F] font-medium">
-                            Selected: {resumeFile.name} (
-                            {(resumeFile.size / 1024).toFixed(1)} KB)
-                          </p>
-                        )}
-                      </div>
-
-                      <div className="sm:col-span-2">
-                        <label className="text-[11px] font-semibold text-slate-600">
-                          Tell us about yourself *
-                        </label>
-
-                        <textarea
-                          required
-                          rows="5"
-                          name="aboutYou"
-                          value={formData.aboutYou}
-                          onChange={handleInputChange}
-                          placeholder="Tell us about your experience, strongest projects, preferred global market and why this opportunity interests you..."
-                          className="mt-1.5 w-full resize-none rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-[#30AFFF]/70 focus:ring-2 focus:ring-[#30AFFF]/10"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-5 pt-5 border-t border-slate-100">
-                      <p className="text-[10px] leading-4 text-slate-400 max-w-sm">
-                        By submitting this application, you confirm that the
-                        information provided is accurate. Global opportunity
-                        availability, compensation and sponsorship depend on the
-                        employer and role.
-                      </p>
-
-                      <motion.button
-                        type="submit"
-                        whileHover={{ y: -3 }}
-                        whileTap={{ scale: 0.97 }}
-                        className="group inline-flex items-center justify-center gap-2 rounded-full bg-[#30AFFF] text-white px-6 py-3 text-sm font-bold shadow-lg shadow-[#30AFFF]/30 hover:bg-[#159FEF] transition"
-                      >
-                        Send application
-                        <Send
-                          size={14}
-                          className="group-hover:translate-x-0.5 transition"
-                        />
-                      </motion.button>
-                    </div>
-                  </motion.form>
-                )}
-              </AnimatePresence>
+                    <span>Open Application Form</span>
+                    <ArrowRight size={16} />
+                  </button>
+                </div>
+                <p className="text-[11px] text-slate-400 mt-4">
+                  ⚡ Takes less than 2 minutes · PDF / DOC / DOCX resume supported
+                </p>
+              </div>
             </motion.div>
           </div>
         </div>
       </section>
+
+      <RoleApplyModal
+        isOpen={isApplyModalOpen}
+        onClose={() => setIsApplyModalOpen(false)}
+        role="Frontend Developer"
+      />
 
       {/* FOOTER */}
       <footer className="border-t border-slate-100 bg-white">
