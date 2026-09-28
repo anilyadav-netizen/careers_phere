@@ -32,6 +32,7 @@ export const getAllFrontendApplicationsAdmin = createAsyncThunk(
   async (params = {}, { rejectWithValue }) => {
     try {
       const queryParams = new URLSearchParams();
+      if (params.role) queryParams.append("role", params.role);
       if (params.status) queryParams.append("status", params.status);
       if (params.search) queryParams.append("search", params.search);
       if (params.market) queryParams.append("market", params.market);

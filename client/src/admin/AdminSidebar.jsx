@@ -46,9 +46,9 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
       icon: FileText,
     },
     {
-      name: "FE Applications",
+      name: "Role Applications",
       path: "/admin/frontend-applications",
-      icon: Code2,
+      icon: BriefcaseBusiness,
     },
     {
       name: "Testimonial",

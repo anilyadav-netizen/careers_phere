@@ -447,6 +447,7 @@ const FrontendDeveloprs = () => {
 
     setLocalError("");
     const data = new FormData();
+    data.append("role", "Frontend Developer");
     Object.keys(formData).forEach((key) => {
       data.append(key, formData[key]);
     });

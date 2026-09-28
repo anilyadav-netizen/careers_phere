@@ -2,6 +2,12 @@ const mongoose = require("mongoose");
 
 const FrontendApplicationSchema = new mongoose.Schema(
   {
+    role: {
+      type: String,
+      default: "Frontend Developer",
+      trim: true,
+      index: true,
+    },
     fullName: {
       type: String,
       required: [true, "Full name is required"],
@@ -146,6 +152,7 @@ const FrontendApplicationSchema = new mongoose.Schema(
 // Indexes for faster lookups
 FrontendApplicationSchema.index({ email: 1, createdAt: -1 });
 FrontendApplicationSchema.index({ status: 1 });
+FrontendApplicationSchema.index({ role: 1 });
 
 module.exports = mongoose.model(
   "FrontendApplication",

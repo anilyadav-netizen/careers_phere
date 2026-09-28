@@ -56,6 +56,7 @@ import FullStackDeveloper from "./Pages/FullStackDeveloper";
 import AndriodDevelopers from "./Pages/AndriodDevelopers";
 import FrontendDeveloprs from "./Pages/FrontendDeveloprs";
 import BackendDeveloper from "./Pages/BackendDeveloper";
+import VideoEditor from "./Pages/VideoEditor";
 // import MySubscription from "./Pages/MySubscription";
 
 function App() {
@@ -85,6 +86,8 @@ function App() {
               <Route path="/andriod" element={<AndriodDevelopers />} />
               <Route path="/frontend" element={<FrontendDeveloprs />} />
               <Route path="/backend" element={<BackendDeveloper />} />
+              <Route path="/video-editor" element={<VideoEditor />} />
+              <Route path="/videoEditor" element={<VideoEditor />} />
 
               <Route path="/contact" element={<ContactUs />} />
 

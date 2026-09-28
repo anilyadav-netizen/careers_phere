@@ -10,6 +10,7 @@ const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 exports.submitApplication = async (req, res) => {
   try {
     const {
+      role,
       fullName,
       email,
       phone,
@@ -84,6 +85,7 @@ exports.submitApplication = async (req, res) => {
     }
 
     const application = await FrontendApplication.create({
+      role: (role && String(role).trim()) ? String(role).trim() : "Frontend Developer",
       fullName: fullName.trim(),
       email: email.trim().toLowerCase(),
       phone: phone.trim(),
@@ -137,6 +139,7 @@ exports.submitApplication = async (req, res) => {
 exports.getAllApplications = async (req, res) => {
   try {
     const {
+      role,
       status,
       search,
       market,
@@ -149,15 +152,19 @@ exports.getAllApplications = async (req, res) => {
 
     const query = {};
 
-    if (status) {
+    if (role && role !== "all") {
+      query.role = new RegExp(`^${role.trim()}$`, "i");
+    }
+
+    if (status && status !== "all") {
       query.status = status;
     }
 
-    if (market) {
+    if (market && market !== "all") {
       query.preferredJobMarket = new RegExp(market, "i");
     }
 
-    if (workMode) {
+    if (workMode && workMode !== "all") {
       query.preferredWorkMode = new RegExp(workMode, "i");
     }
 
@@ -167,6 +174,7 @@ exports.getAllApplications = async (req, res) => {
         { fullName: searchRegex },
         { email: searchRegex },
         { phone: searchRegex },
+        { role: searchRegex },
         { frontendSkills: searchRegex },
         { currentCountry: searchRegex },
       ];
@@ -211,16 +219,32 @@ exports.getAllApplications = async (req, res) => {
 // ============================================================
 exports.getApplicationStats = async (req, res) => {
   try {
-    const [total, pending, reviewed, shortlisted, interview, rejected, hired] =
-      await Promise.all([
-        FrontendApplication.countDocuments(),
-        FrontendApplication.countDocuments({ status: "pending" }),
-        FrontendApplication.countDocuments({ status: "reviewed" }),
-        FrontendApplication.countDocuments({ status: "shortlisted" }),
-        FrontendApplication.countDocuments({ status: "interview" }),
-        FrontendApplication.countDocuments({ status: "rejected" }),
-        FrontendApplication.countDocuments({ status: "hired" }),
-      ]);
+    const [
+      total,
+      pending,
+      reviewed,
+      shortlisted,
+      interview,
+      rejected,
+      hired,
+      roleStats,
+    ] = await Promise.all([
+      FrontendApplication.countDocuments(),
+      FrontendApplication.countDocuments({ status: "pending" }),
+      FrontendApplication.countDocuments({ status: "reviewed" }),
+      FrontendApplication.countDocuments({ status: "shortlisted" }),
+      FrontendApplication.countDocuments({ status: "interview" }),
+      FrontendApplication.countDocuments({ status: "rejected" }),
+      FrontendApplication.countDocuments({ status: "hired" }),
+      FrontendApplication.aggregate([
+        { $group: { _id: "$role", count: { $sum: 1 } } },
+      ]),
+    ]);
+
+    const byRole = {};
+    roleStats.forEach((r) => {
+      byRole[r._id || "Other"] = r.count;
+    });
 
     return res.status(200).json({
       success: true,
@@ -232,6 +256,7 @@ exports.getApplicationStats = async (req, res) => {
         interview,
         rejected,
         hired,
+        byRole,
       },
     });
   } catch (error) {
