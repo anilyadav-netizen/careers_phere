@@ -9,6 +9,7 @@ import jobsReducer from "../redux/slicer/jobSlice";
 import testimonialReducer from "../redux/slicer/testimonialSlice";
 import userSubscriptionReducer from "../redux/slicer/userSubscriptionSlice";
 import testimonialsReducer from "../redux/slicer/userTestimonialSlice";
+import frontendApplicationReducer from "../redux/slicer/frontendApplicationSlice";
 
 export const store = configureStore({
   reducer: {
@@ -22,5 +23,6 @@ export const store = configureStore({
     usertestimonial: testimonialsReducer,
     userSubscription: userSubscriptionReducer,
     application: applicationReducer,
+    frontendApplications: frontendApplicationReducer,
   },
 });

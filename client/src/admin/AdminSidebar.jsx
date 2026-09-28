@@ -1,6 +1,7 @@
 import {
   BriefcaseBusiness,
   ChevronRight,
+  Code2,
   CreditCard,
   FileText,
   Images,
@@ -43,6 +44,11 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
       name: "Applications",
       path: "/admin/applications",
       icon: FileText,
+    },
+    {
+      name: "FE Applications",
+      path: "/admin/frontend-applications",
+      icon: Code2,
     },
     {
       name: "Testimonial",

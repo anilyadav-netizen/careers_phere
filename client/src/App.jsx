@@ -36,6 +36,7 @@ import { SubscriptionProvider } from "./admin/context/SubscriptionContext";
 
 import ApplicationDetails from "./admin/pages/ApplicationDetails";
 import Applications from "./admin/pages/Applications";
+import FrontendApplications from "./admin/pages/FrontendApplications";
 
 import SubscriptionCreate from "./admin/pages/SubscriptionCreate";
 import SubscriptionEdit from "./admin/pages/SubscriptionEdit";
@@ -166,6 +167,11 @@ function App() {
                 <Route
                   path="applications/:applicationId"
                   element={<ApplicationDetails />}
+                />
+
+                <Route
+                  path="frontend-applications"
+                  element={<FrontendApplications />}
                 />
 
                 {/* SUBSCRIPTIONS */}

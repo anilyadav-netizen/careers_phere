@@ -22,6 +22,8 @@ import {
   BriefcaseBusiness,
   Building2,
   Laptop2,
+  Loader2,
+  AlertCircle,
 } from "lucide-react";
 import {
   FaCss3Alt,
@@ -31,13 +33,49 @@ import {
   FaReact,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  submitFrontendApplication,
+  resetSubmitState,
+} from "../redux/slicer/frontendApplicationSlice";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
+const initialFormState = {
+  fullName: "",
+  email: "",
+  phone: "",
+  experience: "",
+  currentCountry: "",
+  currentLocation: "",
+  preferredRegion: "",
+  preferredJobMarket: "",
+  preferredWorkMode: "",
+  relocationPreference: "",
+  workAuthorization: "",
+  expectedSalary: "",
+  salaryCurrency: "",
+  noticePeriod: "",
+  preferredTimezone: "",
+  countryFlexibility: "",
+  portfolio: "",
+  linkedin: "",
+  frontendSkills: "",
+  aboutYou: "",
+};
+
 const FrontendDeveloprs = () => {
+  const dispatch = useDispatch();
+  const { submitLoading, submitSuccess, submitError } = useSelector(
+    (state) => state.frontendApplications || {}
+  );
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState(-1);
   const [submitted, setSubmitted] = useState(false);
+  const [formData, setFormData] = useState(initialFormState);
+  const [resumeFile, setResumeFile] = useState(null);
+  const [localError, setLocalError] = useState("");
 
   useEffect(() => {
     const initAOS = () => {
@@ -375,9 +413,54 @@ const FrontendDeveloprs = () => {
     setMenuOpen(false);
   };
 
+  useEffect(() => {
+    if (submitSuccess) {
+      setSubmitted(true);
+      setFormData(initialFormState);
+      setResumeFile(null);
+      setLocalError("");
+    }
+  }, [submitSuccess]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0] || null;
+    setResumeFile(file);
+    if (file) {
+      setLocalError("");
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    setSubmitted(true);
+    if (!resumeFile) {
+      setLocalError("Please upload your resume (.pdf, .doc, or .docx)");
+      return;
+    }
+
+    setLocalError("");
+    const data = new FormData();
+    Object.keys(formData).forEach((key) => {
+      data.append(key, formData[key]);
+    });
+    data.append("resume", resumeFile);
+
+    dispatch(submitFrontendApplication(data));
+  };
+
+  const handleResetForm = () => {
+    dispatch(resetSubmitState());
+    setSubmitted(false);
+    setFormData(initialFormState);
+    setResumeFile(null);
+    setLocalError("");
   };
 
   const softReveal = {
@@ -1576,7 +1659,7 @@ const FrontendDeveloprs = () => {
                       </p>
 
                       <button
-                        onClick={() => setSubmitted(false)}
+                        onClick={handleResetForm}
                         className="mt-5 text-xs font-bold text-[#0B6F9F] hover:text-[#30AFFF]"
                       >
                         Submit another application
@@ -1611,6 +1694,13 @@ const FrontendDeveloprs = () => {
                       </div>
                     </div>
 
+                    {(localError || submitError) && (
+                      <div className="mb-5 rounded-xl border border-red-500/30 bg-red-50 p-3.5 flex items-start gap-2.5 text-xs text-red-700">
+                        <AlertCircle size={16} className="shrink-0 text-red-500 mt-0.5" />
+                        <span>{localError || submitError}</span>
+                      </div>
+                    )}
+
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div>
                         <label className="text-[11px] font-semibold text-[#17202A]/65">
@@ -1619,6 +1709,9 @@ const FrontendDeveloprs = () => {
                         <input
                           required
                           type="text"
+                          name="fullName"
+                          value={formData.fullName}
+                          onChange={handleInputChange}
                           placeholder="Your name"
                           className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A] outline-none placeholder:text-[#17202A]/30 focus:border-[#30AFFF]/70"
                         />
@@ -1631,6 +1724,9 @@ const FrontendDeveloprs = () => {
                         <input
                           required
                           type="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleInputChange}
                           placeholder="you@example.com"
                           className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A] outline-none placeholder:text-[#17202A]/30 focus:border-[#30AFFF]/70"
                         />
@@ -1643,6 +1739,9 @@ const FrontendDeveloprs = () => {
                         <input
                           required
                           type="tel"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleInputChange}
                           placeholder="+91 00000 00000"
                           className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A] outline-none placeholder:text-[#17202A]/30 focus:border-[#30AFFF]/70"
                         />
@@ -1654,6 +1753,9 @@ const FrontendDeveloprs = () => {
                         </label>
                         <select
                           required
+                          name="experience"
+                          value={formData.experience}
+                          onChange={handleInputChange}
                           className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A]/75 outline-none focus:border-[#30AFFF]/70"
                         >
                           <option value="">Select experience</option>
@@ -1671,6 +1773,9 @@ const FrontendDeveloprs = () => {
                         </label>
                         <select
                           required
+                          name="currentCountry"
+                          value={formData.currentCountry}
+                          onChange={handleInputChange}
                           className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A]/75 outline-none focus:border-[#30AFFF]/70"
                         >
                           <option value="">Select country</option>
@@ -1694,6 +1799,9 @@ const FrontendDeveloprs = () => {
                         </label>
                         <input
                           type="text"
+                          name="currentLocation"
+                          value={formData.currentLocation}
+                          onChange={handleInputChange}
                           placeholder="City / State"
                           className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A] outline-none placeholder:text-[#17202A]/30 focus:border-[#30AFFF]/70"
                         />
@@ -1705,6 +1813,9 @@ const FrontendDeveloprs = () => {
                         </label>
                         <select
                           required
+                          name="preferredRegion"
+                          value={formData.preferredRegion}
+                          onChange={handleInputChange}
                           className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A]/75 outline-none focus:border-[#30AFFF]/70"
                         >
                           <option value="">Select region</option>
@@ -1722,6 +1833,9 @@ const FrontendDeveloprs = () => {
                         </label>
                         <select
                           required
+                          name="preferredJobMarket"
+                          value={formData.preferredJobMarket}
+                          onChange={handleInputChange}
                           className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A]/75 outline-none focus:border-[#30AFFF]/70"
                         >
                           <option value="">Select market</option>
@@ -1743,6 +1857,9 @@ const FrontendDeveloprs = () => {
                         </label>
                         <select
                           required
+                          name="preferredWorkMode"
+                          value={formData.preferredWorkMode}
+                          onChange={handleInputChange}
                           className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A]/75 outline-none focus:border-[#30AFFF]/70"
                         >
                           <option value="">Select work mode</option>
@@ -1759,6 +1876,9 @@ const FrontendDeveloprs = () => {
                           Relocation preference
                         </label>
                         <select
+                          name="relocationPreference"
+                          value={formData.relocationPreference}
+                          onChange={handleInputChange}
                           className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A]/75 outline-none focus:border-[#30AFFF]/70"
                         >
                           <option value="">Select preference</option>
@@ -1774,6 +1894,9 @@ const FrontendDeveloprs = () => {
                           Work authorization / sponsorship
                         </label>
                         <select
+                          name="workAuthorization"
+                          value={formData.workAuthorization}
+                          onChange={handleInputChange}
                           className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A]/75 outline-none focus:border-[#30AFFF]/70"
                         >
                           <option value="">Select status</option>
@@ -1795,6 +1918,9 @@ const FrontendDeveloprs = () => {
                           required
                           type="number"
                           min="0"
+                          name="expectedSalary"
+                          value={formData.expectedSalary}
+                          onChange={handleInputChange}
                           placeholder="e.g. 80000"
                           className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A] outline-none placeholder:text-[#17202A]/30 focus:border-[#30AFFF]/70"
                         />
@@ -1809,6 +1935,9 @@ const FrontendDeveloprs = () => {
                         </label>
                         <select
                           required
+                          name="salaryCurrency"
+                          value={formData.salaryCurrency}
+                          onChange={handleInputChange}
                           className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A]/75 outline-none focus:border-[#30AFFF]/70"
                         >
                           <option value="">Select currency</option>
@@ -1828,6 +1957,9 @@ const FrontendDeveloprs = () => {
                         </label>
                         <select
                           required
+                          name="noticePeriod"
+                          value={formData.noticePeriod}
+                          onChange={handleInputChange}
                           className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A]/75 outline-none focus:border-[#30AFFF]/70"
                         >
                           <option value="">Select availability</option>
@@ -1844,6 +1976,9 @@ const FrontendDeveloprs = () => {
                           Preferred working timezone
                         </label>
                         <select
+                          name="preferredTimezone"
+                          value={formData.preferredTimezone}
+                          onChange={handleInputChange}
                           className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A]/75 outline-none focus:border-[#30AFFF]/70"
                         >
                           <option value="">Select timezone</option>
@@ -1863,6 +1998,9 @@ const FrontendDeveloprs = () => {
                           Country flexibility
                         </label>
                         <select
+                          name="countryFlexibility"
+                          value={formData.countryFlexibility}
+                          onChange={handleInputChange}
                           className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A]/75 outline-none focus:border-[#30AFFF]/70"
                         >
                           <option value="">Select flexibility</option>
@@ -1879,6 +2017,9 @@ const FrontendDeveloprs = () => {
                         </label>
                         <input
                           type="url"
+                          name="portfolio"
+                          value={formData.portfolio}
+                          onChange={handleInputChange}
                           placeholder="https://yourportfolio.com"
                           className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A] outline-none placeholder:text-[#17202A]/30 focus:border-[#30AFFF]/70"
                         />
@@ -1890,6 +2031,9 @@ const FrontendDeveloprs = () => {
                         </label>
                         <input
                           type="url"
+                          name="linkedin"
+                          value={formData.linkedin}
+                          onChange={handleInputChange}
                           placeholder="https://linkedin.com/in/yourname"
                           className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A] outline-none placeholder:text-[#17202A]/30 focus:border-[#30AFFF]/70"
                         />
@@ -1901,6 +2045,9 @@ const FrontendDeveloprs = () => {
                         </label>
                         <input
                           type="text"
+                          name="frontendSkills"
+                          value={formData.frontendSkills}
+                          onChange={handleInputChange}
                           placeholder="React, JavaScript, TypeScript, Next.js, Tailwind..."
                           className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A] outline-none placeholder:text-[#17202A]/30 focus:border-[#30AFFF]/70"
                         />
@@ -1915,8 +2062,14 @@ const FrontendDeveloprs = () => {
                           required
                           type="file"
                           accept=".pdf,.doc,.docx"
+                          onChange={handleFileChange}
                           className="mt-1.5 w-full rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-xs text-[#17202A]/60 file:mr-3 file:rounded-lg file:border-0 file:bg-[#17202A] file:px-3 file:py-2 file:text-xs file:text-white"
                         />
+                        {resumeFile && (
+                          <p className="mt-1 text-[11px] text-[#0B6F9F] font-medium">
+                            Selected: {resumeFile.name} ({(resumeFile.size / 1024).toFixed(1)} KB)
+                          </p>
+                        )}
                       </div>
 
                       <div className="sm:col-span-2">
@@ -1927,6 +2080,9 @@ const FrontendDeveloprs = () => {
                         <textarea
                           required
                           rows="5"
+                          name="aboutYou"
+                          value={formData.aboutYou}
+                          onChange={handleInputChange}
                           placeholder="Tell us about your experience, strongest projects, preferred global market and why this opportunity interests you..."
                           className="mt-1.5 w-full resize-none rounded-xl border border-[#17202A]/20 bg-white px-3.5 py-3 text-sm text-[#17202A] outline-none placeholder:text-[#17202A]/30 focus:border-[#30AFFF]/70"
                         />
@@ -1943,15 +2099,27 @@ const FrontendDeveloprs = () => {
 
                       <motion.button
                         type="submit"
-                        whileHover={{ y: -3 }}
-                        whileTap={{ scale: 0.97 }}
-                        className="group inline-flex items-center justify-center gap-2 rounded-xl bg-[#17202A] text-white px-5 py-3 text-sm font-bold hover:bg-[#30AFFF] transition"
+                        disabled={submitLoading}
+                        whileHover={submitLoading ? {} : { y: -3 }}
+                        whileTap={submitLoading ? {} : { scale: 0.97 }}
+                        className={`group inline-flex items-center justify-center gap-2 rounded-xl bg-[#17202A] text-white px-5 py-3 text-sm font-bold transition ${
+                          submitLoading ? "opacity-75 cursor-not-allowed" : "hover:bg-[#30AFFF]"
+                        }`}
                       >
-                        Send application
-                        <Send
-                          size={14}
-                          className="group-hover:translate-x-0.5 transition"
-                        />
+                        {submitLoading ? (
+                          <>
+                            <Loader2 size={16} className="animate-spin text-white" />
+                            Submitting application...
+                          </>
+                        ) : (
+                          <>
+                            Send application
+                            <Send
+                              size={14}
+                              className="group-hover:translate-x-0.5 transition"
+                            />
+                          </>
+                        )}
                       </motion.button>
                     </div>
                   </motion.form>

@@ -14,15 +14,24 @@ const fileFilter = (req, file, cb) => {
   ];
 
   // -----------------------------------------
-  // RESUME - PDF ONLY
+  // RESUME - PDF, DOC, DOCX
   // -----------------------------------------
   if (file.fieldname === "resume") {
-    if (file.mimetype === "application/pdf") {
+    const resumeMimes = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "application/octet-stream",
+    ];
+
+    const isDoc = file.originalname && file.originalname.match(/\.(pdf|doc|docx)$/i);
+
+    if (resumeMimes.includes(file.mimetype) || isDoc) {
       return cb(null, true);
     }
 
     return cb(
-      new Error("Resume must be a PDF file"),
+      new Error("Resume must be a PDF, DOC, or DOCX file"),
       false
     );
   }
@@ -135,10 +144,13 @@ const uploadProfileFields = upload.fields([
   },
 ]);
 
+const uploadResume = upload.single("resume");
+
 module.exports = {
   uploadImage,
   uploadMultipleImages,
   uploadWithField,
   uploadProfileFields,
+  uploadResume,
   handleUploadError,
 };
