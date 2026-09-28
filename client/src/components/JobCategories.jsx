@@ -116,7 +116,7 @@ const JobCategories = () => {
             CATEGORIES
         ====================================================== */}
         {!loading && !error && categories?.length > 0 && (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {categories.map((category, index) => (
               <div
                 key={category._id || category.id}
@@ -142,9 +142,9 @@ const JobCategories = () => {
                 {/* =================================================
                     IMAGE + CATEGORY CONTENT
                 ================================================== */}
-                <div className="flex items-center gap-3">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                   {/* Category Image */}
-                  <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-[#A0E9FF]/50">
+                  <div className="h-32 w-full shrink-0 overflow-hidden rounded-xl bg-[#A0E9FF]/50 sm:h-16 sm:w-16">
                     {category.image ? (
                       <img
                         src={category.image}
@@ -160,7 +160,7 @@ const JobCategories = () => {
                   </div>
 
                   {/* Name + Description */}
-                  <div className="min-w-0 flex-1 pr-10">
+                  <div className="min-w-0 flex-1 pr-0 sm:pr-10">
                     <h3 className="line-clamp-1 text-sm font-extrabold text-gray-900 transition-colors duration-300 group-hover:text-[#159FEF] sm:text-[15px]">
                       {category.name}
                     </h3>

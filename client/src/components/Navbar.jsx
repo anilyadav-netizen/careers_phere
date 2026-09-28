@@ -78,31 +78,31 @@ const Navbar = () => {
       path: "/jobs",
       icon: Search,
     },
-    // {
-    //   name: "Subscription",
-    //   path: "/subscription",
-    //   icon: CreditCard,
-    // },
-    // {
-    //   name: "FullStack",
-    //   path: "/fullStack",
-    //   icon: Images,
-    // },
-    // {
-    //   name: "Andriod",
-    //   path: "/andriod",
-    //   icon: Images,
-    // },
-    //  {
-    //   name: "Frontend",
-    //   path: "/frontend",
-    //   icon: Images,
-    // },
-    // {
-    //   name: "Backend",
-    //   path: "/backend",
-    //   icon: Images,
-    // },
+    {
+      name: "Subscription",
+      path: "/subscription",
+      icon: CreditCard,
+    },
+    {
+      name: "FullStack",
+      path: "/fullStack",
+      icon: Images,
+    },
+    {
+      name: "Andriod",
+      path: "/andriod",
+      icon: Images,
+    },
+    {
+      name: "Frontend",
+      path: "/frontend",
+      icon: Images,
+    },
+    {
+      name: "Backend",
+      path: "/backend",
+      icon: Images,
+    },
     {
       name: "About Us",
       path: "/about",
