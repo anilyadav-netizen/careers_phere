@@ -2,7 +2,6 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  AlertCircle,
   ArrowRight,
   BriefcaseBusiness,
   Check,
@@ -18,7 +17,6 @@ import {
   Palette,
   Plane,
   Rocket,
-  Send,
   Sparkles,
   Zap,
 } from "lucide-react";
@@ -33,9 +31,9 @@ import {
 import RoleApplyModal from "../components/RoleApplyModal";
 
 const FrontendDeveloprs = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState(-1);
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
+  const [selectedMarket, setSelectedMarket] = useState(null);
 
   useEffect(() => {
     const initAOS = () => {
@@ -368,7 +366,11 @@ const FrontendDeveloprs = () => {
 
   const scrollToApply = () => {
     setIsApplyModalOpen(true);
-    setMenuOpen(false);
+  };
+
+  const handleMarketApply = (market) => {
+    setSelectedMarket(market);
+    setIsApplyModalOpen(true);
   };
 
   const softReveal = {
@@ -395,8 +397,7 @@ const FrontendDeveloprs = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white text-slate-800 selection:bg-[#30AFFF]/20 selection:text-slate-900">
-      {/* NAVBAR */}
+    <div className="min-h-screen overflow-x-hidden bg-white text-slate-800 selection:bg-[#30AFFF]/20 selection:text-slate-900">
       {/* HERO */}
       <section className="relative overflow-hidden bg-white">
         <div className="absolute -top-28 -left-20 w-80 h-80 rounded-full bg-[#30AFFF]/8 blur-[110px]" />
@@ -408,6 +409,7 @@ const FrontendDeveloprs = () => {
               initial="hidden"
               animate="visible"
               variants={softReveal}
+              className="min-w-0"
             >
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -489,7 +491,7 @@ const FrontendDeveloprs = () => {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, x: 50, scale: 0.96 }}
+              initial={{ opacity: 0, x: 40, scale: 0.97 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
               transition={{
                 duration: 0.8,
@@ -497,7 +499,7 @@ const FrontendDeveloprs = () => {
                 ease: [0.22, 1, 0.36, 1],
               }}
               data-aos="fade-left"
-              className="relative"
+              className="relative min-w-0"
             >
               <motion.div
                 whileHover={{ y: -5 }}
@@ -593,7 +595,7 @@ const FrontendDeveloprs = () => {
       </section>
 
       {/* ROLE */}
-      <section id="role" className="border-y border-slate-100 bg-slate-50/60">
+      <section id="role" className="relative overflow-hidden border-y border-slate-100 bg-slate-50/60">
         <div className="max-w-[90rem] mx-auto px-5 sm:px-6 lg:px-8 py-10 lg:py-14">
           <div data-aos="fade-up" className="text-center">
             <div className="inline-flex items-center rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/5 px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-bold text-[#159FEF] mb-3 shadow-sm">
@@ -659,7 +661,7 @@ const FrontendDeveloprs = () => {
       {/* GLOBAL OPPORTUNITY */}
       <section
         id="global"
-        className="border-y border-slate-100 bg-white overflow-hidden"
+        className="relative overflow-hidden border-y border-slate-100 bg-white"
       >
         <div className="relative max-w-[90rem] mx-auto px-5 sm:px-6 lg:px-8 py-10 lg:py-14">
           <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-[#30AFFF]/5 blur-[100px] pointer-events-none" />
@@ -696,7 +698,7 @@ const FrontendDeveloprs = () => {
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.1 }}
                 whileHover={{ y: -5 }}
-                className="group rounded-2xl border border-slate-100 bg-white shadow-sm hover:border-[#30AFFF]/30 hover:shadow-[0_15px_45px_rgba(15,23,42,0.10)] transition-all p-4"
+                className="group rounded-2xl border border-slate-100 bg-white shadow-sm hover:border-[#30AFFF]/30 hover:shadow-[0_15px_45px_rgba(15,23,42,0.10)] transition-all p-4 flex flex-col"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3">
@@ -770,6 +772,18 @@ const FrontendDeveloprs = () => {
                     </span>
                   </div>
                 </div>
+
+                {/* APPLY BUTTON — RIGHT ALIGNED */}
+                <div className="flex justify-end mt-5 pt-4 border-t border-slate-100 mt-auto">
+                  <button
+                    type="button"
+                    onClick={() => handleMarketApply(market)}
+                    className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-3 py-2 text-[10px] font-bold text-white shadow-sm hover:bg-[#159FEF] transition"
+                  >
+                    Apply
+                    <ArrowRight size={13} />
+                  </button>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -811,7 +825,7 @@ const FrontendDeveloprs = () => {
       </section>
 
       {/* STACK */}
-      <section id="stack" className="bg-slate-50/60">
+      <section id="stack" className="relative overflow-hidden bg-slate-50/60">
         <div className="max-w-[90rem] mx-auto px-5 sm:px-6 lg:px-8 py-10 lg:py-14">
           <div
             data-aos="fade-up"
@@ -887,7 +901,7 @@ const FrontendDeveloprs = () => {
       </section>
 
       {/* WHAT YOU BUILD */}
-      <section className="border-y border-slate-100 bg-white">
+      <section className="relative overflow-hidden border-y border-slate-100 bg-white">
         <div className="max-w-[90rem] mx-auto px-5 sm:px-6 lg:px-8 py-10 lg:py-14">
           <div data-aos="fade-up" className="mb-8 text-center">
             <div className="inline-flex items-center rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/5 px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-bold text-[#159FEF] mb-3 shadow-sm">
@@ -945,12 +959,12 @@ const FrontendDeveloprs = () => {
       </section>
 
       {/* REQUIREMENTS */}
-      <section id="requirements" className="bg-slate-50/60">
+      <section id="requirements" className="relative overflow-hidden bg-slate-50/60">
         <div className="max-w-[90rem] mx-auto px-5 sm:px-6 lg:px-8 py-10 lg:py-14">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
             <motion.div
               data-aos="fade-right"
-              className="border-t-2 border-[#30AFFF] pt-4"
+              className="border-t-2 border-[#30AFFF] pt-4 min-w-0"
             >
               <div className="flex items-center gap-3 mb-5">
                 <div className="w-8 h-8 rounded-lg bg-[#30AFFF]/10 flex items-center justify-center">
@@ -987,7 +1001,7 @@ const FrontendDeveloprs = () => {
 
             <motion.div
               data-aos="fade-left"
-              className="border-t-2 border-slate-300 pt-4"
+              className="border-t-2 border-slate-300 pt-4 min-w-0"
             >
               <div className="flex items-center gap-3 mb-5">
                 <div className="w-8 h-8 rounded-lg bg-[#30AFFF]/10 flex items-center justify-center">
@@ -1033,7 +1047,7 @@ const FrontendDeveloprs = () => {
       </section>
 
       {/* BENEFITS */}
-      <section className="border-y border-slate-100 bg-white">
+      <section className="relative overflow-hidden border-y border-slate-100 bg-white">
         <div className="max-w-[90rem] mx-auto px-5 sm:px-6 lg:px-8 py-10 lg:py-14">
           <div data-aos="fade-up" className="mb-8 text-center">
             <div className="inline-flex items-center rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/5 px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-bold text-[#159FEF] mb-3 shadow-sm">
@@ -1089,7 +1103,7 @@ const FrontendDeveloprs = () => {
       </section>
 
       {/* PROCESS */}
-      <section id="process" className="bg-slate-50/60">
+      <section id="process" className="relative overflow-hidden bg-slate-50/60">
         <div className="max-w-[90rem] mx-auto px-5 sm:px-6 lg:px-8 py-10 lg:py-14">
           <div data-aos="fade-up" className="mb-8 text-center">
             <div className="inline-flex items-center rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/5 px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-bold text-[#159FEF] mb-3 shadow-sm">
@@ -1134,7 +1148,7 @@ const FrontendDeveloprs = () => {
       </section>
 
       {/* CTA IMAGE */}
-      <section className="max-w-[90rem] mx-auto px-5 sm:px-6 lg:px-8 py-10 lg:py-14">
+      <section className="relative overflow-hidden max-w-[90rem] mx-auto px-5 sm:px-6 lg:px-8 py-10 lg:py-14">
         <motion.div
           data-aos="zoom-in"
           whileHover={{ y: -4 }}
@@ -1180,10 +1194,10 @@ const FrontendDeveloprs = () => {
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="border-y border-slate-100 bg-white">
+      <section id="faq" className="relative overflow-hidden border-y border-slate-100 bg-white">
         <div className="max-w-[90rem] mx-auto px-5 sm:px-6 lg:px-8 py-10 lg:py-14">
           <div className="grid lg:grid-cols-[0.7fr_1.3fr] gap-6 lg:gap-12">
-            <div data-aos="fade-right" className="text-center lg:text-left">
+            <div data-aos="fade-right" className="text-center lg:text-left min-w-0">
               <div className="inline-flex items-center rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/5 px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-bold text-[#159FEF] mb-3 shadow-sm">
                 FAQ
               </div>
@@ -1198,7 +1212,7 @@ const FrontendDeveloprs = () => {
               </p>
             </div>
 
-            <div data-aos="fade-left" className="border-t border-slate-100">
+            <div data-aos="fade-left" className="border-t border-slate-100 min-w-0">
               {faqs.map((item, index) => {
                 const isOpen = openFaq === index;
                 return (
@@ -1255,10 +1269,13 @@ const FrontendDeveloprs = () => {
       </section>
 
       {/* APPLICATION */}
-      <section id="apply" className="bg-slate-50/60">
+      <section id="apply" className="relative overflow-hidden bg-slate-50/60">
         <div className="max-w-[90rem] mx-auto px-5 sm:px-6 lg:px-8 py-10 lg:py-14">
           <div className="grid lg:grid-cols-[0.68fr_1.32fr] gap-6 lg:gap-10 items-start">
-            <motion.div data-aos="fade-right" className="lg:sticky lg:top-24">
+            <motion.div
+              data-aos="fade-right"
+              className="lg:sticky lg:top-24 min-w-0"
+            >
               <div className="text-center lg:text-left">
                 <div className="inline-flex items-center rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/5 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[#159FEF] font-bold shadow-sm">
                   Global application
@@ -1275,6 +1292,49 @@ const FrontendDeveloprs = () => {
                 you're targeting so we can understand your preferred market,
                 work mode and career direction.
               </p>
+
+              {selectedMarket && (
+                <div className="mt-5 rounded-2xl border border-[#30AFFF]/20 bg-[#30AFFF]/[0.04] p-4 shadow-sm">
+                  <div className="flex items-center gap-3">
+                    <div className="w-11 h-11 rounded-xl bg-white border border-slate-100 flex items-center justify-center overflow-hidden">
+                      <img
+                        src={selectedMarket.flag}
+                        alt={selectedMarket.country}
+                        className="w-7 h-5 object-cover rounded-sm"
+                      />
+                    </div>
+
+                    <div>
+                      <p className="text-[10px] uppercase tracking-[0.15em] text-[#159FEF] font-bold">
+                        Selected market
+                      </p>
+                      <p className="text-sm font-bold text-slate-800 mt-0.5">
+                        {selectedMarket.country}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 mt-4">
+                    <div className="rounded-lg bg-white p-3 border border-slate-100">
+                      <p className="text-[10px] uppercase tracking-wide text-slate-400">
+                        Payout
+                      </p>
+                      <p className="text-xs font-bold text-slate-700 mt-1">
+                        {selectedMarket.payout}
+                      </p>
+                    </div>
+
+                    <div className="rounded-lg bg-white p-3 border border-slate-100">
+                      <p className="text-[10px] uppercase tracking-wide text-slate-400">
+                        Currency
+                      </p>
+                      <p className="text-xs font-bold text-slate-700 mt-1">
+                        {selectedMarket.currency}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div className="space-y-3 mt-6">
                 <motion.div
@@ -1347,7 +1407,7 @@ const FrontendDeveloprs = () => {
 
             <motion.div
               data-aos="fade-left"
-              className="bg-white rounded-3xl border border-slate-100 p-8 sm:p-12 shadow-xl shadow-slate-100 text-center relative overflow-hidden"
+              className="bg-white rounded-3xl border border-slate-100 p-8 sm:p-12 shadow-xl shadow-slate-100 text-center relative overflow-hidden min-w-0"
             >
               <div className="absolute top-0 right-0 w-64 h-64 bg-[#30AFFF]/5 rounded-full blur-3xl pointer-events-none" />
               <div className="max-w-xl mx-auto">
@@ -1383,12 +1443,23 @@ const FrontendDeveloprs = () => {
 
       <RoleApplyModal
         isOpen={isApplyModalOpen}
-        onClose={() => setIsApplyModalOpen(false)}
+        onClose={() => {
+          setIsApplyModalOpen(false);
+          setSelectedMarket(null);
+        }}
         role="Frontend Developer"
+        initialData={
+          selectedMarket
+            ? {
+                preferredJobMarket: selectedMarket.country,
+                preferredWorkMode: selectedMarket.modes?.[0] || "",
+              }
+            : {}
+        }
       />
 
       {/* FOOTER */}
-      <footer className="border-t border-slate-100 bg-white">
+      <footer className="relative overflow-hidden border-t border-slate-100 bg-white">
         <div className="max-w-[90rem] mx-auto px-5 sm:px-6 lg:px-8 py-7">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
             <motion.div

@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import {
   ArrowRight,
@@ -55,20 +56,30 @@ const VideoEditor = () => {
         mirror: false,
         anchorPlacement: "top-bottom",
       });
+
       AOS.refreshHard();
     };
 
     initAOS();
+
     const timer = setTimeout(initAOS, 300);
     window.addEventListener("load", initAOS);
 
     return () => {
       clearTimeout(timer);
       window.removeEventListener("load", initAOS);
+      AOS.refreshHard();
     };
   }, []);
 
   const scrollToApply = () => {
+    setIsApplyModalOpen(true);
+    setMenuOpen(false);
+  };
+
+  // Global Opportunities Apply button
+  // Same modal opens as "Open Application Form"
+  const goToApplicationForm = () => {
     setIsApplyModalOpen(true);
     setMenuOpen(false);
   };
@@ -338,8 +349,7 @@ const VideoEditor = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F7F9] text-[#17202A] selection:bg-[#30AFFF]/25 selection:text-[#17202A]">
-      {/* Dynamic Background Grid Pattern */}
+    <div className="min-h-screen overflow-y-auto overflow-x-hidden bg-[#F5F7F9] text-[#17202A] selection:bg-[#30AFFF]/25 selection:text-[#17202A]">
       <style>{`
         .video-grid {
           background-image:
@@ -363,7 +373,6 @@ const VideoEditor = () => {
 
         <div className="relative max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 lg:pt-12 lg:pb-12">
           <div className="grid lg:grid-cols-[1fr_0.92fr] gap-8 lg:gap-12 items-center">
-            {/* Left Content */}
             <motion.div initial="hidden" animate="visible" variants={softReveal}>
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -415,11 +424,10 @@ const VideoEditor = () => {
                   whileTap={{ scale: 0.98 }}
                   className="inline-flex flex-1 sm:flex-initial items-center justify-center gap-2 rounded-xl border border-[#17202A]/25 bg-white/80 px-5 sm:px-6 py-3.5 text-sm font-semibold text-[#17202A] hover:text-[#0B6F9F] hover:border-[#30AFFF]/60 transition whitespace-nowrap"
                 >
-                  Explore global roles
+                  Global roles
                 </motion.a>
               </div>
 
-              {/* Metrics */}
               <div className="grid grid-cols-3 gap-3 mt-8 max-w-2xl">
                 {[
                   ["8+", "Global markets"],
@@ -448,7 +456,6 @@ const VideoEditor = () => {
               </div>
             </motion.div>
 
-            {/* Right Media Card */}
             <motion.div
               initial={{ opacity: 0, x: 50, scale: 0.96 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
@@ -474,7 +481,6 @@ const VideoEditor = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-[#17202A] via-[#17202A]/25 to-transparent" />
                 <div className="absolute inset-0 bg-[#30AFFF]/10" />
 
-                {/* Timeline UI Header */}
                 <div className="absolute top-5 left-5 right-5 flex items-center justify-between">
                   <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/50 border border-white/20 backdrop-blur-md text-[9px] font-bold tracking-[0.18em] text-white">
                     <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
@@ -486,14 +492,12 @@ const VideoEditor = () => {
                   </div>
                 </div>
 
-                {/* Center Play Button Graphic */}
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <div className="w-16 h-16 rounded-full bg-white/20 border border-white/40 backdrop-blur-md flex items-center justify-center shadow-lg">
                     <Play size={26} className="text-white fill-white ml-1" />
                   </div>
                 </div>
 
-                {/* Bottom Overlay Card */}
                 <div className="absolute left-5 right-5 bottom-5">
                   <div className="rounded-2xl border border-white/20 bg-black/60 backdrop-blur-xl p-4">
                     <div className="flex items-center gap-2 text-[#30AFFF] text-[10px] font-bold tracking-widest uppercase">
@@ -513,7 +517,6 @@ const VideoEditor = () => {
                 </div>
               </motion.div>
 
-              {/* Float Tags */}
               <div className="absolute -bottom-3 -left-3 hidden sm:flex items-center gap-2 rounded-xl border border-[#17202A]/25 bg-white px-3.5 py-2.5 shadow-xl">
                 <div className="w-7 h-7 rounded-lg bg-[#17202A] flex items-center justify-center">
                   <Scissors size={14} className="text-[#30AFFF]" />
@@ -569,6 +572,7 @@ const VideoEditor = () => {
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
             {responsibilities.map((item, index) => {
               const Icon = item.icon;
+
               return (
                 <motion.div
                   key={index}
@@ -588,6 +592,7 @@ const VideoEditor = () => {
                     <span className="text-[10px] font-mono text-[#0B6F9F] font-bold">
                       0{index + 1}
                     </span>
+
                     <h3 className="text-sm font-bold text-[#17202A]">
                       {item.title}
                     </h3>
@@ -604,7 +609,10 @@ const VideoEditor = () => {
       </section>
 
       {/* TECH / SOFTWARE STACK */}
-      <section id="stack" className="bg-[#F5F7F9] py-8 lg:py-12 border-b border-[#17202A]/15">
+      <section
+        id="stack"
+        className="bg-[#F5F7F9] py-8 lg:py-12 border-b border-[#17202A]/15"
+      >
         <div className="max-w-[90rem] mx-auto px-5 sm:px-6 lg:px-8">
           <div data-aos="fade-up" className="text-center">
             <div className="inline-flex items-center rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/10 px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-bold text-[#0B6F9F] mb-2 shadow-sm">
@@ -612,7 +620,8 @@ const VideoEditor = () => {
             </div>
 
             <h2 className="text-2xl md:text-4xl font-black tracking-[-0.05em] text-[#17202A]">
-              Industry-grade <span className="text-[#30AFFF]">creative toolkit.</span>
+              Industry-grade{" "}
+              <span className="text-[#30AFFF]">creative toolkit.</span>
             </h2>
 
             <p className="text-sm text-[#17202A]/65 max-w-2xl mx-auto mt-2">
@@ -624,6 +633,7 @@ const VideoEditor = () => {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-8">
             {toolsStack.map((tool, idx) => {
               const Icon = tool.icon;
+
               return (
                 <div
                   key={idx}
@@ -635,10 +645,12 @@ const VideoEditor = () => {
                     <div className="w-10 h-10 rounded-xl bg-[#17202A] flex items-center justify-center">
                       <Icon size={20} className={tool.color} />
                     </div>
+
                     <div>
                       <h4 className="text-sm font-bold text-[#17202A]">
                         {tool.title}
                       </h4>
+
                       <div className="text-[10px] text-[#17202A]/50">
                         Post-Production
                       </div>
@@ -667,7 +679,10 @@ const VideoEditor = () => {
       </section>
 
       {/* GLOBAL MARKETS */}
-      <section id="global" className="bg-white py-8 lg:py-12 border-b border-[#17202A]/15">
+      <section
+        id="global"
+        className="bg-white py-8 lg:py-12 border-b border-[#17202A]/15"
+      >
         <div className="max-w-[90rem] mx-auto px-5 sm:px-6 lg:px-8">
           <div data-aos="fade-up" className="text-center">
             <div className="inline-flex items-center rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/10 px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-bold text-[#0B6F9F] mb-2 shadow-sm">
@@ -675,7 +690,8 @@ const VideoEditor = () => {
             </div>
 
             <h2 className="text-2xl md:text-4xl font-black tracking-[-0.05em] text-[#17202A]">
-              Edit for audiences <span className="text-[#30AFFF]">across the world.</span>
+              Edit for audiences{" "}
+              <span className="text-[#30AFFF]">across the world.</span>
             </h2>
 
             <p className="text-sm text-[#17202A]/65 max-w-2xl mx-auto mt-2">
@@ -698,10 +714,12 @@ const VideoEditor = () => {
                     alt={market.country}
                     className="w-7 h-5 rounded object-cover shadow-xs"
                   />
-                  <div>
+
+                  <div className="min-w-0">
                     <h4 className="text-sm font-bold text-[#17202A]">
                       {market.country}
                     </h4>
+
                     <span className="text-[10px] text-[#17202A]/50">
                       {market.region}
                     </span>
@@ -712,6 +730,7 @@ const VideoEditor = () => {
                   <div className="text-[10px] uppercase tracking-wider text-[#17202A]/50 font-semibold">
                     Expected Payout
                   </div>
+
                   <div className="text-sm font-black text-[#17202A]">
                     {market.payout}
                   </div>
@@ -731,6 +750,18 @@ const VideoEditor = () => {
                     </span>
                   ))}
                 </div>
+
+                {/* APPLY BUTTON */}
+                <div className="flex justify-end mt-3 pt-3 border-t border-[#17202A]/10">
+                  <button
+                    type="button"
+                    onClick={goToApplicationForm}
+                    className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#17202A] px-3 py-2 text-[10px] font-bold text-white hover:bg-[#30AFFF] transition"
+                  >
+                    Apply
+                    <ArrowRight size={13} className="shrink-0" />
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -738,11 +769,16 @@ const VideoEditor = () => {
       </section>
 
       {/* REQUIREMENTS & PROCESS */}
-      <section id="requirements" className="bg-[#F5F7F9] py-8 lg:py-12 border-b border-[#17202A]/15">
+      <section
+        id="requirements"
+        className="bg-[#F5F7F9] py-8 lg:py-12 border-b border-[#17202A]/15"
+      >
         <div className="max-w-[90rem] mx-auto px-5 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-8 items-start">
-            {/* Requirements list */}
-            <div data-aos="fade-right" className="rounded-2xl border border-[#17202A]/15 bg-white p-6 shadow-sm">
+            <div
+              data-aos="fade-right"
+              className="rounded-2xl border border-[#17202A]/15 bg-white p-6 shadow-sm"
+            >
               <div className="inline-flex items-center rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/10 px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-bold text-[#0B6F9F] mb-3">
                 Requirements
               </div>
@@ -753,10 +789,14 @@ const VideoEditor = () => {
 
               <div className="space-y-3 mt-4">
                 {requirements.map((req, idx) => (
-                  <div key={idx} className="flex items-start gap-3 text-xs sm:text-sm text-[#17202A]/75">
+                  <div
+                    key={idx}
+                    className="flex items-start gap-3 text-xs sm:text-sm text-[#17202A]/75"
+                  >
                     <div className="w-5 h-5 rounded-full bg-[#17202A] text-white flex items-center justify-center shrink-0 mt-0.5">
                       <Check size={12} className="text-[#30AFFF]" />
                     </div>
+
                     <span>{req}</span>
                   </div>
                 ))}
@@ -766,9 +806,13 @@ const VideoEditor = () => {
                 <h4 className="text-xs font-bold uppercase tracking-wider text-[#0B6F9F] mb-2">
                   Nice to Have
                 </h4>
+
                 <div className="space-y-2">
                   {niceToHave.map((nth, idx) => (
-                    <div key={idx} className="text-xs text-[#17202A]/65 flex items-center gap-2">
+                    <div
+                      key={idx}
+                      className="text-xs text-[#17202A]/65 flex items-center gap-2"
+                    >
                       <span className="w-1.5 h-1.5 rounded-full bg-[#30AFFF]" />
                       <span>{nth}</span>
                     </div>
@@ -777,8 +821,11 @@ const VideoEditor = () => {
               </div>
             </div>
 
-            {/* Hiring Process */}
-            <div id="process" data-aos="fade-left" className="rounded-2xl border border-[#17202A]/15 bg-white p-6 shadow-sm">
+            <div
+              id="process"
+              data-aos="fade-left"
+              className="rounded-2xl border border-[#17202A]/15 bg-white p-6 shadow-sm"
+            >
               <div className="inline-flex items-center rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/10 px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-bold text-[#0B6F9F] mb-3">
                 Hiring Journey
               </div>
@@ -793,10 +840,12 @@ const VideoEditor = () => {
                     <div className="w-8 h-8 rounded-xl bg-[#17202A] text-[#30AFFF] font-black text-xs flex items-center justify-center shrink-0">
                       {step.step}
                     </div>
+
                     <div>
                       <h4 className="text-sm font-bold text-[#17202A]">
                         {step.title}
                       </h4>
+
                       <p className="text-xs text-[#17202A]/65 mt-0.5 leading-5">
                         {step.text}
                       </p>
@@ -810,7 +859,10 @@ const VideoEditor = () => {
       </section>
 
       {/* FAQS */}
-      <section id="faq" className="bg-white py-8 lg:py-12 border-b border-[#17202A]/15">
+      <section
+        id="faq"
+        className="bg-white py-8 lg:py-12 border-b border-[#17202A]/15"
+      >
         <div className="max-w-4xl mx-auto px-5 sm:px-6 lg:px-8">
           <div data-aos="fade-up" className="text-center">
             <div className="inline-flex items-center rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/10 px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-bold text-[#0B6F9F] mb-2 shadow-sm">
@@ -833,6 +885,7 @@ const VideoEditor = () => {
                   className="w-full flex items-center justify-between p-4 text-left font-bold text-sm text-[#17202A]"
                 >
                   <span>{faq.q}</span>
+
                   <ChevronDown
                     size={16}
                     className={`transition-transform duration-200 text-[#0B6F9F] ${
@@ -859,12 +912,14 @@ const VideoEditor = () => {
         </div>
       </section>
 
-      {/* APPLICATION FORM SECTION (#apply) */}
+      {/* APPLICATION FORM SECTION */}
       <section id="apply" className="bg-[#F5F7F9]">
         <div className="max-w-[90rem] mx-auto px-5 sm:px-6 lg:px-8 py-8 lg:py-12">
           <div className="grid lg:grid-cols-[0.68fr_1.32fr] gap-6 lg:gap-10 items-start">
-            {/* Left Info Column */}
-            <motion.div data-aos="fade-right" className="lg:sticky lg:top-24">
+            <motion.div
+              data-aos="fade-right"
+              className="lg:sticky lg:top-24"
+            >
               <div className="inline-flex items-center rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[#0B6F9F] font-bold shadow-sm">
                 Video Editor Application
               </div>
@@ -894,10 +949,10 @@ const VideoEditor = () => {
                 </div>
               </div>
 
-              {/* Opportunity Snapshot */}
               <div className="mt-6 rounded-2xl border border-[#17202A]/15 bg-white p-4">
                 <div className="flex items-center gap-2">
                   <Film size={15} className="text-[#30AFFF]" />
+
                   <span className="text-xs font-bold text-[#17202A]">
                     Creative Opportunity Profile
                   </span>
@@ -917,6 +972,7 @@ const VideoEditor = () => {
                       <div className="text-sm font-black text-[#17202A]">
                         {value}
                       </div>
+
                       <div className="text-[9px] uppercase tracking-wider text-[#17202A]/40 mt-0.5">
                         {label}
                       </div>
@@ -925,7 +981,6 @@ const VideoEditor = () => {
                 </div>
               </div>
 
-              {/* Social Channels */}
               <div className="flex items-center gap-2 mt-5">
                 <a
                   href="#"
@@ -933,18 +988,21 @@ const VideoEditor = () => {
                 >
                   <FaYoutube />
                 </a>
+
                 <a
                   href="#"
                   className="w-9 h-9 rounded-lg border border-[#17202A]/25 flex items-center justify-center text-[#17202A]/65 hover:text-white hover:bg-[#17202A] transition"
                 >
                   <FaVimeoV />
                 </a>
+
                 <a
                   href="#"
                   className="w-9 h-9 rounded-lg border border-[#17202A]/25 flex items-center justify-center text-[#17202A]/65 hover:text-white hover:bg-[#17202A] transition"
                 >
                   <FaLinkedinIn />
                 </a>
+
                 <a
                   href="#"
                   className="w-9 h-9 rounded-lg border border-[#17202A]/25 flex items-center justify-center text-[#17202A]/65 hover:text-white hover:bg-[#17202A] transition"
@@ -954,24 +1012,27 @@ const VideoEditor = () => {
               </div>
             </motion.div>
 
-            {/* Right CTA Column */}
             <motion.div
               data-aos="fade-left"
               className="bg-white rounded-3xl border border-[#17202A]/15 p-8 sm:p-12 shadow-xl shadow-slate-200/50 text-center relative overflow-hidden"
             >
               <div className="absolute top-0 right-0 w-64 h-64 bg-[#30AFFF]/10 rounded-full blur-3xl pointer-events-none" />
+
               <div className="max-w-xl mx-auto">
                 <div className="w-16 h-16 rounded-2xl bg-[#17202A] text-[#30AFFF] mx-auto flex items-center justify-center mb-6 shadow-md">
                   <Film size={32} />
                 </div>
+
                 <h3 className="text-2xl sm:text-3xl font-black text-[#17202A] tracking-tight">
                   Ready to Apply as Video Editor?
                 </h3>
+
                 <p className="text-sm text-[#17202A]/70 mt-3 leading-relaxed">
                   Click the button below to launch our official application popup.
                   Submit your contact info, showreel & portfolio links, editing suite
                   proficiencies, and upload your CV directly to our production lead.
                 </p>
+
                 <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
                   <button
                     type="button"
@@ -982,6 +1043,7 @@ const VideoEditor = () => {
                     <ArrowRight size={16} className="text-[#30AFFF]" />
                   </button>
                 </div>
+
                 <p className="text-[11px] text-[#17202A]/50 mt-4">
                   ⚡ Takes less than 2 minutes · PDF / DOC / DOCX resume supported
                 </p>
@@ -1019,18 +1081,23 @@ const VideoEditor = () => {
               <a href="#role" className="hover:text-[#30AFFF] transition">
                 Role
               </a>
+
               <a href="#global" className="hover:text-[#30AFFF] transition">
                 Global
               </a>
+
               <a href="#stack" className="hover:text-[#30AFFF] transition">
                 Stack
               </a>
+
               <a href="#process" className="hover:text-[#30AFFF] transition">
                 Process
               </a>
+
               <a href="#faq" className="hover:text-[#30AFFF] transition">
                 FAQ
               </a>
+
               <button
                 onClick={scrollToApply}
                 className="text-[#17202A]/80 hover:text-[#30AFFF] transition font-semibold"
@@ -1044,6 +1111,7 @@ const VideoEditor = () => {
             <span>
               © {new Date().getFullYear()} Video Editor Careers. All rights reserved.
             </span>
+
             <span>Crafted for visual storytellers and motion artists.</span>
           </div>
         </div>
@@ -1053,3 +1121,4 @@ const VideoEditor = () => {
 };
 
 export default VideoEditor;
+

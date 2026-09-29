@@ -29,6 +29,8 @@ const FlagSection = () => {
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [showAllCountries, setShowAllCountries] = useState(false);
 
+  const [mobileCountryIndex, setMobileCountryIndex] = useState(0);
+
   const experienceRef = useRef(null);
   const countryRef = useRef(null);
 
@@ -58,6 +60,9 @@ const FlagSection = () => {
     { name: "Austria", flag: "https://flagcdn.com/w320/at.png" },
     { name: "Portugal", flag: "https://flagcdn.com/w320/pt.png" },
   ];
+
+  // Duplicate list for infinite loop
+  const infiniteCountries = [...countries, ...countries];
 
   const experienceOptions = [
     { label: "Fresher", value: "Fresher" },
@@ -108,6 +113,29 @@ const FlagSection = () => {
     };
   }, []);
 
+  /* ================= INFINITE MOBILE COUNTRY SLIDER ================= */
+
+  useEffect(() => {
+    if (showAllCountries) return;
+
+    const interval = setInterval(() => {
+      setMobileCountryIndex((prev) => prev + 1);
+    }, 2500);
+
+    return () => clearInterval(interval);
+  }, [showAllCountries]);
+
+  // When we reach the duplicated half, seamlessly reset to the real start
+  useEffect(() => {
+    if (mobileCountryIndex >= countries.length) {
+      const timeout = setTimeout(() => {
+        setMobileCountryIndex(0);
+      }, 700); // wait for the CSS transition to finish
+
+      return () => clearTimeout(timeout);
+    }
+  }, [mobileCountryIndex, countries.length]);
+
   /* ================= COUNTRY CARD CLICK ================= */
 
   const handleCountryClick = (country) => {
@@ -140,9 +168,7 @@ const FlagSection = () => {
       params.set("country", selectedCountry);
     }
 
-    navigate(
-      `/jobs${params.toString() ? `?${params.toString()}` : ""}`
-    );
+    navigate(`/jobs${params.toString() ? `?${params.toString()}` : ""}`);
   };
 
   /* ================= CATEGORY CLICK ================= */
@@ -154,31 +180,24 @@ const FlagSection = () => {
   /* ================= COUNTRY FLAG ================= */
 
   const getCountryFlag = (countryName) => {
-    const country = countries.find(
-      (item) => item.name === countryName
-    );
-
+    const country = countries.find((item) => item.name === countryName);
     return country ? country.flag : null;
   };
 
   return (
     <section className="overflow-hidden bg-white py-10 sm:py-12 lg:py-14">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-
         {/* =====================================================
             JOB SEARCH BAR
         ===================================================== */}
 
         <div className="relative z-30 mx-auto mb-10 w-full max-w-5xl">
-
           {/* ================= MOBILE SEARCH ================= */}
 
           <div className="sm:hidden">
-
             {/* COMPACT SEARCH + FILTERS */}
 
             <div className="flex items-center gap-2">
-
               {/* SEARCH ICON */}
 
               <button
@@ -200,10 +219,7 @@ const FlagSection = () => {
 
               {/* EXPERIENCE */}
 
-              <div
-                ref={experienceRef}
-                className="relative min-w-0 flex-1"
-              >
+              <div ref={experienceRef} className="relative min-w-0 flex-1">
                 <button
                   type="button"
                   onClick={() => {
@@ -214,9 +230,7 @@ const FlagSection = () => {
                 >
                   <span
                     className={`truncate text-[12px] font-medium ${
-                      experience
-                        ? "text-slate-800"
-                        : "text-slate-400"
+                      experience ? "text-slate-800" : "text-slate-400"
                     }`}
                   >
                     {experience
@@ -265,10 +279,7 @@ const FlagSection = () => {
 
               {/* COUNTRY */}
 
-              <div
-                ref={countryRef}
-                className="relative min-w-0 flex-1"
-              >
+              <div ref={countryRef} className="relative min-w-0 flex-1">
                 <button
                   type="button"
                   onClick={() => {
@@ -278,20 +289,17 @@ const FlagSection = () => {
                   className="flex h-[52px] w-full items-center justify-between rounded-full border border-slate-100 bg-white px-3 shadow-sm"
                 >
                   <span className="flex min-w-0 items-center gap-1.5">
-                    {selectedCountry &&
-                      getCountryFlag(selectedCountry) && (
-                        <img
-                          src={getCountryFlag(selectedCountry)}
-                          alt={selectedCountry}
-                          className="h-4 w-6 shrink-0 rounded-sm object-cover"
-                        />
-                      )}
+                    {selectedCountry && getCountryFlag(selectedCountry) && (
+                      <img
+                        src={getCountryFlag(selectedCountry)}
+                        alt={selectedCountry}
+                        className="h-4 w-6 shrink-0 rounded-sm object-cover"
+                      />
+                    )}
 
                     <span
                       className={`truncate text-[12px] font-medium ${
-                        selectedCountry
-                          ? "text-slate-800"
-                          : "text-slate-400"
+                        selectedCountry ? "text-slate-800" : "text-slate-400"
                       }`}
                     >
                       {selectedCountry || "Location"}
@@ -312,9 +320,7 @@ const FlagSection = () => {
                       <button
                         key={country.name}
                         type="button"
-                        onClick={() =>
-                          handleCountrySelect(country)
-                        }
+                        onClick={() => handleCountrySelect(country)}
                         className={`flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm transition-all duration-200 hover:bg-[#30AFFF]/5 hover:text-[#30AFFF] ${
                           selectedCountry === country.name
                             ? "bg-[#30AFFF]/5 font-semibold text-[#30AFFF]"
@@ -327,9 +333,7 @@ const FlagSection = () => {
                           className="h-5 w-7 shrink-0 rounded-sm object-cover"
                         />
 
-                        <span className="truncate">
-                          {country.name}
-                        </span>
+                        <span className="truncate">{country.name}</span>
                       </button>
                     ))}
                   </div>
@@ -341,10 +345,7 @@ const FlagSection = () => {
 
             {mobileSearchOpen && (
               <div className="mt-2 flex min-h-[54px] items-center rounded-2xl border border-slate-100 bg-white p-1.5 shadow-[0_10px_30px_rgba(15,23,42,0.10)]">
-                <Search
-                  size={19}
-                  className="mx-2 shrink-0 text-slate-500"
-                />
+                <Search size={19} className="mx-2 shrink-0 text-slate-500" />
 
                 <input
                   type="text"
@@ -374,14 +375,10 @@ const FlagSection = () => {
           {/* ================= DESKTOP SEARCH ================= */}
 
           <div className="hidden min-h-[68px] flex-col rounded-[28px] border border-slate-100 bg-white p-2 shadow-[0_15px_45px_rgba(15,23,42,0.10)] sm:flex sm:flex-row sm:items-center">
-
             {/* KEYWORD */}
 
             <div className="flex min-h-[54px] flex-1 items-center px-4">
-              <Search
-                size={20}
-                className="mr-3 shrink-0 text-slate-500"
-              />
+              <Search size={20} className="mr-3 shrink-0 text-slate-500" />
 
               <input
                 type="text"
@@ -403,10 +400,7 @@ const FlagSection = () => {
 
             {/* EXPERIENCE */}
 
-            <div
-              ref={experienceRef}
-              className="relative min-w-[190px]"
-            >
+            <div ref={experienceRef} className="relative min-w-[190px]">
               <button
                 type="button"
                 onClick={() => {
@@ -417,9 +411,7 @@ const FlagSection = () => {
               >
                 <span
                   className={`truncate text-sm sm:text-base ${
-                    experience
-                      ? "text-slate-800"
-                      : "text-slate-400"
+                    experience ? "text-slate-800" : "text-slate-400"
                   }`}
                 >
                   {experience
@@ -472,10 +464,7 @@ const FlagSection = () => {
 
             {/* COUNTRY */}
 
-            <div
-              ref={countryRef}
-              className="relative min-w-[190px]"
-            >
+            <div ref={countryRef} className="relative min-w-[190px]">
               <button
                 type="button"
                 onClick={() => {
@@ -485,20 +474,17 @@ const FlagSection = () => {
                 className="flex min-h-[54px] w-full items-center justify-between px-4 text-left"
               >
                 <span className="flex min-w-0 items-center gap-2 truncate text-sm sm:text-base">
-                  {selectedCountry &&
-                    getCountryFlag(selectedCountry) && (
-                      <img
-                        src={getCountryFlag(selectedCountry)}
-                        alt={selectedCountry}
-                        className="h-5 w-7 shrink-0 rounded-sm object-cover"
-                      />
-                    )}
+                  {selectedCountry && getCountryFlag(selectedCountry) && (
+                    <img
+                      src={getCountryFlag(selectedCountry)}
+                      alt={selectedCountry}
+                      className="h-5 w-7 shrink-0 rounded-sm object-cover"
+                    />
+                  )}
 
                   <span
                     className={
-                      selectedCountry
-                        ? "truncate text-slate-800"
-                        : "text-slate-400"
+                      selectedCountry ? "truncate text-slate-800" : "text-slate-400"
                     }
                   >
                     {selectedCountry || "Select location"}
@@ -519,9 +505,7 @@ const FlagSection = () => {
                     <button
                       key={country.name}
                       type="button"
-                      onClick={() =>
-                        handleCountrySelect(country)
-                      }
+                      onClick={() => handleCountrySelect(country)}
                       className={`flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm transition-all duration-200 hover:bg-[#30AFFF]/5 hover:text-[#30AFFF] ${
                         selectedCountry === country.name
                           ? "bg-[#30AFFF]/5 font-semibold text-[#30AFFF]"
@@ -534,9 +518,7 @@ const FlagSection = () => {
                         className="h-5 w-7 shrink-0 rounded-sm object-cover"
                       />
 
-                      <span className="truncate">
-                        {country.name}
-                      </span>
+                      <span className="truncate">{country.name}</span>
                     </button>
                   ))}
                 </div>
@@ -568,7 +550,6 @@ const FlagSection = () => {
                 <button
                   key={category.label}
                   type="button"
-                  // onClick={() => handleCategoryClick(category.label)}
                   className="group inline-flex items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2 py-2.5 text-[10px] font-semibold text-slate-700 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-[#30AFFF]/40 hover:bg-[#30AFFF]/5 hover:text-[#30AFFF] hover:shadow-md sm:gap-3 sm:rounded-lg sm:px-5 sm:py-4 sm:text-xs md:px-6 md:py-4 md:text-sm"
                 >
                   <Icon
@@ -576,9 +557,7 @@ const FlagSection = () => {
                     className="shrink-0 transition-transform duration-300 group-hover:scale-110 sm:h-[18px] sm:w-[18px] md:h-5 md:w-5"
                   />
 
-                  <span className="whitespace-nowrap">
-                    {category.label}
-                  </span>
+                  <span className="whitespace-nowrap">{category.label}</span>
                 </button>
               );
             })}
@@ -592,14 +571,13 @@ const FlagSection = () => {
         <div className="flex flex-col items-center justify-center text-center">
           <div className="max-w-2xl">
             <h2 className="text-xl font-bold leading-tight tracking-tight text-slate-900 sm:text-3xl md:text-4xl">
-              Find Jobs Across{" "}
-              <span>The World</span>
+              Find Jobs Across <span>The World</span>
             </h2>
           </div>
 
           <p className="mt-1 max-w-xl text-[12px] leading-6 text-slate-500 sm:mt-3 sm:text-base sm:leading-7">
-            Explore career opportunities in leading countries and
-            discover your next opportunity around the world.
+            Explore career opportunities in leading countries and discover your
+            next opportunity around the world.
           </p>
         </div>
 
@@ -607,231 +585,133 @@ const FlagSection = () => {
             COUNTRIES
         ===================================================== */}
 
-        <div className="mt-9">
+        <div className="mt-6 sm:mt-9">
+          {/* =================================================
+              MOBILE POPULAR COUNTRY HEADER
+          ================================================= */}
 
-          {/* ================= MOBILE HEADER ================= */}
+          <div className="mb-4 flex items-center justify-between sm:hidden">
+            <div>
+              <h3 className="text-base font-bold tracking-tight text-slate-900">
+                Popular Country
+              </h3>
 
-          <div className="mb-5 flex items-center justify-end sm:hidden">
-            {!showAllCountries && countries.length > 3 && (
+              <p className="mt-0.5 text-[10px] text-slate-400">
+                Explore jobs worldwide
+              </p>
+            </div>
+
+            {countries.length > 4 && (
               <button
                 type="button"
-                onClick={() => setShowAllCountries(true)}
-                className="rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/5 px-4 py-2 text-xs font-bold text-[#159FEF] transition-all duration-300 hover:border-[#30AFFF] hover:bg-[#30AFFF]/10 active:scale-95"
+                onClick={() => setShowAllCountries((prev) => !prev)}
+                className="rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/5 px-4 py-2 text-[11px] font-bold text-[#159FEF] transition-all duration-300 hover:border-[#30AFFF] hover:bg-[#30AFFF]/10 active:scale-95"
               >
-                View All
+                {showAllCountries ? "Show Less" : "View All"}
               </button>
             )}
           </div>
 
-          {/* ================= COUNTRIES GRID ================= */}
+          {/* =================================================
+              MOBILE COUNTRY INFINITE SLIDER
+          ================================================= */}
 
-          <div
-            className="
-              grid
-              grid-cols-3
-              gap-x-3
-              gap-y-8
-
-              sm:grid-cols-4
-              sm:gap-x-6
-              sm:gap-y-7
-
-              md:grid-cols-6
-
-              lg:grid-cols-8
-              lg:gap-x-7
-            "
-          >
-
-            {/* =================================================
-                FIRST 3 COUNTRIES
-                MOBILE + TABLET + DESKTOP
-            ================================================= */}
-
-            {countries.slice(0, 3).map((country) => (
-              <button
-                key={country.name}
-                type="button"
-                onClick={() => handleCountryClick(country)}
-                className="group flex min-w-0 cursor-pointer flex-col items-center justify-center text-center outline-none"
-              >
+          <div className="sm:hidden">
+            {!showAllCountries ? (
+              <div className="relative overflow-hidden">
                 <div
-                  className="
-                    flex
-                    h-12
-                    w-full
-                    max-w-[72px]
-                    items-center
-                    justify-center
-                    overflow-hidden
-                    rounded-md
-                    bg-slate-100
-                    shadow-sm
-                    ring-1
-                    ring-slate-100
-                    transition-all
-                    duration-300
-                    group-hover:-translate-y-1
-                    group-hover:shadow-md
-                    group-hover:ring-[#30AFFF]/30
-                    group-focus-visible:ring-2
-                    group-focus-visible:ring-[#30AFFF]
-
-                    sm:h-14
-                    sm:max-w-[84px]
-
-                    md:h-14
-                    md:max-w-[88px]
-
-                    lg:h-16
-                    lg:max-w-[96px]
-                  "
+                  className="flex"
+                  style={{
+                    transform: `translateX(-${mobileCountryIndex * 100}%)`,
+                    transition:
+                      mobileCountryIndex >= countries.length
+                        ? "none" // instant reset when jumping back
+                        : "transform 700ms ease-out",
+                  }}
                 >
-                  <img
-                    src={country.flag}
-                    alt={`${country.name} flag`}
-                    loading="lazy"
-                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
+                  {Array.from(
+                    { length: Math.ceil(infiniteCountries.length / 4) },
+                    (_, pageIndex) => (
+                      <div
+                        key={pageIndex}
+                        className="grid min-w-full grid-cols-4 gap-2"
+                      >
+                        {infiniteCountries
+                          .slice(pageIndex * 4, pageIndex * 4 + 4)
+                          .map((country, idx) => (
+                            <button
+                              key={`${country.name}-${pageIndex}-${idx}`}
+                              type="button"
+                              onClick={() => handleCountryClick(country)}
+                              className="group min-w-0 cursor-pointer text-center outline-none"
+                            >
+                              <div className="overflow-hidden rounded-lg bg-white ring-1 ring-slate-200/70 shadow-[0_2px_8px_rgba(15,42,74,0.05)] transition-all duration-300 group-active:scale-[0.96] group-hover:-translate-y-0.5 group-hover:ring-[#30AFFF]/40 group-hover:shadow-[0_5px_14px_rgba(48,175,255,0.12)]">
+                                <div className="mx-auto mt-1.5 aspect-[1.5/1] w-[85%] overflow-hidden rounded-md">
+                                  <img
+                                    src={country.flag}
+                                    alt={`${country.name} flag`}
+                                    loading="lazy"
+                                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                  />
+                                </div>
+
+                                <div className="px-1 py-1.5">
+                                  <p className="truncate text-[9px] font-semibold leading-3 text-slate-600 transition-colors duration-300 group-hover:text-[#159FEF]">
+                                    {country.name}
+                                  </p>
+                                </div>
+                              </div>
+                            </button>
+                          ))}
+                      </div>
+                    )
+                  )}
                 </div>
-
-                <p
-                  className="
-                    mt-3
-                    max-w-[110px]
-                    text-[11px]
-                    font-semibold
-                    leading-4
-                    text-slate-600
-                    transition-colors
-                    duration-300
-                    group-hover:text-[#30AFFF]
-                    sm:text-xs
-                    md:text-sm
-                  "
-                >
-                  {country.name}
-                </p>
-              </button>
-            ))}
-
-            {/* =================================================
-                REMAINING COUNTRIES
-                MOBILE ONLY AFTER VIEW ALL
-            ================================================= */}
-
-            {showAllCountries &&
-              countries.slice(3).map((country) => (
-                <button
-                  key={`mobile-${country.name}`}
-                  type="button"
-                  onClick={() => handleCountryClick(country)}
-                  className="group flex min-w-0 cursor-pointer flex-col items-center justify-center text-center outline-none sm:hidden"
-                >
-                  <div
-                    className="
-                      flex
-                      h-12
-                      w-full
-                      max-w-[72px]
-                      items-center
-                      justify-center
-                      overflow-hidden
-                      rounded-md
-                      bg-slate-100
-                      shadow-sm
-                      ring-1
-                      ring-slate-100
-                      transition-all
-                      duration-300
-                      group-hover:-translate-y-1
-                      group-hover:shadow-md
-                      group-hover:ring-[#30AFFF]/30
-                      group-focus-visible:ring-2
-                      group-focus-visible:ring-[#30AFFF]
-                    "
+              </div>
+            ) : (
+              <div className="grid grid-cols-4 gap-x-2 gap-y-5">
+                {countries.map((country) => (
+                  <button
+                    key={country.name}
+                    type="button"
+                    onClick={() => handleCountryClick(country)}
+                    className="group min-w-0 cursor-pointer text-center outline-none"
                   >
-                    <img
-                      src={country.flag}
-                      alt={`${country.name} flag`}
-                      loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                  </div>
+                    <div className="overflow-hidden rounded-lg bg-white ring-1 ring-slate-200/70 shadow-[0_2px_8px_rgba(15,42,74,0.05)] transition-all duration-300 group-active:scale-[0.96] group-hover:-translate-y-0.5 group-hover:ring-[#30AFFF]/40 group-hover:shadow-[0_5px_14px_rgba(48,175,255,0.12)]">
+                      <div className="mx-auto mt-1.5 aspect-[1.5/1] w-[85%] overflow-hidden rounded-md">
+                        <img
+                          src={country.flag}
+                          alt={`${country.name} flag`}
+                          loading="lazy"
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                      </div>
 
-                  <p
-                    className="
-                      mt-3
-                      max-w-[110px]
-                      text-[11px]
-                      font-semibold
-                      leading-4
-                      text-slate-600
-                      transition-colors
-                      duration-300
-                      group-hover:text-[#30AFFF]
-                    "
-                  >
-                    {country.name}
-                  </p>
-                </button>
-              ))}
+                      <div className="px-1 py-1.5">
+                        <p className="truncate text-[9px] font-semibold leading-3 text-slate-600 transition-colors duration-300 group-hover:text-[#159FEF]">
+                          {country.name}
+                        </p>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
 
-            {/* =================================================
-                REMAINING COUNTRIES
-                TABLET + DESKTOP ALWAYS VISIBLE
-            ================================================= */}
+          {/* =================================================
+              TABLET + DESKTOP COUNTRY GRID
+          ================================================= */}
 
-            {countries.slice(3).map((country) => (
+          <div className="hidden grid-cols-4 gap-x-6 gap-y-7 sm:grid md:grid-cols-6 lg:grid-cols-8 lg:gap-x-7">
+            {countries.map((country) => (
               <button
                 key={`desktop-${country.name}`}
                 type="button"
                 onClick={() => handleCountryClick(country)}
-                className="
-                  group
-                  hidden
-                  min-w-0
-                  cursor-pointer
-                  flex-col
-                  items-center
-                  justify-center
-                  text-center
-                  outline-none
-                  sm:flex
-                "
+                className="group flex min-w-0 cursor-pointer flex-col items-center justify-center text-center outline-none"
               >
-                <div
-                  className="
-                    flex
-                    h-12
-                    w-full
-                    max-w-[72px]
-                    items-center
-                    justify-center
-                    overflow-hidden
-                    rounded-md
-                    bg-slate-100
-                    shadow-sm
-                    ring-1
-                    ring-slate-100
-                    transition-all
-                    duration-300
-                    group-hover:-translate-y-1
-                    group-hover:shadow-md
-                    group-hover:ring-[#30AFFF]/30
-                    group-focus-visible:ring-2
-                    group-focus-visible:ring-[#30AFFF]
-
-                    sm:h-14
-                    sm:max-w-[84px]
-
-                    md:h-14
-                    md:max-w-[88px]
-
-                    lg:h-16
-                    lg:max-w-[96px]
-                  "
-                >
+                <div className="flex h-14 w-full max-w-[84px] items-center justify-center overflow-hidden rounded-md bg-slate-100 shadow-sm ring-1 ring-slate-100 transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-md group-hover:ring-[#30AFFF]/30 group-focus-visible:ring-2 group-focus-visible:ring-[#30AFFF] md:h-14 md:max-w-[88px] lg:h-16 lg:max-w-[96px]">
                   <img
                     src={country.flag}
                     alt={`${country.name} flag`}
@@ -840,21 +720,7 @@ const FlagSection = () => {
                   />
                 </div>
 
-                <p
-                  className="
-                    mt-3
-                    max-w-[110px]
-                    text-[11px]
-                    font-semibold
-                    leading-4
-                    text-slate-600
-                    transition-colors
-                    duration-300
-                    group-hover:text-[#30AFFF]
-                    sm:text-xs
-                    md:text-sm
-                  "
-                >
+                <p className="mt-3 max-w-[110px] text-[11px] font-semibold leading-4 text-slate-600 transition-colors duration-300 group-hover:text-[#30AFFF] sm:text-xs md:text-sm">
                   {country.name}
                 </p>
               </button>
@@ -869,10 +735,7 @@ const FlagSection = () => {
         {countries.length === 0 && (
           <div className="py-12 text-center">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#A0E9FF]/10">
-              <MapPin
-                size={20}
-                className="text-[#30AFFF]"
-              />
+              <MapPin size={20} className="text-[#30AFFF]" />
             </div>
 
             <h3 className="mt-3 text-sm font-bold text-slate-800 sm:text-base">
