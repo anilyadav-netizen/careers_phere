@@ -1,31 +1,25 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import {
   BriefcaseBusiness,
-  Search,
-  CreditCard,
-  Images,
-  Phone,
+  ChevronDown,
+  FileText,
   Info,
   LogIn,
-  UserPlus,
-  Menu,
-  X,
-  UserRound,
-  FileText,
   LogOut,
-  ChevronDown,
+  Menu,
+  Phone,
+  Search,
+  UserPlus,
+  UserRound,
+  X,
 } from "lucide-react";
 
-import { BsCreditCardFill } from "react-icons/bs";
 import { FaBookmark } from "react-icons/fa";
 
-import {
-  getProfile,
-  logoutUser,
-} from "../redux/slicer/authSlice";
+import { getProfile, logoutUser } from "../redux/slicer/authSlice";
 
 import FeedbackModal from "./FeedbackModal";
 
@@ -78,31 +72,31 @@ const Navbar = () => {
       path: "/jobs",
       icon: Search,
     },
-    {
-      name: "Video Editor",
-      path: "/videoEditor",
-      icon: CreditCard,
-    },
-    {
-      name: "FullStack",
-      path: "/fullStack",
-      icon: Images,
-    },
-    {
-      name: "Andriod",
-      path: "/andriod",
-      icon: Images,
-    },
-    {
-      name: "Frontend",
-      path: "/frontend",
-      icon: Images,
-    },
-    {
-      name: "Backend",
-      path: "/backend",
-      icon: Images,
-    },
+    // {
+    //   name: "Video Editor",
+    //   path: "/videoEditor",
+    //   icon: CreditCard,
+    // },
+    // {
+    //   name: "FullStack",
+    //   path: "/fullStack",
+    //   icon: Images,
+    // },
+    // {
+    //   name: "Andriod",
+    //   path: "/andriod",
+    //   icon: Images,
+    // },
+    // {
+    //   name: "Frontend",
+    //   path: "/frontend",
+    //   icon: Images,
+    // },
+    // {
+    //   name: "Backend",
+    //   path: "/backend",
+    //   icon: Images,
+    // },
     {
       name: "About Us",
       path: "/about",
@@ -113,7 +107,6 @@ const Navbar = () => {
       path: "/contact",
       icon: Phone,
     },
-
   ];
 
   // =========================================================
@@ -154,10 +147,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (
-        userMenuRef.current &&
-        !userMenuRef.current.contains(event.target)
-      ) {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
         setUserMenu(false);
       }
     };
@@ -288,7 +278,6 @@ const Navbar = () => {
       <nav className="sticky top-0 z-50 w-full border-b border-slate-200/70 bg-white/90 shadow-sm backdrop-blur-xl">
         <div className="mx-auto w-full max-w-[1440px] px-3 sm:px-5 md:px-6 lg:px-8 xl:px-10">
           <div className="flex min-h-[64px] items-center justify-between gap-3 sm:min-h-[68px]">
-
             {/* =================================================
                 LOGO
             ================================================= */}
@@ -307,13 +296,9 @@ const Navbar = () => {
               </div>
 
               <div className="truncate text-lg font-bold tracking-tight sm:text-xl md:text-2xl">
-                <span className="text-slate-800">
-                  Career
-                </span>
+                <span className="text-slate-800">Career</span>
 
-                <span className="text-[#30AFFF]">
-                  Sphere
-                </span>
+                <span className="text-[#30AFFF]">Sphere</span>
               </div>
             </Link>
 
@@ -331,16 +316,13 @@ const Navbar = () => {
                     <Link
                       key={item.name}
                       to={item.path}
-                      className={`relative flex items-center gap-1.5 whitespace-nowrap rounded-xl px-3 py-2.5 text-[13px] font-medium transition-all duration-200 xl:gap-2 xl:px-3.5 xl:text-sm ${active
-                        ? "bg-[#A0E9FF]/35 text-[#30AFFF]"
-                        : "text-slate-600 hover:bg-[#A0E9FF]/25 hover:text-[#30AFFF]"
-                        }`}
+                      className={`relative flex items-center gap-1.5 whitespace-nowrap rounded-xl px-3 py-2.5 text-[13px] font-medium transition-all duration-200 xl:gap-2 xl:px-3.5 xl:text-sm ${
+                        active
+                          ? "bg-[#A0E9FF]/35 text-[#30AFFF]"
+                          : "text-slate-600 hover:bg-[#A0E9FF]/25 hover:text-[#30AFFF]"
+                      }`}
                     >
-                      <Icon
-                        size={16}
-                        strokeWidth={2}
-                        className="shrink-0"
-                      />
+                      <Icon size={16} strokeWidth={2} className="shrink-0" />
 
                       <span>{item.name}</span>
 
@@ -375,15 +357,13 @@ const Navbar = () => {
 
                   <Link
                     to="/login"
-                    className={`flex items-center gap-1.5 whitespace-nowrap rounded-xl px-3 py-2.5 text-[13px] font-medium transition-all duration-200 xl:gap-2 xl:px-4 xl:text-sm ${isActive("/login")
-                      ? "bg-[#A0E9FF]/35 text-[#30AFFF]"
-                      : "text-slate-600 hover:bg-[#A0E9FF]/25 hover:text-[#30AFFF]"
-                      }`}
+                    className={`flex items-center gap-1.5 whitespace-nowrap rounded-xl px-3 py-2.5 text-[13px] font-medium transition-all duration-200 xl:gap-2 xl:px-4 xl:text-sm ${
+                      isActive("/login")
+                        ? "bg-[#A0E9FF]/35 text-[#30AFFF]"
+                        : "text-slate-600 hover:bg-[#A0E9FF]/25 hover:text-[#30AFFF]"
+                    }`}
                   >
-                    <LogIn
-                      size={16}
-                      strokeWidth={2}
-                    />
+                    <LogIn size={16} strokeWidth={2} />
 
                     <span>Login</span>
                   </Link>
@@ -394,10 +374,7 @@ const Navbar = () => {
                     to="/register"
                     className="flex items-center justify-center gap-1.5 whitespace-nowrap rounded-xl bg-[#30AFFF] px-4 py-2.5 text-[13px] font-semibold text-white shadow-md shadow-[#30AFFF]/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#159FEF] hover:shadow-lg xl:gap-2 xl:px-5 xl:text-sm"
                   >
-                    <UserPlus
-                      size={16}
-                      strokeWidth={2}
-                    />
+                    <UserPlus size={16} strokeWidth={2} />
 
                     <span>Sign Up</span>
                   </Link>
@@ -408,9 +385,7 @@ const Navbar = () => {
                 <div className="relative">
                   <button
                     type="button"
-                    onClick={() =>
-                      setUserMenu((prev) => !prev)
-                    }
+                    onClick={() => setUserMenu((prev) => !prev)}
                     className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-2 py-1.5 transition-all duration-200 hover:border-[#A0E9FF] hover:bg-[#A0E9FF]/15 focus:outline-none focus:ring-4 focus:ring-[#30AFFF]/10"
                     aria-label="Open user menu"
                     aria-expanded={userMenu}
@@ -428,15 +403,14 @@ const Navbar = () => {
                         {getUserName()}
                       </p>
 
-                      <p className="text-[10px] text-slate-400">
-                        My Account
-                      </p>
+                      <p className="text-[10px] text-slate-400">My Account</p>
                     </div>
 
                     <ChevronDown
                       size={15}
-                      className={`text-slate-400 transition-transform duration-200 ${userMenu ? "rotate-180" : ""
-                        }`}
+                      className={`text-slate-400 transition-transform duration-200 ${
+                        userMenu ? "rotate-180" : ""
+                      }`}
                     />
                   </button>
 
@@ -446,7 +420,6 @@ const Navbar = () => {
 
                   {userMenu && (
                     <div className="absolute right-0 top-[calc(100%+10px)] w-64 overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl shadow-slate-300/40">
-
                       {/* USER INFO */}
 
                       <div className="mb-1 rounded-xl bg-[#A0E9FF]/15 p-3">
@@ -479,9 +452,7 @@ const Navbar = () => {
                         </span>
 
                         <div>
-                          <p className="font-semibold">
-                            Profile
-                          </p>
+                          <p className="font-semibold">Profile</p>
 
                           <p className="text-[10px] text-slate-400">
                             View your profile
@@ -501,9 +472,7 @@ const Navbar = () => {
                         </span>
 
                         <div>
-                          <p className="font-semibold">
-                            My Applications
-                          </p>
+                          <p className="font-semibold">My Applications</p>
 
                           <p className="text-[10px] text-slate-400">
                             Track your applications
@@ -523,9 +492,7 @@ const Navbar = () => {
                         </span>
 
                         <div>
-                          <p className="font-semibold">
-                            Saved Application
-                          </p>
+                          <p className="font-semibold">Saved Application</p>
 
                           <p className="text-[10px] text-slate-400">
                             View your saved application
@@ -571,9 +538,7 @@ const Navbar = () => {
 
                         <div>
                           <p className="font-semibold">
-                            {logoutLoading
-                              ? "Logging out..."
-                              : "Logout"}
+                            {logoutLoading ? "Logging out..." : "Logout"}
                           </p>
 
                           <p className="text-[10px] text-red-400">
@@ -594,24 +559,14 @@ const Navbar = () => {
             <button
               type="button"
               onClick={toggleMobileMenu}
-              aria-label={
-                mobileMenu
-                  ? "Close menu"
-                  : "Open menu"
-              }
+              aria-label={mobileMenu ? "Close menu" : "Open menu"}
               aria-expanded={mobileMenu}
               className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-slate-600 transition-all duration-200 hover:bg-[#A0E9FF]/25 hover:text-[#30AFFF] active:scale-95 lg:hidden"
             >
               {mobileMenu ? (
-                <X
-                  size={25}
-                  strokeWidth={2}
-                />
+                <X size={25} strokeWidth={2} />
               ) : (
-                <Menu
-                  size={25}
-                  strokeWidth={2}
-                />
+                <Menu size={25} strokeWidth={2} />
               )}
             </button>
           </div>
@@ -623,10 +578,9 @@ const Navbar = () => {
       ====================================================== */}
 
       <div
-        className={`fixed inset-0 z-[55] bg-black/50 transition-opacity duration-300 lg:hidden ${mobileMenu
-          ? "opacity-100"
-          : "pointer-events-none opacity-0"
-          }`}
+        className={`fixed inset-0 z-[55] bg-black/50 transition-opacity duration-300 lg:hidden ${
+          mobileMenu ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
         onClick={() => setMobileMenu(false)}
       />
 
@@ -635,10 +589,9 @@ const Navbar = () => {
       ====================================================== */}
 
       <div
-        className={`fixed right-0 top-0 z-[60] flex h-full w-[300px] max-w-[85vw] flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out lg:hidden ${mobileMenu
-          ? "translate-x-0"
-          : "translate-x-full"
-          }`}
+        className={`fixed right-0 top-0 z-[60] flex h-full w-[300px] max-w-[85vw] flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out lg:hidden ${
+          mobileMenu ? "translate-x-0" : "translate-x-full"
+        }`}
       >
         {/* HEADER */}
 
@@ -662,13 +615,9 @@ const Navbar = () => {
             </div>
 
             <div className="text-lg font-bold tracking-tight">
-              <span className="text-slate-800">
-                Career
-              </span>
+              <span className="text-slate-800">Career</span>
 
-              <span className="text-[#30AFFF]">
-                Sphere
-              </span>
+              <span className="text-[#30AFFF]">Sphere</span>
             </div>
           </Link>
 
@@ -680,17 +629,13 @@ const Navbar = () => {
             aria-label="Close menu"
             className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-600 transition-all duration-200 hover:bg-[#A0E9FF]/25 hover:text-[#30AFFF] active:scale-95"
           >
-            <X
-              size={25}
-              strokeWidth={2}
-            />
+            <X size={25} strokeWidth={2} />
           </button>
         </div>
 
         {/* CONTENT */}
 
         <div className="flex-1 overflow-y-auto p-4">
-
           {/* NAV ITEMS */}
 
           <div className="space-y-1">
@@ -703,21 +648,20 @@ const Navbar = () => {
                   key={item.name}
                   to={item.path}
                   onClick={() => setMobileMenu(false)}
-                  className={`flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-sm font-medium transition-all duration-200 sm:py-4 ${active
-                    ? "bg-[#A0E9FF]/35 text-[#30AFFF]"
-                    : "text-slate-700 hover:bg-[#A0E9FF]/25 hover:text-[#30AFFF]"
-                    }`}
+                  className={`flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-sm font-medium transition-all duration-200 sm:py-4 ${
+                    active
+                      ? "bg-[#A0E9FF]/35 text-[#30AFFF]"
+                      : "text-slate-700 hover:bg-[#A0E9FF]/25 hover:text-[#30AFFF]"
+                  }`}
                 >
                   <span
-                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${active
-                      ? "bg-white text-[#30AFFF] shadow-sm"
-                      : "bg-[#A0E9FF]/25 text-slate-500"
-                      }`}
+                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
+                      active
+                        ? "bg-white text-[#30AFFF] shadow-sm"
+                        : "bg-[#A0E9FF]/25 text-slate-500"
+                    }`}
                   >
-                    <Icon
-                      size={18}
-                      strokeWidth={2}
-                    />
+                    <Icon size={18} strokeWidth={2} />
                   </span>
 
                   <span>{item.name}</span>
@@ -742,22 +686,19 @@ const Navbar = () => {
             /* MOBILE NOT LOGGED IN */
 
             <div className="space-y-2">
-
               {/* LOGIN */}
 
               <Link
                 to="/login"
                 onClick={() => setMobileMenu(false)}
-                className={`flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-sm font-medium transition-all duration-200 sm:py-4 ${isActive("/login")
-                  ? "bg-[#A0E9FF]/35 text-[#30AFFF]"
-                  : "text-slate-700 hover:bg-[#A0E9FF]/25 hover:text-[#30AFFF]"
-                  }`}
+                className={`flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-sm font-medium transition-all duration-200 sm:py-4 ${
+                  isActive("/login")
+                    ? "bg-[#A0E9FF]/35 text-[#30AFFF]"
+                    : "text-slate-700 hover:bg-[#A0E9FF]/25 hover:text-[#30AFFF]"
+                }`}
               >
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#A0E9FF]/25">
-                  <LogIn
-                    size={18}
-                    strokeWidth={2}
-                  />
+                  <LogIn size={18} strokeWidth={2} />
                 </span>
 
                 <span>Login</span>
@@ -770,10 +711,7 @@ const Navbar = () => {
                 onClick={() => setMobileMenu(false)}
                 className="flex w-full items-center justify-center gap-3 rounded-xl bg-[#30AFFF] px-4 py-3.5 text-sm font-semibold text-white shadow-md shadow-[#30AFFF]/20 transition-all duration-200 hover:bg-[#159FEF] hover:shadow-lg active:scale-[0.99] sm:py-4"
               >
-                <UserPlus
-                  size={19}
-                  strokeWidth={2}
-                />
+                <UserPlus size={19} strokeWidth={2} />
 
                 <span>Sign Up</span>
               </Link>
@@ -782,18 +720,14 @@ const Navbar = () => {
             /* MOBILE LOGGED IN */
 
             <div className="space-y-2">
-
               {/* USER HEADER */}
 
               <button
                 type="button"
-                onClick={() =>
-                  setMobileUserMenu((prev) => !prev)
-                }
+                onClick={() => setMobileUserMenu((prev) => !prev)}
                 className="flex w-full items-center justify-between rounded-xl border border-[#A0E9FF] bg-[#A0E9FF]/15 p-3"
               >
                 <div className="flex min-w-0 items-center gap-3">
-
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#30AFFF] text-sm font-bold text-white">
                     {getUserInitial()}
                   </div>
@@ -811,10 +745,9 @@ const Navbar = () => {
 
                 <ChevronDown
                   size={18}
-                  className={`shrink-0 text-slate-400 transition-transform ${mobileUserMenu
-                    ? "rotate-180"
-                    : ""
-                    }`}
+                  className={`shrink-0 text-slate-400 transition-transform ${
+                    mobileUserMenu ? "rotate-180" : ""
+                  }`}
                 />
               </button>
 
@@ -822,7 +755,6 @@ const Navbar = () => {
 
               {mobileUserMenu && (
                 <div className="space-y-1 rounded-xl bg-[#A0E9FF]/15 p-2">
-
                   {/* PROFILE */}
 
                   <Link
@@ -833,10 +765,7 @@ const Navbar = () => {
                     }}
                     className="flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-slate-600 hover:bg-white hover:text-[#30AFFF]"
                   >
-                    <UserRound
-                      size={18}
-                      className="text-[#30AFFF]"
-                    />
+                    <UserRound size={18} className="text-[#30AFFF]" />
 
                     <span>Profile</span>
                   </Link>
@@ -851,10 +780,7 @@ const Navbar = () => {
                     }}
                     className="flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-slate-600 hover:bg-white hover:text-[#30AFFF]"
                   >
-                    <FileText
-                      size={18}
-                      className="text-[#30AFFF]"
-                    />
+                    <FileText size={18} className="text-[#30AFFF]" />
 
                     <span>My Applications</span>
                   </Link>
@@ -869,10 +795,7 @@ const Navbar = () => {
                     }}
                     className="flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-slate-600 hover:bg-white hover:text-[#30AFFF]"
                   >
-                    <FaBookmark
-                      size={18}
-                      className="text-[#30AFFF]"
-                    />
+                    <FaBookmark size={18} className="text-[#30AFFF]" />
 
                     <span>Saved Application</span>
                   </Link>
@@ -887,11 +810,7 @@ const Navbar = () => {
                   >
                     <LogOut size={18} />
 
-                    <span>
-                      {logoutLoading
-                        ? "Logging out..."
-                        : "Logout"}
-                    </span>
+                    <span>{logoutLoading ? "Logging out..." : "Logout"}</span>
                   </button>
                 </div>
               )}
