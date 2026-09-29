@@ -14,6 +14,8 @@ import {
   Briefcase,
   ShoppingCart,
   Truck,
+  Globe2,
+  ArrowRight,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -30,6 +32,7 @@ const FlagSection = () => {
   const [showAllCountries, setShowAllCountries] = useState(false);
 
   const [mobileCountryIndex, setMobileCountryIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(true);
 
   const experienceRef = useRef(null);
   const countryRef = useRef(null);
@@ -61,8 +64,27 @@ const FlagSection = () => {
     { name: "Portugal", flag: "https://flagcdn.com/w320/pt.png" },
   ];
 
-  // Duplicate list for infinite loop
-  const infiniteCountries = [...countries, ...countries];
+  // Build pages of 4 and triple them for seamless infinite loop
+  const PAGE_SIZE = 4;
+  const basePages = [];
+  for (let i = 0; i < countries.length; i += PAGE_SIZE) {
+    basePages.push(countries.slice(i, i + PAGE_SIZE));
+  }
+  // Pad the last page if it has fewer than 4 items so loops stay visually even
+  const lastPage = basePages[basePages.length - 1];
+  if (lastPage.length < PAGE_SIZE) {
+    const padded = [...lastPage];
+    let fillIdx = 0;
+    while (padded.length < PAGE_SIZE) {
+      padded.push(countries[fillIdx % countries.length]);
+      fillIdx++;
+    }
+    basePages[basePages.length - 1] = padded;
+  }
+
+  const totalPages = basePages.length;
+  // Triple the pages: [clone] [real] [clone]
+  const loopPages = [...basePages, ...basePages, ...basePages];
 
   const experienceOptions = [
     { label: "Fresher", value: "Fresher" },
@@ -113,28 +135,68 @@ const FlagSection = () => {
     };
   }, []);
 
-  /* ================= INFINITE MOBILE COUNTRY SLIDER ================= */
+  /* ================= INITIAL OFFSET FOR LOOP ================= */
+
+  // Start at the beginning of the middle (real) block
+  useEffect(() => {
+    setMobileCountryIndex(totalPages);
+  }, [totalPages]);
+
+  /* ================= INFINITE AUTO SLIDER ================= */
 
   useEffect(() => {
     if (showAllCountries) return;
 
     const interval = setInterval(() => {
+      setIsTransitioning(true);
       setMobileCountryIndex((prev) => prev + 1);
     }, 2500);
 
     return () => clearInterval(interval);
   }, [showAllCountries]);
 
-  // When we reach the duplicated half, seamlessly reset to the real start
-  useEffect(() => {
-    if (mobileCountryIndex >= countries.length) {
-      const timeout = setTimeout(() => {
-        setMobileCountryIndex(0);
-      }, 700); // wait for the CSS transition to finish
+  /* ================= SEAMLESS LOOP RESET ================= */
 
+  useEffect(() => {
+    // When we enter the last (third) clone block, snap back to middle block instantly
+    if (mobileCountryIndex >= totalPages * 2) {
+      const timeout = setTimeout(() => {
+        setIsTransitioning(false);
+        setMobileCountryIndex((prev) => prev - totalPages);
+      }, 720); // matches transition duration
       return () => clearTimeout(timeout);
     }
-  }, [mobileCountryIndex, countries.length]);
+
+    // If we ever go into the first clone block (e.g. manual backwards), snap forward
+    if (mobileCountryIndex < totalPages) {
+      const timeout = setTimeout(() => {
+        setIsTransitioning(false);
+        setMobileCountryIndex((prev) => prev + totalPages);
+      }, 720);
+      return () => clearTimeout(timeout);
+    }
+  }, [mobileCountryIndex, totalPages]);
+
+  // Re-enable transition after the instant snap
+  useEffect(() => {
+    if (!isTransitioning) {
+      const raf = requestAnimationFrame(() => {
+        requestAnimationFrame(() => setIsTransitioning(true));
+      });
+      return () => cancelAnimationFrame(raf);
+    }
+  }, [isTransitioning]);
+
+  /* ================= DOTS ================= */
+
+  // Current active dot maps to which of the real pages is showing
+  const activeDot =
+    ((mobileCountryIndex - totalPages) % totalPages + totalPages) % totalPages;
+
+  const goToPage = (dotIndex) => {
+    setIsTransitioning(true);
+    setMobileCountryIndex(totalPages + dotIndex);
+  };
 
   /* ================= COUNTRY CARD CLICK ================= */
 
@@ -171,18 +233,14 @@ const FlagSection = () => {
     navigate(`/jobs${params.toString() ? `?${params.toString()}` : ""}`);
   };
 
-  /* ================= CATEGORY CLICK ================= */
-
-  const handleCategoryClick = (label) => {
-    navigate(`/jobs?category=${encodeURIComponent(label)}`);
-  };
-
   /* ================= COUNTRY FLAG ================= */
 
   const getCountryFlag = (countryName) => {
     const country = countries.find((item) => item.name === countryName);
     return country ? country.flag : null;
   };
+
+  const remainingCountries = countries.length - 4;
 
   return (
     <section className="overflow-hidden bg-white py-10 sm:py-12 lg:py-14">
@@ -195,11 +253,7 @@ const FlagSection = () => {
           {/* ================= MOBILE SEARCH ================= */}
 
           <div className="sm:hidden">
-            {/* COMPACT SEARCH + FILTERS */}
-
             <div className="flex items-center gap-2">
-              {/* SEARCH ICON */}
-
               <button
                 type="button"
                 onClick={() => {
@@ -216,8 +270,6 @@ const FlagSection = () => {
               >
                 <Search size={21} />
               </button>
-
-              {/* EXPERIENCE */}
 
               <div ref={experienceRef} className="relative min-w-0 flex-1">
                 <button
@@ -276,8 +328,6 @@ const FlagSection = () => {
                   </div>
                 )}
               </div>
-
-              {/* COUNTRY */}
 
               <div ref={countryRef} className="relative min-w-0 flex-1">
                 <button
@@ -341,8 +391,6 @@ const FlagSection = () => {
               </div>
             </div>
 
-            {/* EXPANDED MOBILE SEARCH */}
-
             {mobileSearchOpen && (
               <div className="mt-2 flex min-h-[54px] items-center rounded-2xl border border-slate-100 bg-white p-1.5 shadow-[0_10px_30px_rgba(15,23,42,0.10)]">
                 <Search size={19} className="mx-2 shrink-0 text-slate-500" />
@@ -375,8 +423,6 @@ const FlagSection = () => {
           {/* ================= DESKTOP SEARCH ================= */}
 
           <div className="hidden min-h-[68px] flex-col rounded-[28px] border border-slate-100 bg-white p-2 shadow-[0_15px_45px_rgba(15,23,42,0.10)] sm:flex sm:flex-row sm:items-center">
-            {/* KEYWORD */}
-
             <div className="flex min-h-[54px] flex-1 items-center px-4">
               <Search size={20} className="mr-3 shrink-0 text-slate-500" />
 
@@ -394,11 +440,7 @@ const FlagSection = () => {
               />
             </div>
 
-            {/* DIVIDER */}
-
             <div className="hidden h-7 w-px bg-slate-200 sm:block" />
-
-            {/* EXPERIENCE */}
 
             <div ref={experienceRef} className="relative min-w-[190px]">
               <button
@@ -458,11 +500,7 @@ const FlagSection = () => {
               )}
             </div>
 
-            {/* DIVIDER */}
-
             <div className="hidden h-7 w-px bg-slate-200 sm:block" />
-
-            {/* COUNTRY */}
 
             <div ref={countryRef} className="relative min-w-[190px]">
               <button
@@ -484,7 +522,9 @@ const FlagSection = () => {
 
                   <span
                     className={
-                      selectedCountry ? "truncate text-slate-800" : "text-slate-400"
+                      selectedCountry
+                        ? "truncate text-slate-800"
+                        : "text-slate-400"
                     }
                   >
                     {selectedCountry || "Select location"}
@@ -524,8 +564,6 @@ const FlagSection = () => {
                 </div>
               )}
             </div>
-
-            {/* SEARCH BUTTON */}
 
             <button
               type="button"
@@ -618,56 +656,80 @@ const FlagSection = () => {
 
           <div className="sm:hidden">
             {!showAllCountries ? (
-              <div className="relative overflow-hidden">
-                <div
-                  className="flex"
-                  style={{
-                    transform: `translateX(-${mobileCountryIndex * 100}%)`,
-                    transition:
-                      mobileCountryIndex >= countries.length
-                        ? "none" // instant reset when jumping back
-                        : "transform 700ms ease-out",
-                  }}
-                >
-                  {Array.from(
-                    { length: Math.ceil(infiniteCountries.length / 4) },
-                    (_, pageIndex) => (
+              <>
+                <div className="relative overflow-hidden">
+                  <div
+                    className="flex"
+                    style={{
+                      transform: `translateX(-${mobileCountryIndex * 100}%)`,
+                      transition: isTransitioning
+                        ? "transform 700ms ease-out"
+                        : "none",
+                    }}
+                  >
+                    {loopPages.map((page, pageIndex) => (
                       <div
-                        key={pageIndex}
+                        key={`page-${pageIndex}`}
                         className="grid min-w-full grid-cols-4 gap-2"
                       >
-                        {infiniteCountries
-                          .slice(pageIndex * 4, pageIndex * 4 + 4)
-                          .map((country, idx) => (
-                            <button
-                              key={`${country.name}-${pageIndex}-${idx}`}
-                              type="button"
-                              onClick={() => handleCountryClick(country)}
-                              className="group min-w-0 cursor-pointer text-center outline-none"
-                            >
-                              <div className="overflow-hidden rounded-lg bg-white ring-1 ring-slate-200/70 shadow-[0_2px_8px_rgba(15,42,74,0.05)] transition-all duration-300 group-active:scale-[0.96] group-hover:-translate-y-0.5 group-hover:ring-[#30AFFF]/40 group-hover:shadow-[0_5px_14px_rgba(48,175,255,0.12)]">
-                                <div className="mx-auto mt-1.5 aspect-[1.5/1] w-[85%] overflow-hidden rounded-md">
-                                  <img
-                                    src={country.flag}
-                                    alt={`${country.name} flag`}
-                                    loading="lazy"
-                                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                  />
-                                </div>
-
-                                <div className="px-1 py-1.5">
-                                  <p className="truncate text-[9px] font-semibold leading-3 text-slate-600 transition-colors duration-300 group-hover:text-[#159FEF]">
-                                    {country.name}
-                                  </p>
-                                </div>
+                        {page.map((country, idx) => (
+                          <button
+                            key={`${country.name}-${pageIndex}-${idx}`}
+                            type="button"
+                            onClick={() => handleCountryClick(country)}
+                            className="group min-w-0 cursor-pointer text-center outline-none"
+                          >
+                            <div className="overflow-hidden rounded-lg bg-white ring-1 ring-slate-200/70 shadow-[0_2px_8px_rgba(15,42,74,0.05)] transition-all duration-300 group-active:scale-[0.96] group-hover:-translate-y-0.5 group-hover:ring-[#30AFFF]/40 group-hover:shadow-[0_5px_14px_rgba(48,175,255,0.12)]">
+                              <div className="mx-auto mt-1.5 aspect-[1.5/1] w-[85%] overflow-hidden rounded-md">
+                                <img
+                                  src={country.flag}
+                                  alt={`${country.name} flag`}
+                                  loading="lazy"
+                                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                />
                               </div>
-                            </button>
-                          ))}
+
+                              <div className="px-1 py-1.5">
+                                <p className="truncate text-[9px] font-semibold leading-3 text-slate-600 transition-colors duration-300 group-hover:text-[#159FEF]">
+                                  {country.name}
+                                </p>
+                              </div>
+                            </div>
+                          </button>
+                        ))}
                       </div>
-                    )
-                  )}
+                    ))}
+                  </div>
                 </div>
-              </div>
+
+                {/* DOT NAVIGATION */}
+                <div className="mt-4 flex items-center justify-center gap-1.5">
+                  {basePages.map((_, dotIdx) => (
+                    <button
+                      key={`dot-${dotIdx}`}
+                      type="button"
+                      aria-label={`Go to page ${dotIdx + 1}`}
+                      onClick={() => goToPage(dotIdx)}
+                      className={`h-1.5 rounded-full transition-all duration-300 ${
+                        activeDot === dotIdx
+                          ? "w-6 bg-[#30AFFF]"
+                          : "w-1.5 bg-slate-200 hover:bg-slate-300"
+                      }`}
+                    />
+                  ))}
+                </div>
+
+                {/* VIEW ALL BUTTON */}
+                <button
+                  type="button"
+                  onClick={() => setShowAllCountries(true)}
+                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#30AFFF] px-4 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#30AFFF]/30 transition-all duration-300 hover:bg-[#159FEF] active:scale-[0.98]"
+                >
+                  <Globe2 size={17} />
+                  <span>View All {countries.length}+ Countries</span>
+                  <ArrowRight size={16} />
+                </button>
+              </>
             ) : (
               <div className="grid grid-cols-4 gap-x-2 gap-y-5">
                 {countries.map((country) => (
