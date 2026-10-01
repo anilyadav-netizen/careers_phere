@@ -23,6 +23,7 @@ const {
   getJobApplicationsAdmin,
   getAllApplicationsAdmin,
   getApplicationByIdAdmin,
+  downloadApplicationResume,
   updateApplicationStatus,
   deleteApplication,
 } = require("../controllers/jobController");
@@ -102,6 +103,7 @@ router.patch("/jobs/:id/toggle-urgent", toggleUrgent);
 
 router.get("/applications", getAllApplicationsAdmin);
 router.get("/applications/:id", getApplicationByIdAdmin);
+router.get("/applications/:id/resume", downloadApplicationResume);
 router.get("/:id/applications", getJobApplicationsAdmin);
 router.patch("/applications/:id/status", updateApplicationStatus);
 router.delete("/applications/:id", deleteApplication);

@@ -1,7 +1,10 @@
 import React, { useEffect, useReducer, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import RoleApplyModal from "../components/RoleApplyModal";
+import { fetchPublicOpportunities } from "../redux/slicer/roleOpportunitySlice";
 import {
   ArrowRight,
+  Building2,
   Check,
   ChevronDown,
   Code2,
@@ -45,8 +48,21 @@ const reducer = (state, action) => {
 const FullStackDeveloper = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { openFaq } = state;
+  const reduxDispatch = useDispatch();
+  const { publicList = [], opportunities = [] } = useSelector(
+    (state) => state.roleOpportunities || {}
+  );
+  const activeOpportunities =
+    opportunities.length > 0 ? opportunities : publicList;
 
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
+  const [selectedOpportunity, setSelectedOpportunity] = useState(null);
+
+  useEffect(() => {
+    reduxDispatch(
+      fetchPublicOpportunities({ roleCategory: "Full Stack Developer" })
+    );
+  }, [reduxDispatch]);
 
   useEffect(() => {
     AOS.init({
@@ -217,7 +233,8 @@ const FullStackDeveloper = () => {
     }
   };
 
-  const openGlobalApplication = () => {
+  const openGlobalApplication = (opp = null) => {
+    setSelectedOpportunity(opp && opp._id ? opp : null);
     setIsApplyModalOpen(true);
   };
 
@@ -311,16 +328,16 @@ const FullStackDeveloper = () => {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.55, delay: 0.15 }}
-                className="inline-flex items-center gap-2 border border-[#30AFFF]/30 bg-[#30AFFF]/5 rounded-full px-3 py-1.5 mb-3 shadow-sm"
+                className="inline-flex items-center gap-2 border border-[#30AFFF]/30 bg-[#30AFFF]/5 rounded-full px-3.5 py-1.5 mb-3 shadow-sm"
               >
-                <Sparkles size={13} className="text-[#159FEF]" />
+                <Layers3 size={13} className="text-[#30AFFF]" />
                 <span className="text-[10px] font-bold tracking-[0.18em] uppercase text-[#159FEF]">
-                  We're hiring · Full Stack Developer
+                  Full Stack Engineering · End-to-End Web Systems
                 </span>
               </motion.div>
 
               <motion.h1
-                className="text-[28px] md:text-4xl lg:text-5xl font-bold tracking-tight leading-[0.95] text-slate-900"
+                className="text-[28px] md:text-4xl lg:text-5xl font-bold tracking-tight leading-[0.98] text-slate-900"
                 initial={{ opacity: 0, y: 40, scale: 0.96 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{
@@ -329,26 +346,26 @@ const FullStackDeveloper = () => {
                   ease: [0.22, 1, 0.36, 1],
                 }}
               >
-                Build things{" "}
+                Master the complete stack from{" "}
                 <motion.span
                   className="inline-block text-[#30AFFF]"
                   initial={{ opacity: 0, x: 18 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.65, delay: 0.55 }}
                 >
-                  people love.
+                  Client UI to Cloud Database.
                 </motion.span>
               </motion.h1>
 
               <motion.p
-                className="mt-3 max-w-2xl text-sm sm:text-base text-slate-500 leading-6"
+                className="mt-3.5 max-w-2xl text-sm sm:text-base text-slate-500 leading-relaxed"
                 initial={{ opacity: 0, y: 25 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.75, delay: 0.65 }}
               >
-                We're looking for a Full Stack Developer who can turn ideas into
-                fast, scalable and beautiful digital products from frontend to
-                backend.
+                We're hiring Full Stack Developers who bridge frontend craft and
+                backend scale — building complete end-to-end digital products from
+                interactive React interfaces to scalable Node.js APIs and robust databases.
               </motion.p>
 
               <motion.div
@@ -380,29 +397,32 @@ const FullStackDeveloper = () => {
                 </motion.button>
               </motion.div>
 
-              <motion.div
-                className="flex flex-wrap gap-x-6 gap-y-3 mt-6 text-sm text-slate-500"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.95 }}
-              >
-                <div className="flex items-center gap-2">
-                  <MapPin size={15} className="text-[#30AFFF]" />
-                  Remote Friendly
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <Users size={15} className="text-[#30AFFF]" />
-                  Product Engineering
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <Zap size={15} className="text-[#30AFFF]" />
-                  Full Time
-                </div>
-              </motion.div>
+              <div className="grid grid-cols-3 gap-3 mt-7 max-w-2xl">
+                {[
+                  ["React & Next", "Client Layer"],
+                  ["Node & APIs", "Service Layer"],
+                  ["Postgres & Mongo", "Data Layer"],
+                ].map(([value, label], index) => (
+                  <motion.div
+                    key={label}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
+                    whileHover={{ y: -3 }}
+                    className="border border-[#A0E9FF]/40 rounded-2xl p-3 bg-white shadow-xs"
+                  >
+                    <div className="text-base md:text-lg font-black tracking-tight text-[#30AFFF]">
+                      {value}
+                    </div>
+                    <div className="text-[10px] uppercase tracking-wider text-slate-400 mt-0.5 font-bold">
+                      {label}
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
             </motion.div>
 
+            {/* FULL STACK ROLE DEFINING VISUAL MOCKUP */}
             <motion.div
               className="relative min-w-0"
               variants={heroRight}
@@ -410,85 +430,124 @@ const FullStackDeveloper = () => {
               animate="visible"
             >
               <motion.div
-                className="relative overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-[0_15px_45px_rgba(15,23,42,0.10)]"
-                whileHover={{ y: -5 }}
+                className="relative overflow-hidden rounded-3xl border border-[#A0E9FF]/60 bg-slate-950 shadow-[0_20px_50px_rgba(48,175,255,0.18)] p-4 sm:p-5"
+                whileHover={{ y: -4 }}
                 transition={{ duration: 0.25 }}
               >
-                <div className="h-[250px] sm:h-[310px] lg:h-[350px] relative overflow-hidden">
-                  <motion.img
-                    src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1400&q=85"
-                    alt="Developer working"
-                    className="w-full h-full object-cover"
-                    initial={{ scale: 1.15 }}
-                    animate={{ scale: 1 }}
-                    transition={{
-                      duration: 1.4,
-                      delay: 0.3,
-                      ease: [0.22, 1, 0.36, 1],
-                    }}
-                  />
-
-                  <div className="absolute inset-0 bg-gradient-to-t from-white via-white/10 to-transparent" />
-
-                  <div className="absolute top-4 left-4 flex gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-red-400" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+                {/* Window Bar */}
+                <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-full bg-rose-500/90" />
+                    <span className="w-3 h-3 rounded-full bg-amber-500/90" />
+                    <span className="w-3 h-3 rounded-full bg-emerald-500/90" />
+                    <span className="ml-2 text-xs font-mono text-slate-300">
+                      FullStack Architecture Pipeline
+                    </span>
                   </div>
-
-                  <motion.div
-                    className="absolute bottom-4 left-4 right-4"
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.7, delay: 1 }}
-                  >
-                    <div className="inline-flex items-center gap-2 rounded-full border border-white/60 bg-white/90 backdrop-blur-md px-3 py-2 text-xs text-slate-800 shadow-sm">
-                      <Code2 size={14} className="text-[#30AFFF]" />
-                      Building the future, one commit at a time.
-                    </div>
-                  </motion.div>
+                  <span className="px-2.5 py-0.5 rounded-full bg-[#30AFFF]/15 border border-[#30AFFF]/30 text-[10px] font-bold text-[#30AFFF]">
+                    End-to-End
+                  </span>
                 </div>
 
-                <div className="p-4 border-t border-slate-100 bg-white">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-[11px] text-slate-400 font-mono">
-                        developer.js
-                      </p>
-
-                      <p className="text-sm text-slate-700 font-mono mt-1">
-                        <span className="text-[#30AFFF]">developer</span>
-                        <span className="text-slate-400">.</span>
-                        <span className="text-[#159FEF]">apply</span>
-                        <span className="text-slate-800">()</span>
-                        <span className="text-slate-400">;</span>
-                      </p>
+                {/* 3 Tier Full Stack Architecture Cards */}
+                <div className="mt-4 space-y-3">
+                  {/* Tier 1: Frontend Client */}
+                  <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-3.5 transition hover:border-[#30AFFF]/50">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-xl bg-[#30AFFF]/20 flex items-center justify-center text-[#30AFFF]">
+                          <Code2 size={16} />
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                            Client Layer (Frontend)
+                            <span className="px-1.5 py-0.2 rounded bg-[#30AFFF]/20 text-[#30AFFF] text-[9px]">React 19</span>
+                          </div>
+                          <div className="text-[10px] text-slate-400">Next.js · Tailwind CSS · State Management</div>
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-mono text-emerald-400 font-bold">Fast UI (60fps)</span>
                     </div>
+                  </div>
 
-                    <div className="flex -space-x-2">
-                      {["JS", "RE", "NO"].map((item, index) => (
-                        <motion.div
-                          key={item}
-                          className={`w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-[10px] font-bold text-white ${index === 0
-                              ? "bg-[#30AFFF]"
-                              : index === 1
-                                ? "bg-[#159FEF]"
-                                : "bg-slate-400"
-                            }`}
-                          initial={{ scale: 0, x: 20 }}
-                          animate={{ scale: 1, x: 0 }}
-                          transition={{
-                            delay: 1.2 + index * 0.1,
-                            type: "spring",
-                          }}
-                        >
-                          {item}
-                        </motion.div>
-                      ))}
+                  {/* Flow Arrow */}
+                  <div className="flex items-center justify-center -my-1 text-slate-500 text-xs gap-2">
+                    <span className="h-3 w-px bg-slate-700" />
+                    <span className="text-[10px] font-mono text-[#30AFFF] bg-slate-900 px-2 py-0.5 rounded-full border border-slate-800">
+                      REST & GraphQL APIs (JSON)
+                    </span>
+                    <span className="h-3 w-px bg-slate-700" />
+                  </div>
+
+                  {/* Tier 2: Backend Logic & APIs */}
+                  <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-3.5 transition hover:border-[#30AFFF]/50">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-xl bg-indigo-500/20 flex items-center justify-center text-indigo-400">
+                          <Server size={16} />
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                            API & Service Layer (Backend)
+                            <span className="px-1.5 py-0.2 rounded bg-indigo-500/20 text-indigo-300 text-[9px]">Node.js</span>
+                          </div>
+                          <div className="text-[10px] text-slate-400">Express · Auth JWT · Business Services</div>
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-mono text-emerald-400 font-bold">200 OK (12ms)</span>
+                    </div>
+                  </div>
+
+                  {/* Flow Arrow */}
+                  <div className="flex items-center justify-center -my-1 text-slate-500 text-xs gap-2">
+                    <span className="h-3 w-px bg-slate-700" />
+                    <span className="text-[10px] font-mono text-emerald-400 bg-slate-900 px-2 py-0.5 rounded-full border border-slate-800">
+                      Prisma ORM & Connection Pool
+                    </span>
+                    <span className="h-3 w-px bg-slate-700" />
+                  </div>
+
+                  {/* Tier 3: Database & Cloud */}
+                  <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-3.5 transition hover:border-[#30AFFF]/50">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400">
+                          <Database size={16} />
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                            Data & Storage Layer
+                            <span className="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 text-[9px]">PostgreSQL</span>
+                          </div>
+                          <div className="text-[10px] text-slate-400">MongoDB · Redis Cluster · AWS S3 Cloud</div>
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-mono text-[#30AFFF] font-bold">ACID Secure</span>
                     </div>
                   </div>
                 </div>
               </motion.div>
+
+              {/* Floating badges */}
+              <div className="absolute -bottom-3 -left-3 hidden sm:flex items-center gap-2.5 rounded-2xl border border-slate-100 bg-white px-3.5 py-2.5 shadow-lg">
+                <div className="w-8 h-8 rounded-xl bg-[#30AFFF]/15 flex items-center justify-center text-[#30AFFF]">
+                  <Layers3 size={16} />
+                </div>
+                <div>
+                  <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">FULL ARCHITECTURE</div>
+                  <div className="text-xs font-bold text-slate-900">React ⟷ Node ⟷ Postgres</div>
+                </div>
+              </div>
+
+              <div className="absolute -top-3 -right-3 hidden sm:flex items-center gap-2.5 rounded-2xl border border-slate-100 bg-white px-3.5 py-2.5 shadow-lg">
+                <div>
+                  <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">SCOPE</div>
+                  <div className="text-xs font-bold text-slate-900">Complete Product Ownership</div>
+                </div>
+                <div className="w-8 h-8 rounded-xl bg-[#30AFFF]/15 flex items-center justify-center text-[#30AFFF]">
+                  <Zap size={16} />
+                </div>
+              </div>
             </motion.div>
           </div>
 
@@ -622,75 +681,226 @@ const FullStackDeveloper = () => {
             viewport={{ once: true, amount: 0.1 }}
             className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3"
           >
-            {opportunityCountries.map((country) => (
-              <motion.div
-                key={country.name}
-                variants={cardVariants}
-                className="group rounded-2xl border border-slate-100 bg-white p-4 shadow-sm hover:border-[#30AFFF]/30 hover:shadow-[0_15px_45px_rgba(15,23,42,0.10)] transition-all flex flex-col"
-                whileHover={{ y: -5 }}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center overflow-hidden">
-                      <img
-                        src={country.flag}
-                        alt={`${country.name} flag`}
-                        className="w-7 h-5 object-cover rounded-sm"
-                      />
+            {activeOpportunities.length > 0 ? (
+              activeOpportunities.map((opp, idx) => {
+                const displaySalary = opp.salary || "Competitive";
+
+                return (
+                  <motion.div
+                    key={opp._id || idx}
+                    variants={cardVariants}
+                    className="group rounded-2xl border border-slate-100 bg-white p-4 shadow-sm hover:border-[#30AFFF]/30 hover:shadow-[0_15px_45px_rgba(15,23,42,0.10)] transition-all flex flex-col"
+                    whileHover={{ y: -5 }}
+                  >
+                    {/* Company Header */}
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
+                          {opp.companyLogo ? (
+                            <img
+                              src={opp.companyLogo}
+                              alt={opp.companyName}
+                              className="w-full h-full object-contain p-1"
+                              onError={(e) => {
+                                e.target.style.display = "none";
+                              }}
+                            />
+                          ) : (
+                            <Building2 size={18} className="text-[#30AFFF]" />
+                          )}
+                        </div>
+
+                        <div className="min-w-0">
+                          <h3
+                            className="text-sm font-bold text-slate-800 truncate"
+                            title={opp.companyName}
+                          >
+                            {opp.companyName}
+                          </h3>
+
+                          <p className="text-[11px] text-slate-400 mt-0.5 truncate">
+                            {opp.roleTitle || opp.roleCategory || "Full Stack Developer"}
+                          </p>
+                        </div>
+                      </div>
+
+                      {opp.salaryCurrency && (
+                        <span className="text-[9px] font-bold tracking-wider rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/5 text-[#159FEF] px-2 py-0.5 shrink-0">
+                          {opp.salaryCurrency}
+                        </span>
+                      )}
                     </div>
 
-                    <div>
-                      <h3 className="text-sm font-bold text-slate-800">
-                        {country.name}
-                      </h3>
+                    {/* Countries with Flags */}
+                    <div className="mt-3.5">
+                      <div className="flex items-center gap-1 text-[9px] uppercase tracking-[0.16em] text-slate-400 font-bold mb-1.5">
+                        <Globe2 size={11} className="text-[#30AFFF]" />
+                        <span>Hiring Locations</span>
+                      </div>
 
-                      <p className="text-[11px] text-slate-400 mt-0.5">
-                        Full Stack roles
+                      <div className="flex flex-wrap gap-1">
+                        {opp.countries && opp.countries.length > 0 ? (
+                          opp.countries.map((c, cIdx) => (
+                            <span
+                              key={cIdx}
+                              className="inline-flex items-center gap-1 rounded bg-slate-50 border border-slate-200 px-2 py-0.5 text-[10px] font-medium text-slate-700"
+                            >
+                              {c.flag && (
+                                c.flag.startsWith("http") ? (
+                                  <img
+                                    src={c.flag}
+                                    alt={c.countryName || "flag"}
+                                    className="w-3.5 h-2.5 object-cover rounded-2xs"
+                                    onError={(e) => {
+                                      e.target.style.display = "none";
+                                    }}
+                                  />
+                                ) : (
+                                  <span>{c.flag}</span>
+                                )
+                              )}
+                              <span>{c.countryName || "Target Market"}</span>
+                            </span>
+                          ))
+                        ) : (
+                          <span className="text-[10px] text-slate-500 font-medium">
+                            Worldwide / Remote
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Typical range */}
+                    <div className="border-t border-slate-100 mt-3 pt-3">
+                      <p className="text-[10px] uppercase tracking-[0.15em] text-slate-400 font-bold">
+                        Typical range
+                      </p>
+
+                      <p className="text-lg font-black text-slate-900 mt-0.5">
+                        {displaySalary}
+                      </p>
+
+                      <p className="text-[10px] text-slate-400 mt-0.5">
+                        {opp.salary ? "Annual range · employer specific" : "Disclosed upon matching"}
                       </p>
                     </div>
+
+                    {/* Skills */}
+                    {opp.skills && opp.skills.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-2.5">
+                        {opp.skills.slice(0, 3).map((skill, sIdx) => (
+                          <span
+                            key={sIdx}
+                            className="rounded-md border border-[#30AFFF]/20 bg-[#30AFFF]/[0.05] px-1.5 py-0.5 text-[9px] font-semibold text-[#159FEF]"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                        {opp.skills.length > 3 && (
+                          <span className="rounded-md bg-slate-50 border border-slate-200 px-1 py-0.5 text-[8px] text-slate-500 font-bold">
+                            +{opp.skills.length - 3}
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Work Modes */}
+                    <div className="flex flex-wrap gap-1.5 mt-2.5">
+                      {(opp.workModes || ["Remote", "Hybrid"]).map((mode) => (
+                        <span
+                          key={mode}
+                          className="rounded-full bg-slate-50 border border-slate-200 px-2 py-1 text-[10px] text-slate-600"
+                        >
+                          {mode}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* APPLY BUTTON - GLOBAL OPPORTUNITY */}
+                    <div className="flex justify-end mt-3 pt-3 border-t border-slate-100 mt-auto">
+                      <button
+                        type="button"
+                        onClick={() => openGlobalApplication(opp)}
+                        className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-3.5 py-2 text-[10px] font-bold text-white shadow-sm hover:bg-[#159FEF] transition cursor-pointer"
+                      >
+                        Apply
+                        <ArrowRight size={13} />
+                      </button>
+                    </div>
+                  </motion.div>
+                );
+              })
+            ) : (
+              opportunityCountries.map((country) => (
+                <motion.div
+                  key={country.name}
+                  variants={cardVariants}
+                  className="group rounded-2xl border border-slate-100 bg-white p-4 shadow-sm hover:border-[#30AFFF]/30 hover:shadow-[0_15px_45px_rgba(15,23,42,0.10)] transition-all flex flex-col"
+                  whileHover={{ y: -5 }}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center overflow-hidden">
+                        <img
+                          src={country.flag}
+                          alt={`${country.name} flag`}
+                          className="w-7 h-5 object-cover rounded-sm"
+                        />
+                      </div>
+
+                      <div>
+                        <h3 className="text-sm font-bold text-slate-800">
+                          {country.name}
+                        </h3>
+
+                        <p className="text-[11px] text-slate-400 mt-0.5">
+                          Full Stack roles
+                        </p>
+                      </div>
+                    </div>
+
+                    <span className="w-2 h-2 rounded-full mt-2 bg-[#30AFFF]" />
                   </div>
 
-                  <span className="w-2 h-2 rounded-full mt-2 bg-[#30AFFF]" />
-                </div>
+                  <div className="border-t border-slate-100 mt-4 pt-3">
+                    <p className="text-[10px] uppercase tracking-[0.15em] text-slate-400 font-bold">
+                      Typical range
+                    </p>
 
-                <div className="border-t border-slate-100 mt-4 pt-3">
-                  <p className="text-[10px] uppercase tracking-[0.15em] text-slate-400 font-bold">
-                    Typical range
-                  </p>
+                    <p className="text-lg font-black text-slate-900 mt-0.5">
+                      {country.salary}
+                    </p>
 
-                  <p className="text-lg font-black text-slate-900 mt-0.5">
-                    {country.salary}
-                  </p>
+                    <p className="text-[10px] text-slate-400 mt-0.5">
+                      USD equivalent / year
+                    </p>
+                  </div>
 
-                  <p className="text-[10px] text-slate-400 mt-0.5">
-                    USD equivalent / year
-                  </p>
-                </div>
+                  <div className="flex flex-wrap gap-1.5 mt-3">
+                    {country.modes.map((mode) => (
+                      <span
+                        key={mode}
+                        className="rounded-full bg-slate-50 border border-slate-200 px-2 py-1 text-[10px] text-slate-600"
+                      >
+                        {mode}
+                      </span>
+                    ))}
+                  </div>
 
-                <div className="flex flex-wrap gap-1.5 mt-3">
-                  {country.modes.map((mode) => (
-                    <span
-                      key={mode}
-                      className="rounded-full bg-slate-50 border border-slate-200 px-2 py-1 text-[10px] text-slate-600"
+                  {/* APPLY BUTTON - GLOBAL OPPORTUNITY */}
+                  <div className="flex justify-end mt-3 pt-3 border-t border-slate-100 mt-auto">
+                    <button
+                      type="button"
+                      onClick={() => openGlobalApplication(null)}
+                      className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-3 py-2 text-[10px] font-bold text-white shadow-sm hover:bg-[#159FEF] transition"
                     >
-                      {mode}
-                    </span>
-                  ))}
-                </div>
-
-                {/* APPLY BUTTON - GLOBAL OPPORTUNITY */}
-                <div className="flex justify-end mt-3 pt-3 border-t border-slate-100 mt-auto">
-                  <button
-                    type="button"
-                    onClick={openGlobalApplication}
-                    className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-3 py-2 text-[10px] font-bold text-white shadow-sm hover:bg-[#159FEF] transition"
-                  >
-                    Apply
-                    <ArrowRight size={13} />
-                  </button>
-                </div>
-              </motion.div>
-            ))}
+                      Apply
+                      <ArrowRight size={13} />
+                    </button>
+                  </div>
+                </motion.div>
+              ))
+            )}
           </motion.div>
 
           <motion.div
@@ -1379,8 +1589,22 @@ const FullStackDeveloper = () => {
 
       <RoleApplyModal
         isOpen={isApplyModalOpen}
-        onClose={() => setIsApplyModalOpen(false)}
+        onClose={() => {
+          setIsApplyModalOpen(false);
+          setSelectedOpportunity(null);
+        }}
         role="Full Stack Developer"
+        opportunity={selectedOpportunity}
+        initialData={
+          selectedOpportunity
+            ? {
+                preferredJobMarket:
+                  selectedOpportunity.countries?.[0]?.countryName || "",
+                preferredWorkMode:
+                  selectedOpportunity.workModes?.[0] || "",
+              }
+            : {}
+        }
       />
 
       {/* FOOTER */}

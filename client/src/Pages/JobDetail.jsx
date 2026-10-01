@@ -1,11 +1,11 @@
-55
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { applyToJob, getJobByIdUser } from "../redux/slicer/jobSlice";
+import { getJobByIdUser } from "../redux/slicer/jobSlice";
 
 import {
+  applyToJob,
   clearApplicationError,
   resetApplicationState,
   saveJob,
@@ -22,6 +22,7 @@ import {
   Building2,
   CheckCircle2,
   Clock3,
+  DollarSign,
   FileText,
   Globe,
   IdCard,
@@ -32,10 +33,10 @@ import {
   Share2,
   Upload,
   User,
+  UserPlus,
   Users,
   X,
 } from "lucide-react";
-import { DollarSign } from "lucide-react";
 
 const JobDetail = () => {
   const navigate = useNavigate();
@@ -54,7 +55,11 @@ const JobDetail = () => {
   // AUTH / PROFILE STATE
   // =========================================================
 
-  const { profileError } = useSelector((state) => state.auth || {});
+  const { user, token, isAuthenticated, profileError } = useSelector(
+    (state) => state.auth || {},
+  );
+
+  const isLoggedIn = Boolean(user || token || isAuthenticated);
 
   // =========================================================
   // APPLICATION STATE
@@ -80,27 +85,19 @@ const JobDetail = () => {
   const [loadingSavedDetails, setLoadingSavedDetails] = useState(false);
 
   // =========================================================
-  // FORM DATA
+  // COMPACT FORM DATA (MATCHING ROLE APPLY MODAL)
   // =========================================================
 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
-    experienceType: "",
-    experience: "",
-    profilePhoto: null,
-    governmentDocument: null,
-    resume: null,
-    skills: "",
     currentLocation: "",
     expectedSalary: "",
-    noticePeriod: "",
     linkedin: "",
-    portfolio: "",
+    skills: "",
+    resume: null,
     coverLetter: "",
-    additionalInfo: "",
-    passport: "",
   });
 
   // =========================================================
@@ -210,68 +207,8 @@ const JobDetail = () => {
   };
 
   // =========================================================
-  // PROFILE PHOTO
   // =========================================================
-
-  const handleProfilePhoto = (e) => {
-    const file = e.target.files?.[0];
-
-    if (!file) return;
-
-    const allowedTypes = [
-      "image/jpeg",
-      "image/png",
-      "image/jpg",
-      "image/webp",
-    ];
-
-    if (!validateFile(file, allowedTypes, 5 * 1024 * 1024)) {
-      return;
-    }
-
-    setFormData((prev) => ({
-      ...prev,
-      profilePhoto: file,
-    }));
-
-    if (applicationError) {
-      dispatch(clearApplicationError());
-    }
-  };
-
-  // =========================================================
-  // GOVERNMENT DOCUMENT
-  // =========================================================
-
-  const handleGovernmentDocument = (e) => {
-    const file = e.target.files?.[0];
-
-    if (!file) return;
-
-    const allowedTypes = [
-      "image/jpeg",
-      "image/png",
-      "image/jpg",
-      "image/webp",
-      "application/pdf",
-    ];
-
-    if (!validateFile(file, allowedTypes, 10 * 1024 * 1024)) {
-      return;
-    }
-
-    setFormData((prev) => ({
-      ...prev,
-      governmentDocument: file,
-    }));
-
-    if (applicationError) {
-      dispatch(clearApplicationError());
-    }
-  };
-
-  // =========================================================
-  // RESUME
+  // RESUME HANDLER
   // =========================================================
 
   const handleResume = (e) => {
@@ -279,9 +216,21 @@ const JobDetail = () => {
 
     if (!file) return;
 
-    const allowedTypes = ["application/pdf"];
+    const allowedTypes = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
 
-    if (!validateFile(file, allowedTypes, 10 * 1024 * 1024)) {
+    const isDoc = file.name && file.name.match(/\.(pdf|doc|docx)$/i);
+
+    if (!allowedTypes.includes(file.type) && !isDoc) {
+      alert("Invalid file type. Please select a .pdf, .doc, or .docx resume.");
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      alert("File size should not exceed 10 MB.");
       return;
     }
 
@@ -358,17 +307,6 @@ const JobDetail = () => {
           "city",
         ),
 
-        experienceType: getProfileValue(
-          profileData,
-          "experienceType",
-        ),
-
-        experience: getProfileValue(
-          profileData,
-          "experience",
-          "yearsOfExperience",
-        ),
-
         skills: Array.isArray(profileData?.skills)
           ? profileData.skills.join(", ")
           : getProfileValue(profileData, "skills"),
@@ -379,28 +317,19 @@ const JobDetail = () => {
           "salary",
         ),
 
-        noticePeriod: getProfileValue(
-          profileData,
-          "noticePeriod",
-        ),
-
         linkedin: getProfileValue(
           profileData,
           "linkedin",
           "linkedinUrl",
         ),
 
-        portfolio: getProfileValue(
+        coverLetter: getProfileValue(
           profileData,
-          "portfolio",
-          "portfolioUrl",
+          "bio",
+          "about",
+          "aboutMe",
+          "coverLetter",
         ),
-
-        passport:
-          profileData?.passport !== undefined &&
-            profileData?.passport !== null
-            ? String(profileData.passport)
-            : "",
       }));
 
       setApplicationStep("manual");
@@ -431,20 +360,12 @@ const JobDetail = () => {
       name: "",
       email: "",
       phone: "",
-      experienceType: "",
-      experience: "",
-      profilePhoto: null,
-      governmentDocument: null,
-      resume: null,
-      skills: "",
       currentLocation: "",
       expectedSalary: "",
-      noticePeriod: "",
       linkedin: "",
-      portfolio: "",
+      skills: "",
+      resume: null,
       coverLetter: "",
-      additionalInfo: "",
-      passport: "",
     });
 
     setApplicationStep("manual");
@@ -487,6 +408,11 @@ const JobDetail = () => {
       return;
     }
 
+    if (!formData.resume) {
+      alert("Please upload your resume (.pdf, .doc, or .docx).");
+      return;
+    }
+
     dispatch(clearApplicationError());
     setApplicationBlockMessage("");
 
@@ -498,35 +424,22 @@ const JobDetail = () => {
       const data = new FormData();
 
       data.append("jobId", job._id);
-      data.append("name", formData.name);
-      data.append("email", formData.email);
-      data.append("phone", formData.phone);
-      data.append("experienceType", formData.experienceType);
-      data.append("experience", formData.experience);
+      data.append("name", formData.name.trim());
+      data.append("email", formData.email.trim());
+      data.append("phone", formData.phone.trim());
+      data.append("currentLocation", (formData.currentLocation || "").trim());
+      data.append("expectedSalary", (formData.expectedSalary || "").trim());
+      data.append("linkedin", (formData.linkedin || "").trim());
+      data.append("coverLetter", (formData.coverLetter || "").trim());
 
       const skills = formData.skills
-        .split(",")
-        .map((skill) => skill.trim())
-        .filter(Boolean);
+        ? formData.skills
+            .split(",")
+            .map((skill) => skill.trim())
+            .filter(Boolean)
+        : [];
 
       data.append("skills", JSON.stringify(skills));
-
-      data.append("currentLocation", formData.currentLocation);
-      data.append("expectedSalary", formData.expectedSalary);
-      data.append("noticePeriod", formData.noticePeriod);
-      data.append("linkedin", formData.linkedin);
-      data.append("portfolio", formData.portfolio);
-      data.append("coverLetter", formData.coverLetter);
-      data.append("additionalInfo", formData.additionalInfo);
-      data.append("passport", formData.passport);
-
-      if (formData.profilePhoto) {
-        data.append("profilePhoto", formData.profilePhoto);
-      }
-
-      if (formData.governmentDocument) {
-        data.append("governmentDocument", formData.governmentDocument);
-      }
 
       if (formData.resume) {
         data.append("resume", formData.resume);
@@ -1148,546 +1061,332 @@ const JobDetail = () => {
 
                 {applicationStep === "options" && (
                   <div className="overflow-y-auto px-5 py-6 sm:px-6">
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      {/* MANUAL */}
+                    {isLoggedIn ? (
+                      /* LOGGED IN USER */
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        {/* MANUAL */}
+                        <button
+                          type="button"
+                          onClick={handleApplyManually}
+                          className="group rounded-xl border border-[#D9F3FA] p-5 text-left transition hover:border-[#30AFFF] hover:bg-[#F1FBFE]"
+                        >
+                          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-[#A0E9FF] text-[#159FEF] transition group-hover:scale-105">
+                            <User size={21} />
+                          </div>
 
-                      <button
-                        type="button"
-                        onClick={handleApplyManually}
-                        className="rounded-xl border border-[#D9F3FA] p-5 text-left transition hover:border-[#30AFFF] hover:bg-[#F1FBFE]"
-                      >
-                        <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-[#A0E9FF] text-[#159FEF]">
-                          <User size={21} />
-                        </div>
+                          <h3 className="mt-4 font-bold text-[#102B36]">
+                            Apply Manually
+                          </h3>
 
-                        <h3 className="mt-4 font-bold text-[#102B36]">
-                          Apply Manually
-                        </h3>
+                          <p className="mt-2 text-sm leading-6 text-[#526F7A]">
+                            Fill in your details and submit your application.
+                          </p>
+                        </button>
 
-                        <p className="mt-2 text-sm leading-6 text-[#526F7A]">
-                          Fill in your details and submit your application.
-                        </p>
-                      </button>
+                        {/* SAVED DETAILS */}
+                        <button
+                          type="button"
+                          onClick={handleUseSavedDetails}
+                          disabled={loadingSavedDetails}
+                          className="group rounded-xl border border-[#D9F3FA] p-5 text-left transition hover:border-[#30AFFF] hover:bg-[#F1FBFE] disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-[#A0E9FF] text-[#159FEF] transition group-hover:scale-105">
+                            {loadingSavedDetails ? (
+                              <span className="h-5 w-5 animate-spin rounded-full border-2 border-[#30AFFF] border-t-transparent" />
+                            ) : (
+                              <FileText size={21} />
+                            )}
+                          </div>
 
-                      {/* SAVED DETAILS */}
+                          <h3 className="mt-4 font-bold text-[#102B36]">
+                            {loadingSavedDetails
+                              ? "Loading Profile..."
+                              : "Use Saved Details"}
+                          </h3>
 
-                      <button
-                        type="button"
-                        onClick={handleUseSavedDetails}
-                        disabled={loadingSavedDetails}
-                        className="rounded-xl border border-[#D9F3FA] p-5 text-left transition hover:border-[#30AFFF] hover:bg-[#F1FBFE] disabled:cursor-not-allowed disabled:opacity-60"
-                      >
-                        <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-[#A0E9FF] text-[#159FEF]">
-                          {loadingSavedDetails ? (
-                            <span className="h-5 w-5 animate-spin rounded-full border-2 border-[#30AFFF] border-t-transparent" />
-                          ) : (
-                            <FileText size={21} />
-                          )}
-                        </div>
+                          <p className="mt-2 text-sm leading-6 text-[#526F7A]">
+                            Continue with your profile information from your
+                            account.
+                          </p>
+                        </button>
+                      </div>
+                    ) : (
+                      /* GUEST USER (NO ACCOUNT / NOT LOGGED IN) */
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        {/* APPLY NOW */}
+                        <button
+                          type="button"
+                          onClick={handleApplyManually}
+                          className="group rounded-xl border-2 border-[#30AFFF]/40 bg-[#F1FBFE]/60 p-5 text-left transition hover:border-[#30AFFF] hover:bg-[#F1FBFE]"
+                        >
+                          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-[#30AFFF] text-white shadow-md shadow-[#30AFFF]/20 transition group-hover:scale-105">
+                            <Send size={20} />
+                          </div>
 
-                        <h3 className="mt-4 font-bold text-[#102B36]">
-                          {loadingSavedDetails
-                            ? "Loading Profile..."
-                            : "Use Saved Details"}
-                        </h3>
+                          <h3 className="mt-4 font-bold text-[#102B36]">
+                            Apply Now
+                          </h3>
 
-                        <p className="mt-2 text-sm leading-6 text-[#526F7A]">
-                          Continue with your profile information from your
-                          account.
-                        </p>
-                      </button>
-                    </div>
+                          <p className="mt-2 text-sm leading-6 text-[#526F7A]">
+                            Fill in the quick application form directly without creating an account.
+                          </p>
+                        </button>
+
+                        {/* CREATE AN ACCOUNT */}
+                        <button
+                          type="button"
+                          onClick={() => navigate("/register")}
+                          className="group rounded-xl border border-[#D9F3FA] bg-white p-5 text-left transition hover:border-[#30AFFF] hover:bg-[#F1FBFE]"
+                        >
+                          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-[#A0E9FF] text-[#159FEF] transition group-hover:scale-105">
+                            <UserPlus size={21} />
+                          </div>
+
+                          <h3 className="mt-4 font-bold text-[#102B36]">
+                            Create an Account
+                          </h3>
+
+                          <p className="mt-2 text-sm leading-6 text-[#526F7A]">
+                            Create a free account to track applications, save jobs, and speed up future applications.
+                          </p>
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
 
-                {/* MANUAL FORM */}
+                {/* COMPACT MANUAL FORM (FIELDS MATCHING ROLE APPLY MODAL) */}
 
                 {applicationStep === "manual" && (
                   <form
                     onSubmit={submitApplication}
                     className="overflow-y-auto px-5 py-6 sm:px-6"
                   >
-                    {/* PERSONAL INFORMATION */}
-
-                    <div>
-                      <h3 className="text-base font-bold text-[#102B36]">
-                        Personal Information
-                      </h3>
-
-                      <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                        {/* NAME */}
-
-                        <div>
-                          <label className="mb-1.5 block text-sm font-semibold text-[#29444F]">
-                            Full Name *
-                          </label>
-
-                          <div className="relative">
-                            <User
-                              size={17}
-                              className="absolute left-3 top-1/2 -translate-y-1/2 text-[#7A969F]"
-                            />
-
-                            <input
-                              type="text"
-                              name="name"
-                              value={formData.name}
-                              onChange={handleInputChange}
-                              required
-                              placeholder="Enter your full name"
-                              className="w-full rounded-lg border border-[#D9F3FA] py-3 pl-10 pr-3 text-sm text-[#29444F] outline-none transition placeholder:text-[#9AAEB5] focus:border-[#30AFFF] focus:ring-2 focus:ring-[#A0E9FF]"
-                            />
-                          </div>
-                        </div>
-
-                        {/* EMAIL */}
-
-                        <div>
-                          <label className="mb-1.5 block text-sm font-semibold text-[#29444F]">
-                            Email *
-                          </label>
-
-                          <div className="relative">
-                            <Mail
-                              size={17}
-                              className="absolute left-3 top-1/2 -translate-y-1/2 text-[#7A969F]"
-                            />
-
-                            <input
-                              type="email"
-                              name="email"
-                              value={formData.email}
-                              onChange={handleInputChange}
-                              required
-                              placeholder="Enter your email"
-                              className="w-full rounded-lg border border-[#D9F3FA] py-3 pl-10 pr-3 text-sm text-[#29444F] outline-none transition placeholder:text-[#9AAEB5] focus:border-[#30AFFF] focus:ring-2 focus:ring-[#A0E9FF]"
-                            />
-                          </div>
-                        </div>
-
-                        {/* PHONE */}
-
-                        <div>
-                          <label className="mb-1.5 block text-sm font-semibold text-[#29444F]">
-                            Phone *
-                          </label>
-
-                          <div className="relative">
-                            <Phone
-                              size={17}
-                              className="absolute left-3 top-1/2 -translate-y-1/2 text-[#7A969F]"
-                            />
-
-                            <input
-                              type="tel"
-                              name="phone"
-                              value={formData.phone}
-                              onChange={handleInputChange}
-                              required
-                              placeholder="Enter your phone number"
-                              className="w-full rounded-lg border border-[#D9F3FA] py-3 pl-10 pr-3 text-sm text-[#29444F] outline-none transition placeholder:text-[#9AAEB5] focus:border-[#30AFFF] focus:ring-2 focus:ring-[#A0E9FF]"
-                            />
-                          </div>
-                        </div>
-
-                        {/* LOCATION */}
-
-                        <div>
-                          <label className="mb-1.5 block text-sm font-semibold text-[#29444F]">
-                            Current Location *
-                          </label>
-
-                          <div className="relative">
-                            <MapPin
-                              size={17}
-                              className="absolute left-3 top-1/2 -translate-y-1/2 text-[#7A969F]"
-                            />
-
-                            <input
-                              type="text"
-                              name="currentLocation"
-                              value={formData.currentLocation}
-                              onChange={handleInputChange}
-                              required
-                              placeholder="City, State"
-                              className="w-full rounded-lg border border-[#D9F3FA] py-3 pl-10 pr-3 text-sm text-[#29444F] outline-none transition placeholder:text-[#9AAEB5] focus:border-[#30AFFF] focus:ring-2 focus:ring-[#A0E9FF]"
-                            />
-                          </div>
-                        </div>
-                      </div>
+                    {/* INFO BANNER */}
+                    <div className="mb-5 rounded-xl border border-[#D9F3FA] bg-[#F1FBFE] p-4">
+                      <h4 className="text-sm font-bold text-[#102B36]">
+                        Quick Application
+                      </h4>
+                      <p className="mt-0.5 text-xs text-[#526F7A]">
+                        Please enter your details, expected compensation, skills, and upload your resume.
+                      </p>
                     </div>
 
-                    {/* EXPERIENCE */}
-
-                    <div className="mt-7">
-                      <h3 className="text-base font-bold text-[#102B36]">
-                        Experience
-                      </h3>
-
-                      <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                        <div>
-                          <label className="mb-1.5 block text-sm font-semibold text-[#29444F]">
-                            Experience Type *
-                          </label>
-
-                          <select
-                            name="experienceType"
-                            value={formData.experienceType}
-                            onChange={handleInputChange}
-                            required
-                            className="w-full rounded-lg border border-[#D9F3FA] bg-white px-3 py-3 text-sm text-[#29444F] outline-none transition focus:border-[#30AFFF] focus:ring-2 focus:ring-[#A0E9FF]"
-                          >
-                            <option value="">
-                              Select experience type
-                            </option>
-
-                            <option value="Fresher">Fresher</option>
-
-                            <option value="Experienced">
-                              Experienced
-                            </option>
-                          </select>
-                        </div>
-
-                        <div>
-                          <label className="mb-1.5 block text-sm font-semibold text-[#29444F]">
-                            Years of Experience
-                          </label>
-
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      {/* FULL NAME */}
+                      <div>
+                        <label className="mb-1.5 block text-xs font-semibold text-[#29444F]">
+                          Full Name *
+                        </label>
+                        <div className="relative">
+                          <User
+                            size={16}
+                            className="absolute left-3 top-1/2 -translate-y-1/2 text-[#7A969F]"
+                          />
                           <input
                             type="text"
-                            name="experience"
-                            value={formData.experience}
-                            onChange={handleInputChange}
-                            placeholder="e.g. 2 years"
-                            className="w-full rounded-lg border border-[#D9F3FA] px-3 py-3 text-sm text-[#29444F] outline-none transition placeholder:text-[#9AAEB5] focus:border-[#30AFFF] focus:ring-2 focus:ring-[#A0E9FF]"
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* PASSPORT */}
-
-                    <div className="mt-7">
-                      <h3 className="text-base font-bold text-[#102B36]">
-                        Passport Information
-                      </h3>
-
-                      <div className="mt-4 rounded-xl border border-[#D9F3FA] bg-[#F1FBFE] p-4">
-                        <div className="flex items-start gap-3">
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#A0E9FF] text-[#159FEF]">
-                            <IdCard size={19} />
-                          </div>
-
-                          <div>
-                            <p className="text-sm font-semibold text-[#29444F]">
-                              Do you have a passport? *
-                            </p>
-
-                            <p className="mt-1 text-xs text-[#6B8792]">
-                              Please select Yes or No.
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="mt-4 flex flex-wrap gap-3">
-                          {/* YES */}
-
-                          <label
-                            className={`flex cursor-pointer items-center gap-2 rounded-lg border px-5 py-3 text-sm font-semibold transition ${formData.passport === "Yes"
-                              ? "border-[#30AFFF] bg-[#A0E9FF] text-[#159FEF]"
-                              : "border-[#D9F3FA] bg-white text-[#526F7A] hover:border-[#30AFFF]"
-                              }`}
-                          >
-                            <input
-                              type="radio"
-                              name="passport"
-                              value="Yes"
-                              checked={formData.passport === "Yes"}
-                              onChange={handleInputChange}
-                              required
-                              className="h-4 w-4 accent-[#30AFFF]"
-                            />
-                            Yes
-                          </label>
-
-                          {/* NO */}
-
-                          <label
-                            className={`flex cursor-pointer items-center gap-2 rounded-lg border px-5 py-3 text-sm font-semibold transition ${formData.passport === "No"
-                              ? "border-[#30AFFF] bg-[#A0E9FF] text-[#159FEF]"
-                              : "border-[#D9F3FA] bg-white text-[#526F7A] hover:border-[#30AFFF]"
-                              }`}
-                          >
-                            <input
-                              type="radio"
-                              name="passport"
-                              value="No"
-                              checked={formData.passport === "No"}
-                              onChange={handleInputChange}
-                              required
-                              className="h-4 w-4 accent-[#30AFFF]"
-                            />
-                            No
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* DOCUMENTS */}
-
-                    <div className="mt-7">
-                      <h3 className="text-base font-bold text-[#102B36]">
-                        Documents
-                      </h3>
-
-                      <div className="mt-4 grid gap-4 sm:grid-cols-3">
-                        {/* PROFILE PHOTO */}
-
-                        <div>
-                          <label className="mb-1.5 block text-sm font-semibold text-[#29444F]">
-                            Profile Photo
-                          </label>
-
-                          <label className="flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-[#BDEAF5] p-4 text-center transition hover:border-[#30AFFF] hover:bg-[#F1FBFE]">
-                            <Upload
-                              size={20}
-                              className="text-[#7A969F]"
-                            />
-
-                            <span className="mt-2 max-w-full truncate text-xs font-medium text-[#6B8792]">
-                              {formData.profilePhoto
-                                ? formData.profilePhoto.name
-                                : "Upload Photo"}
-                            </span>
-
-                            <input
-                              type="file"
-                              accept="image/jpeg,image/png,image/jpg,image/webp"
-                              onChange={handleProfilePhoto}
-                              className="hidden"
-                            />
-                          </label>
-                        </div>
-
-                        {/* GOVERNMENT DOCUMENT */}
-
-                        <div>
-                          <label className="mb-1.5 block text-sm font-semibold text-[#29444F]">
-                            Government Document
-                          </label>
-
-                          <label className="flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-[#BDEAF5] p-4 text-center transition hover:border-[#30AFFF] hover:bg-[#F1FBFE]">
-                            <FileText
-                              size={20}
-                              className="text-[#7A969F]"
-                            />
-
-                            <span className="mt-2 max-w-full truncate text-xs font-medium text-[#6B8792]">
-                              {formData.governmentDocument
-                                ? formData.governmentDocument.name
-                                : "Upload Document"}
-                            </span>
-
-                            <input
-                              type="file"
-                              accept=".pdf,image/jpeg,image/png,image/jpg,image/webp"
-                              onChange={handleGovernmentDocument}
-                              className="hidden"
-                            />
-                          </label>
-                        </div>
-
-                        {/* RESUME */}
-
-                        <div>
-                          <label className="mb-1.5 block text-sm font-semibold text-[#29444F]">
-                            Resume *
-                          </label>
-
-                          <label className="flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-[#BDEAF5] p-4 text-center transition hover:border-[#30AFFF] hover:bg-[#F1FBFE]">
-                            <FileText
-                              size={20}
-                              className="text-[#7A969F]"
-                            />
-
-                            <span className="mt-2 max-w-full truncate text-xs font-medium text-[#6B8792]">
-                              {formData.resume
-                                ? formData.resume.name
-                                : "Upload Resume"}
-                            </span>
-
-                            <input
-                              type="file"
-                              accept=".pdf,application/pdf"
-                              onChange={handleResume}
-                              required
-                              className="hidden"
-                            />
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* PROFESSIONAL INFORMATION */}
-
-                    <div className="mt-7">
-                      <h3 className="text-base font-bold text-[#102B36]">
-                        Professional Information
-                      </h3>
-
-                      <div className="mt-4 space-y-4">
-                        {/* SKILLS */}
-
-                        <div>
-                          <label className="mb-1.5 block text-sm font-semibold text-[#29444F]">
-                            Skills *
-                          </label>
-
-                          <input
-                            type="text"
-                            name="skills"
-                            value={formData.skills}
+                            name="name"
+                            value={formData.name}
                             onChange={handleInputChange}
                             required
-                            placeholder="React, JavaScript, Node.js..."
-                            className="w-full rounded-lg border border-[#D9F3FA] px-3 py-3 text-sm text-[#29444F] outline-none transition placeholder:text-[#9AAEB5] focus:border-[#30AFFF] focus:ring-2 focus:ring-[#A0E9FF]"
+                            placeholder="Your full name"
+                            className="w-full rounded-xl border border-[#D9F3FA] py-2.5 pl-9 pr-3 text-sm text-[#29444F] outline-none transition placeholder:text-[#9AAEB5] focus:border-[#30AFFF] focus:ring-2 focus:ring-[#A0E9FF]"
                           />
                         </div>
+                      </div>
 
-                        {/* SALARY / NOTICE */}
-
-                        <div className="grid gap-4 sm:grid-cols-2">
-                          <div>
-                            <label className="mb-1.5 block text-sm font-semibold text-[#29444F]">
-                              Expected Salary
-                            </label>
-
-                            <input
-                              type="text"
-                              name="expectedSalary"
-                              value={formData.expectedSalary}
-                              onChange={handleInputChange}
-                              placeholder="e.g. ₹6 LPA"
-                              className="w-full rounded-lg border border-[#D9F3FA] px-3 py-3 text-sm text-[#29444F] outline-none transition placeholder:text-[#9AAEB5] focus:border-[#30AFFF] focus:ring-2 focus:ring-[#A0E9FF]"
-                            />
-                          </div>
-
-                          <div>
-                            <label className="mb-1.5 block text-sm font-semibold text-[#29444F]">
-                              Notice Period
-                            </label>
-
-                            <input
-                              type="text"
-                              name="noticePeriod"
-                              value={formData.noticePeriod}
-                              onChange={handleInputChange}
-                              placeholder="e.g. 30 days"
-                              className="w-full rounded-lg border border-[#D9F3FA] px-3 py-3 text-sm text-[#29444F] outline-none transition placeholder:text-[#9AAEB5] focus:border-[#30AFFF] focus:ring-2 focus:ring-[#A0E9FF]"
-                            />
-                          </div>
-                        </div>
-
-                        {/* LINKEDIN / PORTFOLIO */}
-
-                        <div className="grid gap-4 sm:grid-cols-2">
-                          <div>
-                            <label className="mb-1.5 block text-sm font-semibold text-[#29444F]">
-                              LinkedIn
-                            </label>
-
-                            <input
-                              type="url"
-                              name="linkedin"
-                              value={formData.linkedin}
-                              onChange={handleInputChange}
-                              placeholder="LinkedIn URL"
-                              className="w-full rounded-lg border border-[#D9F3FA] px-3 py-3 text-sm text-[#29444F] outline-none transition placeholder:text-[#9AAEB5] focus:border-[#30AFFF] focus:ring-2 focus:ring-[#A0E9FF]"
-                            />
-                          </div>
-
-                          <div>
-                            <label className="mb-1.5 block text-sm font-semibold text-[#29444F]">
-                              Portfolio
-                            </label>
-
-                            <div className="relative">
-                              <Globe
-                                size={17}
-                                className="absolute left-3 top-1/2 -translate-y-1/2 text-[#7A969F]"
-                              />
-
-                              <input
-                                type="url"
-                                name="portfolio"
-                                value={formData.portfolio}
-                                onChange={handleInputChange}
-                                placeholder="Portfolio URL"
-                                className="w-full rounded-lg border border-[#D9F3FA] py-3 pl-10 pr-3 text-sm text-[#29444F] outline-none transition placeholder:text-[#9AAEB5] focus:border-[#30AFFF] focus:ring-2 focus:ring-[#A0E9FF]"
-                              />
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* COVER LETTER */}
-
-                        <div>
-                          <label className="mb-1.5 block text-sm font-semibold text-[#29444F]">
-                            Cover Letter
-                          </label>
-
-                          <textarea
-                            name="coverLetter"
-                            value={formData.coverLetter}
+                      {/* EMAIL */}
+                      <div>
+                        <label className="mb-1.5 block text-xs font-semibold text-[#29444F]">
+                          Email Address *
+                        </label>
+                        <div className="relative">
+                          <Mail
+                            size={16}
+                            className="absolute left-3 top-1/2 -translate-y-1/2 text-[#7A969F]"
+                          />
+                          <input
+                            type="email"
+                            name="email"
+                            value={formData.email}
                             onChange={handleInputChange}
-                            rows={5}
-                            placeholder="Write a short cover letter..."
-                            className="w-full resize-none rounded-lg border border-[#D9F3FA] px-3 py-3 text-sm text-[#29444F] outline-none transition placeholder:text-[#9AAEB5] focus:border-[#30AFFF] focus:ring-2 focus:ring-[#A0E9FF]"
+                            required
+                            placeholder="you@example.com"
+                            className="w-full rounded-xl border border-[#D9F3FA] py-2.5 pl-9 pr-3 text-sm text-[#29444F] outline-none transition placeholder:text-[#9AAEB5] focus:border-[#30AFFF] focus:ring-2 focus:ring-[#A0E9FF]"
                           />
                         </div>
+                      </div>
 
-                        {/* ADDITIONAL INFO */}
-
-                        <div>
-                          <label className="mb-1.5 block text-sm font-semibold text-[#29444F]">
-                            Additional Information
-                          </label>
-
-                          <textarea
-                            name="additionalInfo"
-                            value={formData.additionalInfo}
+                      {/* PHONE */}
+                      <div>
+                        <label className="mb-1.5 block text-xs font-semibold text-[#29444F]">
+                          Phone Number *
+                        </label>
+                        <div className="relative">
+                          <Phone
+                            size={16}
+                            className="absolute left-3 top-1/2 -translate-y-1/2 text-[#7A969F]"
+                          />
+                          <input
+                            type="tel"
+                            name="phone"
+                            value={formData.phone}
                             onChange={handleInputChange}
-                            rows={4}
-                            placeholder="Anything else you want the employer to know..."
-                            className="w-full resize-none rounded-lg border border-[#D9F3FA] px-3 py-3 text-sm text-[#29444F] outline-none transition placeholder:text-[#9AAEB5] focus:border-[#30AFFF] focus:ring-2 focus:ring-[#A0E9FF]"
+                            required
+                            placeholder="+91 00000 00000"
+                            className="w-full rounded-xl border border-[#D9F3FA] py-2.5 pl-9 pr-3 text-sm text-[#29444F] outline-none transition placeholder:text-[#9AAEB5] focus:border-[#30AFFF] focus:ring-2 focus:ring-[#A0E9FF]"
                           />
                         </div>
+                      </div>
+
+                      {/* LOCATION */}
+                      <div>
+                        <label className="mb-1.5 block text-xs font-semibold text-[#29444F]">
+                          Current Location (City / State)
+                        </label>
+                        <div className="relative">
+                          <MapPin
+                            size={16}
+                            className="absolute left-3 top-1/2 -translate-y-1/2 text-[#7A969F]"
+                          />
+                          <input
+                            type="text"
+                            name="currentLocation"
+                            value={formData.currentLocation}
+                            onChange={handleInputChange}
+                            placeholder="e.g. Bangalore, Delhi, London..."
+                            className="w-full rounded-xl border border-[#D9F3FA] py-2.5 pl-9 pr-3 text-sm text-[#29444F] outline-none transition placeholder:text-[#9AAEB5] focus:border-[#30AFFF] focus:ring-2 focus:ring-[#A0E9FF]"
+                          />
+                        </div>
+                      </div>
+
+                      {/* EXPECTED SALARY */}
+                      <div>
+                        <label className="mb-1.5 block text-xs font-semibold text-[#29444F]">
+                          Expected Annual Salary *
+                        </label>
+                        <div className="relative">
+                          <DollarSign
+                            size={16}
+                            className="absolute left-3 top-1/2 -translate-y-1/2 text-[#7A969F]"
+                          />
+                          <input
+                            type="text"
+                            name="expectedSalary"
+                            value={formData.expectedSalary}
+                            onChange={handleInputChange}
+                            required
+                            placeholder="e.g. ₹8,00,000 / $60,000"
+                            className="w-full rounded-xl border border-[#D9F3FA] py-2.5 pl-9 pr-3 text-sm text-[#29444F] outline-none transition placeholder:text-[#9AAEB5] focus:border-[#30AFFF] focus:ring-2 focus:ring-[#A0E9FF]"
+                          />
+                        </div>
+                      </div>
+
+                      {/* LINKEDIN */}
+                      <div>
+                        <label className="mb-1.5 block text-xs font-semibold text-[#29444F]">
+                          LinkedIn Profile
+                        </label>
+                        <div className="relative">
+                          <Globe
+                            size={16}
+                            className="absolute left-3 top-1/2 -translate-y-1/2 text-[#7A969F]"
+                          />
+                          <input
+                            type="url"
+                            name="linkedin"
+                            value={formData.linkedin}
+                            onChange={handleInputChange}
+                            placeholder="https://linkedin.com/in/..."
+                            className="w-full rounded-xl border border-[#D9F3FA] py-2.5 pl-9 pr-3 text-sm text-[#29444F] outline-none transition placeholder:text-[#9AAEB5] focus:border-[#30AFFF] focus:ring-2 focus:ring-[#A0E9FF]"
+                          />
+                        </div>
+                      </div>
+
+                      {/* SKILLS */}
+                      <div className="sm:col-span-2">
+                        <label className="mb-1.5 block text-xs font-semibold text-[#29444F]">
+                          Technical Skills & Tools
+                        </label>
+                        <input
+                          type="text"
+                          name="skills"
+                          value={formData.skills}
+                          onChange={handleInputChange}
+                          placeholder="Relevant technical skills, libraries, frameworks..."
+                          className="w-full rounded-xl border border-[#D9F3FA] px-3.5 py-2.5 text-sm text-[#29444F] outline-none transition placeholder:text-[#9AAEB5] focus:border-[#30AFFF] focus:ring-2 focus:ring-[#A0E9FF]"
+                        />
+                      </div>
+
+                      {/* RESUME UPLOAD */}
+                      <div className="sm:col-span-2">
+                        <label className="mb-1.5 block text-xs font-semibold text-[#29444F]">
+                          Resume / CV * (.pdf, .doc, .docx)
+                        </label>
+                        <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-[#BDEAF5] bg-white p-4 text-center transition hover:border-[#30AFFF] hover:bg-[#F1FBFE]">
+                          <Upload
+                            size={20}
+                            className="text-[#30AFFF]"
+                          />
+                          <span className="mt-2 text-xs font-semibold text-[#29444F]">
+                            {formData.resume
+                              ? formData.resume.name
+                              : "Click to upload Resume / CV"}
+                          </span>
+                          <span className="mt-1 text-[11px] text-[#7A969F]">
+                            Supported: PDF, DOC, DOCX up to 10MB
+                          </span>
+                          <input
+                            type="file"
+                            accept=".pdf,.doc,.docx"
+                            onChange={handleResume}
+                            className="hidden"
+                          />
+                        </label>
+                        {formData.resume && (
+                          <p className="mt-1.5 text-xs font-medium text-[#30AFFF]">
+                            ✓ Selected: {formData.resume.name} (
+                            {(formData.resume.size / 1024).toFixed(1)} KB)
+                          </p>
+                        )}
+                      </div>
+
+                      {/* COVER LETTER / ABOUT YOU */}
+                      <div className="sm:col-span-2">
+                        <label className="mb-1.5 block text-xs font-semibold text-[#29444F]">
+                          Tell us about yourself & experience *
+                        </label>
+                        <textarea
+                          required
+                          name="coverLetter"
+                          value={formData.coverLetter}
+                          onChange={handleInputChange}
+                          rows={4}
+                          placeholder="Tell us about your background, relevant projects, and why this opportunity interests you..."
+                          className="w-full resize-none rounded-xl border border-[#D9F3FA] p-3 text-sm text-[#29444F] outline-none transition placeholder:text-[#9AAEB5] focus:border-[#30AFFF] focus:ring-2 focus:ring-[#A0E9FF]"
+                        />
                       </div>
                     </div>
 
                     {/* NOTICE */}
-
-                    <div className="mt-6 flex items-start gap-3 rounded-lg border border-[#A0E9FF] bg-[#F1FBFE] p-4">
+                    <div className="mt-5 flex items-start gap-2.5 rounded-xl border border-[#A0E9FF] bg-[#F1FBFE] p-3 sm:p-3.5">
                       <AlertCircle
-                        size={18}
+                        size={17}
                         className="mt-0.5 shrink-0 text-[#30AFFF]"
                       />
-
-                      <p className="text-xs leading-5 text-[#159FEF] sm:text-sm">
+                      <p className="text-xs leading-relaxed text-[#159FEF]">
                         Please make sure all information provided is accurate
                         before submitting your application.
                       </p>
                     </div>
 
                     {/* ACTIONS */}
-
-                    <div className="mt-6 flex flex-col-reverse gap-3 border-t border-[#D9F3FA] pt-5 sm:flex-row sm:justify-end">
+                    <div className="mt-5 flex flex-col-reverse gap-3 border-t border-[#D9F3FA] pt-4 sm:flex-row sm:justify-end">
                       <button
                         type="button"
                         disabled={applying}
                         onClick={() => setApplicationStep("options")}
-                        className="rounded-lg border border-[#D9F3FA] px-5 py-3 text-sm font-bold text-[#526F7A] transition hover:bg-[#F1FBFE] disabled:cursor-not-allowed disabled:opacity-50"
+                        className="rounded-xl border border-[#D9F3FA] px-5 py-2.5 text-sm font-bold text-[#526F7A] transition hover:bg-[#F1FBFE] disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         Back
                       </button>
@@ -1695,7 +1394,7 @@ const JobDetail = () => {
                       <button
                         type="submit"
                         disabled={applying}
-                        className="flex items-center justify-center gap-2 rounded-lg bg-[#30AFFF] px-6 py-3 text-sm font-bold text-white transition hover:bg-[#159FEF] disabled:cursor-not-allowed disabled:opacity-60"
+                        className="flex items-center justify-center gap-2 rounded-xl bg-[#30AFFF] px-6 py-2.5 text-sm font-bold text-white shadow-md shadow-[#30AFFF]/20 transition hover:bg-[#159FEF] disabled:cursor-not-allowed disabled:opacity-60"
                       >
                         {applying ? (
                           <>
@@ -1705,7 +1404,7 @@ const JobDetail = () => {
                         ) : (
                           <>
                             Submit Application
-                            <Send size={17} />
+                            <Send size={16} />
                           </>
                         )}
                       </button>

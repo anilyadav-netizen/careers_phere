@@ -1,5 +1,9 @@
 const mongoose = require("mongoose");
 const FrontendApplication = require("../models/FrontendApplication");
+const {
+  sendRoleApplicationReceivedEmail,
+  sendRoleApplicationStatusUpdateEmail,
+} = require("../utils/mailer");
 
 const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 
@@ -31,21 +35,18 @@ exports.submitApplication = async (req, res) => {
       linkedin,
       frontendSkills,
       aboutYou,
+      companyName,
+      companyLogo,
+      opportunityId,
+      opportunityRole,
     } = req.body;
 
-    // Check required textual fields
+    // Check required textual fields (matched to RoleApplyModal form)
     const requiredFields = {
       fullName: "Full name",
       email: "Email address",
       phone: "Phone number",
-      experience: "Experience",
-      currentCountry: "Current country",
-      preferredRegion: "Preferred region",
-      preferredJobMarket: "Preferred job market",
-      preferredWorkMode: "Preferred work mode",
       expectedSalary: "Expected annual salary",
-      salaryCurrency: "Salary currency",
-      noticePeriod: "Availability / notice period",
       aboutYou: "About you",
     };
 
@@ -89,23 +90,33 @@ exports.submitApplication = async (req, res) => {
       fullName: fullName.trim(),
       email: email.trim().toLowerCase(),
       phone: phone.trim(),
-      experience: experience.trim(),
-      currentCountry: currentCountry.trim(),
-      currentLocation: currentLocation ? currentLocation.trim() : "",
-      preferredRegion: preferredRegion.trim(),
-      preferredJobMarket: preferredJobMarket.trim(),
-      preferredWorkMode: preferredWorkMode.trim(),
-      relocationPreference: relocationPreference ? relocationPreference.trim() : "",
-      workAuthorization: workAuthorization ? workAuthorization.trim() : "",
+      experience: (experience && String(experience).trim()) ? String(experience).trim() : "Not specified",
+      currentCountry: (currentCountry && String(currentCountry).trim()) ? String(currentCountry).trim() : "",
+      currentLocation: currentLocation ? String(currentLocation).trim() : "",
+      preferredRegion: (preferredRegion && String(preferredRegion).trim()) ? String(preferredRegion).trim() : "Global",
+      preferredJobMarket: (preferredJobMarket && String(preferredJobMarket).trim())
+        ? String(preferredJobMarket).trim()
+        : (countryFlexibility && String(countryFlexibility).trim())
+        ? String(countryFlexibility).trim()
+        : "Worldwide / Open",
+      preferredWorkMode: (preferredWorkMode && String(preferredWorkMode).trim())
+        ? String(preferredWorkMode).trim()
+        : "Remote / Hybrid",
+      relocationPreference: relocationPreference ? String(relocationPreference).trim() : "",
+      workAuthorization: workAuthorization ? String(workAuthorization).trim() : "",
       expectedSalary: parsedSalary,
-      salaryCurrency: salaryCurrency.trim(),
-      noticePeriod: noticePeriod.trim(),
-      preferredTimezone: preferredTimezone ? preferredTimezone.trim() : "",
-      countryFlexibility: countryFlexibility ? countryFlexibility.trim() : "",
-      portfolio: portfolio ? portfolio.trim() : "",
-      linkedin: linkedin ? linkedin.trim() : "",
-      frontendSkills: frontendSkills ? frontendSkills.trim() : "",
+      salaryCurrency: (salaryCurrency && String(salaryCurrency).trim()) ? String(salaryCurrency).trim() : "USD",
+      noticePeriod: (noticePeriod && String(noticePeriod).trim()) ? String(noticePeriod).trim() : "Immediate / Flexible",
+      preferredTimezone: preferredTimezone ? String(preferredTimezone).trim() : "",
+      countryFlexibility: countryFlexibility ? String(countryFlexibility).trim() : "",
+      portfolio: portfolio ? String(portfolio).trim() : "",
+      linkedin: linkedin ? String(linkedin).trim() : "",
+      frontendSkills: frontendSkills ? String(frontendSkills).trim() : "",
       aboutYou: aboutYou.trim(),
+      companyName: companyName ? String(companyName).trim() : "",
+      companyLogo: companyLogo ? String(companyLogo).trim() : "",
+      opportunityId: isValidObjectId(opportunityId) ? opportunityId : null,
+      opportunityRole: opportunityRole ? String(opportunityRole).trim() : "",
       resume: {
         filename: req.file.originalname,
         mimetype: req.file.mimetype,
@@ -117,6 +128,14 @@ exports.submitApplication = async (req, res) => {
     // Return created application without the binary buffer
     const responseData = application.toObject();
     delete responseData.resume.data;
+
+    // Send high-priority confirmation email to candidate (async)
+    sendRoleApplicationReceivedEmail(application).catch((emailErr) => {
+      console.error(
+        "Application confirmation email dispatch failed:",
+        emailErr.message || emailErr
+      );
+    });
 
     return res.status(201).json({
       success: true,
@@ -177,6 +196,7 @@ exports.getAllApplications = async (req, res) => {
         { role: searchRegex },
         { frontendSkills: searchRegex },
         { currentCountry: searchRegex },
+        { companyName: searchRegex },
       ];
     }
 
@@ -381,27 +401,45 @@ exports.updateApplicationStatus = async (req, res) => {
       });
     }
 
-    const updateFields = {};
-    if (status) updateFields.status = status;
-    if (typeof adminNotes !== "undefined") updateFields.adminNotes = adminNotes;
-
-    const application = await FrontendApplication.findByIdAndUpdate(
-      id,
-      { $set: updateFields },
-      { new: true, runValidators: true }
-    ).select("-resume.data");
-
-    if (!application) {
+    const existingApp = await FrontendApplication.findById(id).select("-resume.data");
+    if (!existingApp) {
       return res.status(404).json({
         success: false,
         message: "Application not found",
       });
     }
 
+    const previousStatus = existingApp.status;
+    const isStatusChanged = status && status !== previousStatus;
+
+    const updateFields = {};
+    if (status) updateFields.status = status;
+    if (typeof adminNotes !== "undefined") updateFields.adminNotes = adminNotes;
+
+    const updatedApplication = await FrontendApplication.findByIdAndUpdate(
+      id,
+      { $set: updateFields },
+      { new: true, runValidators: true }
+    ).select("-resume.data");
+
+    // Send email notification to candidate if status changed
+    if (isStatusChanged) {
+      sendRoleApplicationStatusUpdateEmail(
+        updatedApplication,
+        status,
+        adminNotes || updatedApplication.adminNotes
+      ).catch((emailErr) => {
+        console.error(
+          "Status update email dispatch failed:",
+          emailErr.message || emailErr
+        );
+      });
+    }
+
     return res.status(200).json({
       success: true,
       message: "Application status updated successfully",
-      data: application,
+      data: updatedApplication,
     });
   } catch (error) {
     console.error("Update frontend application status error:", error);

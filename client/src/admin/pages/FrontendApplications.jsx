@@ -78,6 +78,13 @@ export const ROLE_CONFIG = {
     icon: Film,
     accent: "#c026d3",
   },
+  "UI/UX Designer": {
+    label: "UI/UX Designer",
+    badge: "bg-rose-50 text-rose-700 border-rose-200",
+    pill: "border-rose-300 text-rose-700 bg-rose-50/70",
+    icon: Sparkles,
+    accent: "#e11d48",
+  },
 };
 
 export const getRoleConfig = (roleName) => {
@@ -250,6 +257,7 @@ const FrontendApplications = () => {
     { label: "Full Stack", value: "Full Stack Developer", icon: Layers },
     { label: "Android", value: "Android Developer", icon: Smartphone },
     { label: "Video Editor", value: "Video Editor", icon: Film },
+    { label: "UI/UX", value: "UI/UX Designer", icon: Sparkles },
   ];
 
   return (
@@ -419,6 +427,7 @@ const FrontendApplications = () => {
             <option value="Full Stack Developer">Full Stack Developer</option>
             <option value="Android Developer">Android Developer</option>
             <option value="Video Editor">Video Editor</option>
+            <option value="UI/UX Designer">UI/UX Designer</option>
           </select>
 
           {/* Status Filter */}
@@ -570,6 +579,16 @@ const FrontendApplications = () => {
                           <RoleIcon size={13} />
                           {app.role || "Frontend Developer"}
                         </span>
+                        {app.companyName && (
+                          <div className="mt-1.5">
+                            <span className="inline-flex items-center gap-1 rounded-md border border-amber-300 bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-800">
+                              <Building size={10} className="shrink-0 text-amber-600" />
+                              <span className="truncate max-w-[130px]" title={app.companyName}>
+                                {app.companyName}
+                              </span>
+                            </span>
+                          </div>
+                        )}
                       </td>
 
                       {/* Experience & Skills */}
@@ -742,6 +761,43 @@ const FrontendApplications = () => {
 
               {/* Modal Body */}
               <div className="p-6 space-y-6">
+                {/* Company Tagged Info if Applied via Specific Company */}
+                {selectedApp.companyName && (
+                  <div className="rounded-2xl border border-amber-200 bg-amber-50/70 p-4">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-3">
+                        {selectedApp.companyLogo ? (
+                          <img
+                            src={selectedApp.companyLogo}
+                            alt={selectedApp.companyName}
+                            className="w-11 h-11 rounded-xl object-contain bg-white border border-amber-200 p-1 shrink-0"
+                          />
+                        ) : (
+                          <div className="w-11 h-11 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold shrink-0">
+                            <Building size={20} />
+                          </div>
+                        )}
+                        <div>
+                          <div className="text-[10px] font-bold uppercase tracking-wider text-amber-700">
+                            Target Company Opportunity
+                          </div>
+                          <div className="text-base font-black text-slate-900">
+                            {selectedApp.companyName}
+                          </div>
+                          {selectedApp.opportunityRole && (
+                            <div className="text-xs text-slate-600 font-medium">
+                              Position: {selectedApp.opportunityRole}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <span className="rounded-full border border-amber-300 bg-amber-100 px-3 py-1 text-[11px] font-bold text-amber-900">
+                        Company Referral
+                      </span>
+                    </div>
+                  </div>
+                )}
+
                 {/* Status & Quick Action Bar */}
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <div>

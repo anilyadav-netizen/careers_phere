@@ -4,6 +4,7 @@ import {
   Code2,
   CreditCard,
   FileText,
+  Globe2,
   Images,
   LayoutDashboard,
   LogOut,
@@ -49,6 +50,11 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
       name: "Role Applications",
       path: "/admin/frontend-applications",
       icon: BriefcaseBusiness,
+    },
+    {
+      name: "Role Opportunities",
+      path: "/admin/role-opportunities",
+      icon: Globe2,
     },
     {
       name: "Testimonial",

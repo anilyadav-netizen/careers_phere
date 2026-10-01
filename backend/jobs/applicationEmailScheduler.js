@@ -20,7 +20,10 @@ const processPendingApplicationEmails = async () => {
       .populate("job", "title location company");
 
     for (const application of applications) {
-      const user = application.applicant;
+      const user = application.applicant || {
+        name: application.applicationData?.name || "Applicant",
+        email: application.applicationData?.email,
+      };
       const job = application.job;
 
       if (!user?.email || !job?.title) {
@@ -31,7 +34,7 @@ const processPendingApplicationEmails = async () => {
       }
 
       try {
-        await sendApplicationConfirmation({ user, job });
+        await sendApplicationConfirmation({ user, job, application });
         await JobApplication.updateOne(
           { _id: application._id, isSendMail: false },
           { $set: { isSendMail: true } },

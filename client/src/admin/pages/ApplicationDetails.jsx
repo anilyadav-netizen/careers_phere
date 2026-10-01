@@ -1,5 +1,5 @@
 // src/admin/pages/ApplicationDetails.jsx
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -12,7 +12,6 @@ import {
   Link2,
   Globe,
   Calendar,
-  IndianRupee,
   Clock,
   CheckCircle2,
   XCircle,
@@ -20,9 +19,11 @@ import {
   DownloadCloud,
   X,
   Eye,
-  FileImage,
   FileText as FileTextIcon,
-  Image,
+  Building2,
+  UserCheck,
+  RefreshCw,
+  Award,
 } from "lucide-react";
 import {
   getApplicationByIdAdmin,
@@ -42,120 +43,183 @@ const ApplicationDetails = () => {
   const [notification, setNotification] = useState(null);
   const [previewDocument, setPreviewDocument] = useState(null);
 
-  // Load the selected persisted application, rather than the legacy mock context.
   useEffect(() => {
-    dispatch(getApplicationByIdAdmin(applicationId));
+    if (applicationId) {
+      dispatch(getApplicationByIdAdmin(applicationId));
+    }
   }, [applicationId, dispatch]);
 
-  // Get category name dynamically
-  const getCategoryName = useCallback(() => {
-    if (!application) return "";
-    return application.categoryName || "Not provided";
-  }, [application]);
+  const showNotification = (message, type) => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 3500);
+  };
 
-  // Handle status update
   const handleStatusUpdate = async (newStatus) => {
-    if (!application) return;
+    if (!application || !application._id) return;
+    if (application.status === newStatus) return;
 
     try {
       await dispatch(
-        updateApplicationStatus({ applicationId: application._id, status: newStatus }),
+        updateApplicationStatus({
+          applicationId: application._id,
+          status: newStatus,
+        }),
       ).unwrap();
+
       showNotification(
-        `Application ${newStatus} successfully.`,
+        `Application status updated to ${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}. Notification email sent to applicant.`,
         "success",
       );
     } catch (updateError) {
       showNotification(
-        typeof updateError === "string" ? updateError : "Failed to update application status.",
+        typeof updateError === "string"
+          ? updateError
+          : "Failed to update application status.",
         "error",
       );
     }
   };
 
-  // Handle document preview
+  const candidateName =
+    application?.applicationData?.name ||
+    application?.applicant?.name ||
+    application?.applicant?.fullName ||
+    application?.fullName ||
+    "Applicant";
+
+  const candidateEmail =
+    application?.applicationData?.email ||
+    application?.applicant?.email ||
+    application?.email ||
+    "Not provided";
+
+  const candidatePhone =
+    application?.applicationData?.phone ||
+    application?.applicationData?.mobile ||
+    application?.applicant?.mobile ||
+    application?.applicant?.phone ||
+    application?.phoneNumber ||
+    "Not provided";
+
+  const candidateLocation =
+    application?.applicationData?.location ||
+    application?.job?.location ||
+    application?.currentLocation ||
+    "Not provided";
+
+  const candidateExperience =
+    application?.applicationData?.experience ||
+    application?.experienceType ||
+    application?.totalExperience ||
+    "Not specified";
+
+  const candidateSkills =
+    application?.applicationData?.skills ||
+    application?.professionalDetails ||
+    "Not provided";
+
+  const candidateCoverLetter =
+    application?.applicationData?.coverLetter ||
+    application?.applicationData?.about ||
+    application?.coverLetter ||
+    "Not provided";
+
+  const candidateLinkedIn =
+    application?.applicationData?.linkedin ||
+    application?.applicationData?.linkedIn ||
+    application?.linkedInProfile ||
+    null;
+
+  const candidatePortfolio =
+    application?.applicationData?.portfolio ||
+    application?.portfolioWebsite ||
+    null;
+
+  const resumeFileName =
+    application?.applicationData?.resume ||
+    application?.resume ||
+    null;
+
+  const jobTitle =
+    application?.job?.title ||
+    application?.applicationData?.role ||
+    "Role Application";
+
+  const companyName =
+    application?.job?.company ||
+    "CareerSphere";
+
+  const isGuest =
+    !application?.applicant &&
+    Boolean(
+      application?.applicationData?.name || application?.applicationData?.email,
+    );
+
+  const appliedDate = application?.appliedAt || application?.createdAt;
+
+  const resumeDownloadUrl = resumeFileName
+    ? resumeFileName.startsWith("http://") ||
+      resumeFileName.startsWith("https://")
+      ? resumeFileName
+      : `/api/admin/applications/${application?._id}/resume`
+    : null;
+
   const handleDocumentPreview = (documentType, fileName, fileUrl) => {
     if (!fileName && !fileUrl) return;
 
-    // Determine file type based on extension or URL
-    let fileType = "other";
-    let displayName = fileName || "file";
-    let previewUrl = fileUrl || "";
-
-    // If it's a profile photo, always treat as image
-    if (documentType === "Profile Photo") {
+    let fileType = "pdf";
+    const extension = fileName ? fileName.split(".").pop().toLowerCase() : "";
+    const imageExtensions = ["jpg", "jpeg", "png", "webp", "svg", "gif"];
+    if (imageExtensions.includes(extension)) {
       fileType = "image";
-      // If profilePhoto is a URL, use it directly
-      if (
-        fileUrl &&
-        (fileUrl.startsWith("http://") || fileUrl.startsWith("https://"))
-      ) {
-        previewUrl = fileUrl;
-        displayName = fileUrl.split("/").pop() || "profile-photo.jpg";
-      } else if (
-        fileName &&
-        (fileName.startsWith("http://") || fileName.startsWith("https://"))
-      ) {
-        // If fileName itself is a URL
-        previewUrl = fileName;
-        displayName = fileName.split("/").pop() || "profile-photo.jpg";
-      } else if (fileName) {
-        // For local file paths
-        previewUrl = `/uploads/profile-photos/${fileName}`;
-      }
-    } else {
-      // For other documents (Government ID, Resume)
-      const extension = fileName ? fileName.split(".").pop().toLowerCase() : "";
-      const imageExtensions = [
-        "jpg",
-        "jpeg",
-        "png",
-        "gif",
-        "webp",
-        "svg",
-        "bmp",
-        "tiff",
-      ];
-      const pdfExtensions = ["pdf"];
-
-      if (imageExtensions.includes(extension)) {
-        fileType = "image";
-      } else if (pdfExtensions.includes(extension)) {
-        fileType = "pdf";
-      }
-
-      previewUrl = `/documents/${fileName}`;
     }
 
     setPreviewDocument({
       title: documentType,
-      fileName: displayName,
-      url: previewUrl,
+      fileName: fileName || "Resume.pdf",
+      url: fileUrl || resumeDownloadUrl,
       type: fileType,
     });
   };
 
-  const showNotification = (message, type) => {
-    setNotification({ message, type });
-    setTimeout(() => setNotification(null), 3000);
+  const getStatusBadge = (status) => {
+    switch (String(status || "").toLowerCase()) {
+      case "shortlisted":
+        return "bg-emerald-50 text-emerald-700 border-emerald-200";
+      case "rejected":
+        return "bg-rose-50 text-rose-700 border-rose-200";
+      default:
+        return "bg-amber-50 text-amber-700 border-amber-200";
+    }
   };
 
-  const getStatusBadge = (status) => {
-    switch (status) {
+  const getStatusDot = (status) => {
+    switch (String(status || "").toLowerCase()) {
       case "shortlisted":
-        return "bg-green-50 text-green-700";
+        return "bg-emerald-500";
       case "rejected":
-        return "bg-red-50 text-red-700";
+        return "bg-rose-500";
       default:
-        return "bg-amber-50 text-amber-700";
+        return "bg-amber-500";
     }
+  };
+
+  const getInitials = (name) => {
+    if (!name) return "AP";
+    return name
+      .trim()
+      .split(/\s+/)
+      .map((w) => w[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
   };
 
   if (loading) {
     return (
-      <div className="p-4 sm:p-6 lg:p-8">
+      <div className="p-4 sm:p-6 lg:p-8 space-y-6">
         <div className="animate-pulse space-y-6">
-          <div className="h-8 bg-slate-200 rounded w-32"></div>
+          <div className="h-8 bg-slate-200 rounded-lg w-36"></div>
           <div className="h-32 bg-slate-200 rounded-2xl"></div>
           <div className="h-64 bg-slate-200 rounded-2xl"></div>
         </div>
@@ -166,14 +230,18 @@ const ApplicationDetails = () => {
   if (error || !application) {
     return (
       <div className="p-4 sm:p-6 lg:p-8">
-        <div className="flex flex-col items-center justify-center py-16">
+        <div className="flex flex-col items-center justify-center py-16 text-center">
           <AlertCircle className="w-16 h-16 text-red-400 mb-4" />
           <h3 className="text-lg font-semibold text-slate-800 mb-2">
             {error || "Application not found"}
           </h3>
+          <p className="text-sm text-slate-500 max-w-md mb-6">
+            The application details could not be loaded. Please return to the
+            applications list.
+          </p>
           <button
             onClick={() => navigate("/admin/applications")}
-            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl"
+            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl shadow-sm hover:shadow transition-all"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Applications
@@ -183,276 +251,344 @@ const ApplicationDetails = () => {
     );
   }
 
+  const currentStatus = String(application.status || "pending").toLowerCase();
+
   return (
-    <div className="p-4 sm:p-6 lg:p-8 space-y-6">
+    <div className="p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto">
       {/* Back Button */}
       <button
         onClick={() => navigate("/admin/applications")}
-        className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 transition-colors"
+        className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
         Back to Applications
       </button>
 
-      {/* Header */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6">
-        <div className="flex flex-col sm:flex-row items-start gap-4">
-          <div className="w-20 h-20 rounded-full overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex items-center justify-center text-2xl font-semibold flex-shrink-0">
-            {application.profilePhoto ? (
-              <img
-                src={application.profilePhoto}
-                alt={application.fullName}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              application.fullName
-                .split(" ")
-                .map((w) => w[0])
-                .join("")
-                .toUpperCase()
-                .slice(0, 2)
-            )}
-          </div>
-          <div className="flex-1 min-w-0">
-            <h1 className="text-2xl font-bold text-slate-900">
-              {application.fullName}
-            </h1>
-            <div className="flex flex-wrap gap-2 mt-2">
-              <span
-                className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${getStatusBadge(
-                  application.status,
-                )}`}
-              >
+      {/* Header Profile Card */}
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-xs p-5 sm:p-6">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div className="flex items-start sm:items-center gap-4">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center text-xl sm:text-2xl font-bold flex-shrink-0 shadow-sm">
+              {getInitials(candidateName)}
+            </div>
+
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <h1 className="text-xl sm:text-2xl font-bold text-slate-900">
+                  {candidateName}
+                </h1>
+                {isGuest ? (
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-50 text-sky-700 border border-sky-200">
+                    Guest Applicant
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <UserCheck className="w-3 h-3" />
+                    Registered User
+                  </span>
+                )}
+              </div>
+
+              <div className="flex flex-wrap items-center gap-3 mt-1.5 text-sm text-slate-600">
+                <span className="font-medium text-blue-600">{jobTitle}</span>
+                <span className="text-slate-300">•</span>
+                <span className="text-slate-500">{companyName}</span>
+                <span className="text-slate-300">•</span>
                 <span
-                  className={`w-1.5 h-1.5 rounded-full ${
-                    application.status === "shortlisted"
-                      ? "bg-green-500"
-                      : application.status === "rejected"
-                        ? "bg-red-500"
-                        : "bg-amber-500"
-                  }`}
-                ></span>
-                {application.status.charAt(0).toUpperCase() +
-                  application.status.slice(1)}
-              </span>
-              <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
-                {application.experienceType}
-              </span>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            {application.status !== "shortlisted" && (
-              <button
-                onClick={() => handleStatusUpdate("shortlisted")}
-                disabled={updatingStatus}
-                className="flex items-center gap-2 px-4 py-2.5 bg-green-600 text-white rounded-xl text-sm font-medium hover:bg-green-700 transition-colors disabled:opacity-50"
-              >
-                <CheckCircle2 className="w-4 h-4" />
-                {updatingStatus ? "Updating..." : "Shortlist"}
-              </button>
-            )}
-            {application.status !== "rejected" && (
-              <button
-                onClick={() => handleStatusUpdate("rejected")}
-                disabled={updatingStatus}
-                className="flex items-center gap-2 px-4 py-2.5 bg-red-600 text-white rounded-xl text-sm font-medium hover:bg-red-700 transition-colors disabled:opacity-50"
-              >
-                <XCircle className="w-4 h-4" />
-                {updatingStatus ? "Updating..." : "Reject"}
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Basic Information */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6">
-        <h2 className="text-lg font-semibold text-slate-800 mb-4">
-          Basic Information
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <InfoItem
-            icon={<Mail className="w-5 h-5 text-blue-600" />}
-            label="Email"
-            value={application.email}
-          />
-          <InfoItem
-            icon={<Phone className="w-5 h-5 text-blue-600" />}
-            label="Phone"
-            value={application.phoneNumber}
-          />
-          <InfoItem
-            icon={<MapPin className="w-5 h-5 text-blue-600" />}
-            label="Location"
-            value={application.currentLocation}
-          />
-          <InfoItem
-            icon={<Briefcase className="w-5 h-5 text-blue-600" />}
-            label="Experience Type"
-            value={application.experienceType}
-          />
-          <InfoItem
-            icon={<FileText className="w-5 h-5 text-blue-600" />}
-            label="Category"
-            value={getCategoryName()}
-          />
-          <InfoItem
-            icon={<Calendar className="w-5 h-5 text-blue-600" />}
-            label="Applied On"
-            value={new Date(application.appliedAt).toLocaleDateString("en-IN", {
-              year: "numeric",
-              month: "short",
-              day: "numeric",
-            })}
-          />
-        </div>
-      </div>
-
-      {/* Professional Details */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6">
-        <h2 className="text-lg font-semibold text-slate-800 mb-4">
-          Professional Details
-        </h2>
-        <div className="space-y-4">
-          <div>
-            <p className="text-xs text-slate-500 mb-1">Professional Summary</p>
-            <p className="text-sm text-slate-700">
-              {application.professionalDetails || "Not provided"}
-            </p>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {application.experienceType === "Experienced" && (
-              <InfoItem
-                icon={<Briefcase className="w-5 h-5 text-purple-600" />}
-                label="Total Experience"
-                value={application.totalExperience || "Not provided"}
-              />
-            )}
-            <InfoItem
-              icon={<IndianRupee className="w-5 h-5 text-green-600" />}
-              label="Expected Salary"
-              value={application.expectedSalary || "Not provided"}
-            />
-            <InfoItem
-              icon={<Clock className="w-5 h-5 text-blue-600" />}
-              label="Notice Period"
-              value={application.noticePeriod || "Not provided"}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Documents */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6">
-        <h2 className="text-lg font-semibold text-slate-800 mb-4">Documents</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <DocumentCard
-            label="Profile Photo"
-            fileName={
-              application.profilePhoto
-                ? application.profilePhoto.startsWith("http")
-                  ? application.profilePhoto.split("/").pop()
-                  : application.profilePhoto
-                : ""
-            }
-            fileUrl={application.profilePhoto}
-            isImage={true}
-            onPreview={() =>
-              handleDocumentPreview(
-                "Profile Photo",
-                application.profilePhoto,
-                application.profilePhoto,
-              )
-            }
-          />
-          <DocumentCard
-            label="Government ID"
-            fileName={application.governmentIdDocument}
-            onPreview={() =>
-              handleDocumentPreview(
-                "Government ID",
-                application.governmentIdDocument,
-                null,
-              )
-            }
-          />
-          <DocumentCard
-            label="Resume"
-            fileName={application.resume}
-            onPreview={() =>
-              handleDocumentPreview("Resume", application.resume, null)
-            }
-          />
-        </div>
-      </div>
-
-      {/* Online Profiles */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6">
-        <h2 className="text-lg font-semibold text-slate-800 mb-4">
-          Online Profiles
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="flex items-center gap-3">
-            <Link2 className="w-5 h-5 text-blue-600" />
-            <div className="flex-1 min-w-0">
-              <p className="text-xs text-slate-500">LinkedIn Profile</p>
-              {application.linkedInProfile ? (
-                <a
-                  href={application.linkedInProfile}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm font-medium text-blue-600 hover:underline break-all"
+                  className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold border ${getStatusBadge(
+                    currentStatus,
+                  )}`}
                 >
-                  {application.linkedInProfile}
-                </a>
-              ) : (
-                <p className="text-sm text-slate-500">Not provided</p>
-              )}
+                  <span
+                    className={`w-1.5 h-1.5 rounded-full ${getStatusDot(
+                      currentStatus,
+                    )}`}
+                  />
+                  {currentStatus.charAt(0).toUpperCase() +
+                    currentStatus.slice(1)}
+                </span>
+              </div>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <Globe className="w-5 h-5 text-indigo-600" />
-            <div className="flex-1 min-w-0">
-              <p className="text-xs text-slate-500">Portfolio / Website</p>
-              {application.portfolioWebsite ? (
-                <a
-                  href={application.portfolioWebsite}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm font-medium text-blue-600 hover:underline break-all"
-                >
-                  {application.portfolioWebsite}
-                </a>
-              ) : (
-                <p className="text-sm text-slate-500">Not provided</p>
-              )}
-            </div>
+
+          {/* Status Controls */}
+          <div className="flex flex-wrap items-center gap-2 pt-4 lg:pt-0 border-t lg:border-t-0 border-slate-100">
+            <span className="text-xs font-semibold text-slate-500 mr-1 uppercase tracking-wider">
+              Update Status:
+            </span>
+
+            {/* Shortlist */}
+            <button
+              onClick={() => handleStatusUpdate("shortlisted")}
+              disabled={updatingStatus || currentStatus === "shortlisted"}
+              className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+                currentStatus === "shortlisted"
+                  ? "bg-emerald-600 text-white ring-2 ring-emerald-600/20 shadow-xs cursor-default"
+                  : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200"
+              } disabled:opacity-70`}
+            >
+              <CheckCircle2 className="w-4 h-4" />
+              Shortlist
+            </button>
+
+            {/* Pending */}
+            <button
+              onClick={() => handleStatusUpdate("pending")}
+              disabled={updatingStatus || currentStatus === "pending"}
+              className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+                currentStatus === "pending"
+                  ? "bg-amber-600 text-white ring-2 ring-amber-600/20 shadow-xs cursor-default"
+                  : "bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200"
+              } disabled:opacity-70`}
+            >
+              <Clock className="w-4 h-4" />
+              Pending
+            </button>
+
+            {/* Reject */}
+            <button
+              onClick={() => handleStatusUpdate("rejected")}
+              disabled={updatingStatus || currentStatus === "rejected"}
+              className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+                currentStatus === "rejected"
+                  ? "bg-rose-600 text-white ring-2 ring-rose-600/20 shadow-xs cursor-default"
+                  : "bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200"
+              } disabled:opacity-70`}
+            >
+              <XCircle className="w-4 h-4" />
+              Reject
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Additional Information */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6">
-        <h2 className="text-lg font-semibold text-slate-800 mb-4">
-          Additional Information
-        </h2>
-        <div className="space-y-4">
+      {/* Grid: Applicant & Job Overview */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Contact & Profile Info */}
+        <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-xs p-5 sm:p-6 space-y-6">
+          <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-3">
+            Contact & Application Details
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <InfoItem
+              icon={<Mail className="w-4 h-4 text-blue-600" />}
+              label="Email Address"
+              value={
+                <a
+                  href={`mailto:${candidateEmail}`}
+                  className="text-blue-600 hover:underline break-all"
+                >
+                  {candidateEmail}
+                </a>
+              }
+            />
+
+            <InfoItem
+              icon={<Phone className="w-4 h-4 text-blue-600" />}
+              label="Phone Number"
+              value={
+                candidatePhone !== "Not provided" ? (
+                  <a
+                    href={`tel:${candidatePhone}`}
+                    className="text-slate-800 hover:text-blue-600"
+                  >
+                    {candidatePhone}
+                  </a>
+                ) : (
+                  "Not provided"
+                )
+              }
+            />
+
+            <InfoItem
+              icon={<Briefcase className="w-4 h-4 text-blue-600" />}
+              label="Applied For Role"
+              value={jobTitle}
+            />
+
+            <InfoItem
+              icon={<Building2 className="w-4 h-4 text-blue-600" />}
+              label="Company"
+              value={companyName}
+            />
+
+            <InfoItem
+              icon={<MapPin className="w-4 h-4 text-blue-600" />}
+              label="Location"
+              value={candidateLocation}
+            />
+
+            <InfoItem
+              icon={<Award className="w-4 h-4 text-blue-600" />}
+              label="Experience Level"
+              value={candidateExperience}
+            />
+
+            <InfoItem
+              icon={<Calendar className="w-4 h-4 text-blue-600" />}
+              label="Applied On"
+              value={
+                appliedDate
+                  ? new Date(appliedDate).toLocaleDateString("en-IN", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })
+                  : "N/A"
+              }
+            />
+
+            <InfoItem
+              icon={<FileText className="w-4 h-4 text-blue-600" />}
+              label="Application ID"
+              value={
+                <span className="font-mono text-xs text-slate-500 break-all">
+                  {application._id}
+                </span>
+              }
+            />
+          </div>
+
+          {/* Skills & Expertise */}
           <div>
-            <p className="text-xs text-slate-500 mb-2">Cover Letter</p>
-            <div className="p-4 bg-slate-50 rounded-xl">
-              <p className="text-sm text-slate-700 whitespace-pre-wrap">
-                {application.coverLetter || "Not provided"}
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
+              Skills / Tech Stack
+            </h3>
+            <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-100">
+              <p className="text-sm text-slate-800 leading-relaxed">
+                {candidateSkills}
               </p>
             </div>
           </div>
+
+          {/* Cover Letter / About */}
           <div>
-            <p className="text-xs text-slate-500 mb-2">
-              Additional Information
-            </p>
-            <div className="p-4 bg-slate-50 rounded-xl">
-              <p className="text-sm text-slate-700 whitespace-pre-wrap">
-                {application.additionalInformation || "Not provided"}
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
+              Cover Letter / Introduction
+            </h3>
+            <div className="p-4 bg-slate-50 rounded-xl border border-slate-100 max-h-60 overflow-y-auto">
+              <p className="text-sm text-slate-700 whitespace-pre-wrap leading-relaxed">
+                {candidateCoverLetter}
               </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Sidebar: Resume & Online Links */}
+        <div className="space-y-6">
+          {/* Resume Document Card */}
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-xs p-5 space-y-4">
+            <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-3">
+              Candidate Resume
+            </h2>
+
+            {resumeFileName ? (
+              <div className="p-4 rounded-xl border border-blue-100 bg-blue-50/50 space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 rounded-lg bg-blue-600 text-white shadow-xs">
+                    <FileTextIcon className="w-5 h-5" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold text-slate-900 truncate">
+                      Resume Attached
+                    </p>
+                    <p className="text-xs text-slate-500 truncate">
+                      {resumeFileName}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 pt-2">
+                  <a
+                    href={resumeDownloadUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700 transition-colors shadow-xs"
+                  >
+                    <Eye className="w-3.5 h-3.5" />
+                    View Resume
+                  </a>
+
+                  <a
+                    href={resumeDownloadUrl}
+                    download
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center p-2 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors"
+                    title="Download Resume"
+                  >
+                    <DownloadCloud className="w-4 h-4" />
+                  </a>
+                </div>
+              </div>
+            ) : (
+              <div className="p-6 text-center rounded-xl bg-slate-50 border border-slate-100">
+                <FileText className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+                <p className="text-sm font-medium text-slate-600">
+                  No resume file provided
+                </p>
+                <p className="text-xs text-slate-400 mt-1">
+                  Applicant did not upload a separate resume document.
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* Online Profiles */}
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-xs p-5 space-y-4">
+            <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-3">
+              Online Profiles
+            </h2>
+
+            <div className="space-y-3">
+              {/* LinkedIn */}
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100">
+                <div className="p-2 rounded-lg bg-blue-100 text-blue-700">
+                  <Link2 className="w-4 h-4" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-medium text-slate-500">LinkedIn</p>
+                  {candidateLinkedIn ? (
+                    <a
+                      href={candidateLinkedIn}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs font-semibold text-blue-600 hover:underline truncate block"
+                    >
+                      {candidateLinkedIn}
+                    </a>
+                  ) : (
+                    <p className="text-xs text-slate-400">Not provided</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Portfolio */}
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100">
+                <div className="p-2 rounded-lg bg-indigo-100 text-indigo-700">
+                  <Globe className="w-4 h-4" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-medium text-slate-500">
+                    Portfolio / Website
+                  </p>
+                  {candidatePortfolio ? (
+                    <a
+                      href={candidatePortfolio}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs font-semibold text-blue-600 hover:underline truncate block"
+                    >
+                      {candidatePortfolio}
+                    </a>
+                  ) : (
+                    <p className="text-xs text-slate-400">Not provided</p>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -466,7 +602,7 @@ const ApplicationDetails = () => {
         />
       )}
 
-      {/* Notification */}
+      {/* Notification Toast */}
       <Toast
         message={notification?.message}
         type={notification?.type}
@@ -478,121 +614,33 @@ const ApplicationDetails = () => {
 
 // Info Item Component
 const InfoItem = ({ icon, label, value }) => (
-  <div className="flex items-start gap-3">
-    <div className="p-2 rounded-lg bg-blue-50 flex-shrink-0">{icon}</div>
-    <div className="min-w-0">
-      <p className="text-xs text-slate-500">{label}</p>
-      <p className="text-sm font-medium text-slate-800 break-words">{value}</p>
+  <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-50/70 border border-slate-100/80">
+    <div className="p-2 rounded-lg bg-white shadow-xs border border-slate-200/60 flex-shrink-0">
+      {icon}
+    </div>
+    <div className="min-w-0 flex-1">
+      <p className="text-xs font-medium text-slate-500">{label}</p>
+      <div className="text-sm font-semibold text-slate-800 break-words mt-0.5">
+        {value}
+      </div>
     </div>
   </div>
 );
 
-// Document Card Component
-const DocumentCard = ({ label, fileName, fileUrl, isImage, onPreview }) => {
-  const isAvailable = Boolean(fileName || fileUrl);
-
-  const handleDownload = (e) => {
-    e.stopPropagation();
-    if (!isAvailable) return;
-
-    let downloadUrl;
-    if (
-      fileUrl &&
-      (fileUrl.startsWith("http://") || fileUrl.startsWith("https://"))
-    ) {
-      downloadUrl = fileUrl;
-    } else if (isImage) {
-      downloadUrl = `/uploads/profile-photos/${fileName}`;
-    } else {
-      downloadUrl = `/documents/${fileName}`;
-    }
-
-    // Trigger download
-    const link = document.createElement("a");
-    link.href = downloadUrl;
-    link.download = fileName || "download";
-    link.target = "_blank";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const handlePreviewClick = (e) => {
-    e.stopPropagation();
-    if (isAvailable && onPreview) {
-      onPreview();
-    }
-  };
-
-  return (
-    <div
-      onClick={isAvailable ? onPreview : undefined}
-      className={`p-4 border border-slate-200 rounded-xl transition-all ${
-        isAvailable
-          ? "cursor-pointer hover:border-blue-300 hover:shadow-md group"
-          : ""
-      }`}
-    >
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-3 flex-1 min-w-0">
-          <div className="p-2 rounded-lg bg-slate-50 flex-shrink-0">
-            {isImage ? (
-              <Image className="w-5 h-5 text-blue-600" />
-            ) : (
-              <FileText className="w-5 h-5 text-slate-600" />
-            )}
-          </div>
-          <div className="min-w-0">
-            <p className="text-sm font-medium text-slate-800">{label}</p>
-            <p className="text-xs text-slate-500 truncate">
-              {isAvailable ? fileName || "Available" : "Not provided"}
-            </p>
-          </div>
-        </div>
-        {isAvailable && (
-          <div className="flex items-center gap-1 flex-shrink-0">
-            <button
-              onClick={handleDownload}
-              className="p-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors"
-              title="Download"
-            >
-              <DownloadCloud className="w-4 h-4" />
-            </button>
-            <button
-              onClick={handlePreviewClick}
-              className="p-2 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-              title="Preview"
-            >
-              <Eye className="w-4 h-4" />
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
-// Document Preview Modal Component
+// Document Preview Modal
 const DocumentPreviewModal = ({ document, onClose }) => {
   const { title, fileName, url, type } = document;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col">
-        {/* Modal Header */}
-        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-slate-100">
+    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in duration-200">
+        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="p-2 rounded-lg bg-blue-50">
-              {type === "image" || title === "Profile Photo" ? (
-                <FileImage className="w-5 h-5 text-blue-600" />
-              ) : type === "pdf" ? (
-                <FileTextIcon className="w-5 h-5 text-red-600" />
-              ) : (
-                <FileText className="w-5 h-5 text-slate-600" />
-              )}
+            <div className="p-2 rounded-lg bg-blue-50 text-blue-600">
+              <FileTextIcon className="w-5 h-5" />
             </div>
             <div className="min-w-0">
-              <h3 className="text-lg font-semibold text-slate-900 truncate">
+              <h3 className="text-base font-bold text-slate-900 truncate">
                 {title}
               </h3>
               <p className="text-xs text-slate-500 truncate">{fileName}</p>
@@ -600,69 +648,48 @@ const DocumentPreviewModal = ({ document, onClose }) => {
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg hover:bg-slate-100 transition-colors flex-shrink-0"
+            className="p-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
           >
-            <X className="w-5 h-5 text-slate-500" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Modal Content */}
-        <div className="flex-1 overflow-auto p-4 sm:p-6 bg-slate-50">
-          {type === "image" || title === "Profile Photo" ? (
+        <div className="flex-1 overflow-auto p-4 bg-slate-100">
+          {type === "image" ? (
             <div className="flex items-center justify-center h-full">
               <img
                 src={url}
                 alt={title}
-                className="max-w-full max-h-[70vh] object-contain rounded-xl shadow-lg"
-                onError={(e) => {
-                  e.target.style.display = "none";
-                  const parent = e.target.parentElement;
-                  const fallback = document.createElement("div");
-                  fallback.className = "text-center text-slate-500";
-                  fallback.innerHTML = "Failed to load image preview";
-                  parent.appendChild(fallback);
-                }}
+                className="max-w-full max-h-[70vh] object-contain rounded-xl shadow-md"
               />
             </div>
-          ) : type === "pdf" ? (
-            <div className="h-[70vh] rounded-xl overflow-hidden shadow-lg bg-white">
-              <iframe src={url} title={title} className="w-full h-full" />
-            </div>
           ) : (
-            <div className="flex flex-col items-center justify-center py-16">
-              <FileText className="w-16 h-16 text-slate-400 mb-4" />
-              <p className="text-sm text-slate-500">
-                Preview not available for this file type
-              </p>
-              <a
-                href={url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-4 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl text-sm font-medium hover:shadow-lg transition-shadow"
-              >
-                Open File
-              </a>
+            <div className="h-[70vh] rounded-xl overflow-hidden shadow-md bg-white">
+              <iframe
+                src={url}
+                title={title}
+                className="w-full h-full border-0"
+              />
             </div>
           )}
         </div>
 
-        {/* Modal Footer */}
         <div className="flex items-center justify-between p-4 border-t border-slate-100 bg-white">
-          <p className="text-xs text-slate-500">Previewing: {fileName}</p>
+          <p className="text-xs text-slate-500 truncate">Previewing: {fileName}</p>
           <div className="flex gap-2">
             <a
               href={url}
               download={fileName}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-blue-600 hover:bg-blue-50 transition-colors"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors"
             >
               <DownloadCloud className="w-4 h-4" />
               Download
             </a>
             <button
               onClick={onClose}
-              className="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors"
+              className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-colors"
             >
               Close
             </button>

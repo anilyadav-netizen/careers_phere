@@ -8,6 +8,27 @@ const FrontendApplicationSchema = new mongoose.Schema(
       trim: true,
       index: true,
     },
+    companyName: {
+      type: String,
+      trim: true,
+      default: "",
+      index: true,
+    },
+    companyLogo: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    opportunityId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "RoleOpportunity",
+      default: null,
+    },
+    opportunityRole: {
+      type: String,
+      trim: true,
+      default: "",
+    },
     fullName: {
       type: String,
       required: [true, "Full name is required"],
@@ -31,13 +52,13 @@ const FrontendApplicationSchema = new mongoose.Schema(
     },
     experience: {
       type: String,
-      required: [true, "Experience is required"],
       trim: true,
+      default: "Not specified",
     },
     currentCountry: {
       type: String,
-      required: [true, "Current country is required"],
       trim: true,
+      default: "",
     },
     currentLocation: {
       type: String,
@@ -46,18 +67,18 @@ const FrontendApplicationSchema = new mongoose.Schema(
     },
     preferredRegion: {
       type: String,
-      required: [true, "Preferred region is required"],
       trim: true,
+      default: "Global",
     },
     preferredJobMarket: {
       type: String,
-      required: [true, "Preferred job market is required"],
       trim: true,
+      default: "Worldwide / Open",
     },
     preferredWorkMode: {
       type: String,
-      required: [true, "Preferred work mode is required"],
       trim: true,
+      default: "Remote / Hybrid",
     },
     relocationPreference: {
       type: String,
@@ -76,13 +97,13 @@ const FrontendApplicationSchema = new mongoose.Schema(
     },
     salaryCurrency: {
       type: String,
-      required: [true, "Salary currency is required"],
       trim: true,
+      default: "USD",
     },
     noticePeriod: {
       type: String,
-      required: [true, "Availability / notice period is required"],
       trim: true,
+      default: "Immediate / Flexible",
     },
     preferredTimezone: {
       type: String,
@@ -134,7 +155,14 @@ const FrontendApplicationSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "reviewed", "shortlisted", "interview", "rejected", "hired"],
+      enum: [
+        "pending",
+        "reviewed",
+        "shortlisted",
+        "interview",
+        "rejected",
+        "hired",
+      ],
       default: "pending",
       index: true,
     },
@@ -146,7 +174,7 @@ const FrontendApplicationSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 // Indexes for faster lookups
@@ -156,5 +184,5 @@ FrontendApplicationSchema.index({ role: 1 });
 
 module.exports = mongoose.model(
   "FrontendApplication",
-  FrontendApplicationSchema
+  FrontendApplicationSchema,
 );

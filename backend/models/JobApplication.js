@@ -12,7 +12,8 @@ const JobApplicationSchema = new mongoose.Schema(
     applicant: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      required: false,
+      default: null,
       index: true,
     },
 
@@ -73,7 +74,13 @@ const JobApplicationSchema = new mongoose.Schema(
   },
 );
 
-// One user can apply to a particular job only once.
-JobApplicationSchema.index({ job: 1, applicant: 1 }, { unique: true });
+// One logged-in user can apply to a particular job only once.
+JobApplicationSchema.index(
+  { job: 1, applicant: 1 },
+  {
+    unique: true,
+    partialFilterExpression: { applicant: { $type: "objectId" } },
+  }
+);
 
 module.exports = mongoose.model("JobApplication", JobApplicationSchema);

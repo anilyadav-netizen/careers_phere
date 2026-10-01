@@ -48,6 +48,41 @@ const protect = async (req, res, next) => {
   }
 };
 
+// Optional protect middleware - allows unauthenticated/guest requests while attaching req.user if a valid token is present
+const optionalProtect = async (req, res, next) => {
+  try {
+    let token;
+
+    // Get token from cookie
+    if (req.cookies && req.cookies.token) {
+      token = req.cookies.token;
+    }
+
+    // If no cookie, check Authorization header
+    if (!token && req.headers.authorization) {
+      if (req.headers.authorization.startsWith("Bearer")) {
+        token = req.headers.authorization.split(" ")[1];
+      }
+    }
+
+    if (token) {
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await User.findById(decoded.id);
+        if (user) {
+          req.user = user;
+        }
+      } catch (err) {
+        // Token expired/invalid - proceed as guest
+      }
+    }
+
+    next();
+  } catch (error) {
+    next();
+  }
+};
+
 // Admin-only guard - must run AFTER protect (needs req.user set)
 const admin = (req, res, next) => {
   if (req.user && req.user.role === "admin") {
@@ -60,4 +95,5 @@ const admin = (req, res, next) => {
   }
 };
 
-module.exports = { protect, admin };
+module.exports = { protect, optionalProtect, admin };
+

@@ -17,7 +17,7 @@ const {
   getSavedJobs,
 } = require("../controllers/jobController");
 
-const { protect } = require("../middleware/auth");
+const { protect, optionalProtect } = require("../middleware/auth");
 const {
   uploadProfileFields,
   handleUploadError,
@@ -49,7 +49,7 @@ router.get("/saved", protect, getSavedJobs);
 // Apply to job
 router.post(
   "/:id/apply",
-  protect,
+  optionalProtect,
   uploadProfileFields,
   handleUploadError,
   applyToJob,

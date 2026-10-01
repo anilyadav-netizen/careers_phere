@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
   BriefcaseBusiness,
+  Building2,
   Check,
   ChevronDown,
   Clock3,
@@ -21,6 +22,7 @@ import {
   Zap,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   FaCss3Alt,
   FaGithub,
@@ -29,11 +31,21 @@ import {
   FaReact,
 } from "react-icons/fa";
 import RoleApplyModal from "../components/RoleApplyModal";
+import { fetchPublicOpportunities } from "../redux/slicer/roleOpportunitySlice";
 
 const FrontendDeveloprs = () => {
+  const dispatch = useDispatch();
+  const { publicList: opportunities = [], publicLoading } = useSelector(
+    (state) => state.roleOpportunities || {}
+  );
+
   const [openFaq, setOpenFaq] = useState(-1);
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
   const [selectedMarket, setSelectedMarket] = useState(null);
+
+  useEffect(() => {
+    dispatch(fetchPublicOpportunities({ roleCategory: "Frontend Developer" }));
+  }, [dispatch]);
 
   useEffect(() => {
     const initAOS = () => {
@@ -415,30 +427,30 @@ const FrontendDeveloprs = () => {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.55, delay: 0.15 }}
-                className="inline-flex items-center gap-2 border border-[#30AFFF]/30 bg-[#30AFFF]/5 rounded-full px-3 py-1.5 mb-3 shadow-sm"
+                className="inline-flex items-center gap-2 border border-[#30AFFF]/30 bg-[#30AFFF]/5 rounded-full px-3.5 py-1.5 mb-3 shadow-sm"
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-[#30AFFF] animate-pulse" />
+                <Code2 size={13} className="text-[#30AFFF]" />
                 <span className="text-[10px] font-bold tracking-[0.18em] uppercase text-[#159FEF]">
-                  We're hiring · Frontend Developer
+                  Frontend Engineering · Web Applications
                 </span>
               </motion.div>
 
-              <h1 className="text-[28px] md:text-4xl lg:text-5xl font-bold tracking-tight leading-[0.95] max-w-5xl text-slate-900">
-                Build the interface{" "}
+              <h1 className="text-[28px] md:text-4xl lg:text-5xl font-bold tracking-tight leading-[0.98] max-w-5xl text-slate-900">
+                Build high-performance web apps with{" "}
                 <motion.span
                   initial={{ opacity: 0, x: 18 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.65, delay: 0.35 }}
                   className="inline-block text-[#30AFFF]"
                 >
-                  of what's next.
+                  React, TypeScript & Tailwind.
                 </motion.span>
               </h1>
 
-              <p className="mt-3 max-w-2xl text-sm sm:text-base text-slate-500 leading-6">
-                We're looking for a frontend developer who cares about the
-                details — from a perfectly aligned pixel to a fast, accessible
-                experience that thousands of people can use.
+              <p className="mt-3.5 max-w-2xl text-sm sm:text-base text-slate-500 leading-relaxed">
+                We're hiring Frontend Developers who care about pixel-perfect craft,
+                reusable component design systems, lightning-fast Core Web Vitals, and
+                responsive experiences that delight users across all screens.
               </p>
 
               <div className="flex flex-row gap-2.5 mt-6">
@@ -467,9 +479,9 @@ const FrontendDeveloprs = () => {
 
               <div className="grid grid-cols-3 gap-3 mt-7 max-w-2xl">
                 {[
-                  ["8+", "Global markets"],
-                  ["3", "Work modes"],
-                  ["7", "Currencies"],
+                  ["React 19", "Modern UI Lib"],
+                  ["TypeScript", "Type-safe code"],
+                  ["100%", "Responsive Web"],
                 ].map(([value, label], index) => (
                   <motion.div
                     key={label}
@@ -477,12 +489,12 @@ const FrontendDeveloprs = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
                     whileHover={{ y: -3 }}
-                    className="border border-slate-100 rounded-2xl p-3 bg-white shadow-sm"
+                    className="border border-[#A0E9FF]/40 rounded-2xl p-3 bg-white shadow-xs"
                   >
-                    <div className="text-base md:text-2xl font-black tracking-tight text-slate-900">
+                    <div className="text-base md:text-xl font-black tracking-tight text-[#30AFFF]">
                       {value}
                     </div>
-                    <div className="text-[10px] uppercase tracking-wider text-slate-400 mt-0.5">
+                    <div className="text-[10px] uppercase tracking-wider text-slate-400 mt-0.5 font-bold">
                       {label}
                     </div>
                   </motion.div>
@@ -490,6 +502,7 @@ const FrontendDeveloprs = () => {
               </div>
             </motion.div>
 
+            {/* FRONTEND ROLE DEFINING MOCKUP */}
             <motion.div
               initial={{ opacity: 0, x: 40, scale: 0.97 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
@@ -502,72 +515,111 @@ const FrontendDeveloprs = () => {
               className="relative min-w-0"
             >
               <motion.div
-                whileHover={{ y: -5 }}
+                whileHover={{ y: -4 }}
                 transition={{ duration: 0.25 }}
-                className="relative min-h-[360px] md:min-h-[450px] rounded-3xl overflow-hidden border border-slate-100 bg-slate-50 shadow-[0_15px_45px_rgba(15,23,42,0.10)]"
+                className="relative rounded-3xl overflow-hidden border border-[#A0E9FF]/60 bg-slate-900 shadow-[0_20px_50px_rgba(48,175,255,0.18)]"
               >
-                <img
-                  src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1600&q=90"
-                  alt="Frontend developer workspace"
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-slate-900/10 to-transparent" />
-
-                <div className="absolute top-5 left-5 right-5 flex items-center justify-between">
-                  <div className="px-3 py-1.5 rounded-full bg-white/90 border border-white/60 backdrop-blur-md text-[9px] font-bold tracking-[0.18em] text-slate-700">
-                    GLOBAL FRONTEND
+                {/* Browser / IDE Top Bar */}
+                <div className="flex items-center justify-between px-4 py-3 bg-slate-950/80 border-b border-slate-800">
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-full bg-rose-500/90" />
+                    <span className="w-3 h-3 rounded-full bg-amber-500/90" />
+                    <span className="w-3 h-3 rounded-full bg-emerald-500/90" />
+                    <div className="ml-3 flex items-center gap-1.5 px-3 py-1 rounded-md bg-slate-800/80 text-[11px] font-mono text-slate-300">
+                      <Code2 size={12} className="text-[#30AFFF]" />
+                      <span>AppHero.tsx</span>
+                    </div>
                   </div>
-
-                  <motion.div
-                    animate={{ y: [0, -5, 0] }}
-                    transition={{
-                      duration: 3,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                    className="w-9 h-9 rounded-full bg-white/90 border border-white/60 backdrop-blur-md flex items-center justify-center shadow-md"
-                  >
-                    <Globe2 className="text-[#30AFFF]" size={19} />
-                  </motion.div>
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#30AFFF]/15 border border-[#30AFFF]/30 text-[10px] font-bold text-[#30AFFF]">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#30AFFF] animate-ping" />
+                      Live Preview
+                    </span>
+                  </div>
                 </div>
 
-                <div className="absolute left-5 right-5 bottom-5">
-                  <div className="max-w-sm rounded-2xl border border-white/60 bg-white/90 backdrop-blur-xl p-4 shadow-lg">
-                    <div className="flex items-center gap-2 text-[#159FEF] text-[10px] font-bold tracking-widest uppercase">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#30AFFF]" />
-                      Work without borders
+                {/* Split Mockup: Code on Top, Live UI below */}
+                <div className="p-4 sm:p-5 space-y-4">
+                  {/* Code Editor Snippet */}
+                  <div className="rounded-xl bg-slate-950/90 border border-slate-800/80 p-3.5 font-mono text-xs text-slate-300 overflow-x-auto shadow-inner">
+                    <div className="text-slate-500 text-[10px] pb-1">// Frontend React Component</div>
+                    <div>
+                      <span className="text-rose-400">export function</span>{" "}
+                      <span className="text-amber-300">FrontendHero</span>() &#123;
+                    </div>
+                    <div className="pl-4">
+                      <span className="text-rose-400">const</span> [speed, setSpeed] ={" "}
+                      <span className="text-[#30AFFF]">useState</span>(<span className="text-emerald-400">'60fps'</span>);
+                    </div>
+                    <div className="pl-4">
+                      <span className="text-rose-400">return</span> (
+                    </div>
+                    <div className="pl-8 text-sky-300">
+                      &lt;<span className="text-indigo-400">div</span>{" "}
+                      <span className="text-slate-400">className</span>=
+                      <span className="text-emerald-400">"grid gap-4 bg-white/95 rounded-2xl p-4 shadow-xl"</span>&gt;
+                    </div>
+                    <div className="pl-12 text-slate-400">
+                      &lt;<span className="text-amber-300">WebNavigation</span>{" "}
+                      <span className="text-slate-400">responsive</span>=&#123;<span className="text-purple-400">true</span>&#125; /&gt;
+                    </div>
+                    <div className="pl-8 text-sky-300">
+                      &lt;/<span className="text-indigo-400">div</span>&gt;
+                    </div>
+                    <div>&#125;</div>
+                  </div>
+
+                  {/* Rendered Live Web UI Card */}
+                  <div className="rounded-2xl bg-white p-4 shadow-lg border border-slate-100">
+                    <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-lg bg-[#30AFFF] flex items-center justify-center text-white font-bold text-xs">
+                          UI
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-slate-900 leading-tight">CareerSphere Web</div>
+                          <div className="text-[10px] text-slate-400">frontend.careersphere.dev</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold text-[9px] border border-emerald-200">
+                          99 Core Web Vitals
+                        </span>
+                      </div>
                     </div>
 
-                    <div className="mt-1 md:mt-2 text-base md:text-2xl font-black tracking-tight text-slate-900">
-                      Build for
-                      <span className="text-[#30AFFF]"> global users.</span>
-                    </div>
-
-                    <div className="mt-1 text-xs leading-4 md:leading-5 text-slate-500">
-                      Explore international frontend opportunities across
-                      remote, hybrid and on-site teams.
+                    <div className="mt-3 grid grid-cols-2 gap-2">
+                      <div className="rounded-xl border border-slate-100 bg-[#F7FCFF] p-2.5">
+                        <div className="text-[10px] uppercase font-bold text-slate-400">Render Speed</div>
+                        <div className="text-base font-black text-slate-900 mt-0.5">0.4s FCP</div>
+                        <div className="text-[10px] text-emerald-600 font-semibold">Fastest tier</div>
+                      </div>
+                      <div className="rounded-xl border border-slate-100 bg-[#F7FCFF] p-2.5">
+                        <div className="text-[10px] uppercase font-bold text-slate-400">Components</div>
+                        <div className="text-base font-black text-[#30AFFF] mt-0.5">50+ Modular</div>
+                        <div className="text-[10px] text-slate-500 font-semibold">Tailwind + CSS</div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </motion.div>
 
+              {/* Floating tech badges */}
               <motion.div
                 initial={{ opacity: 0, x: -15 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5, delay: 0.9 }}
-                className="absolute -bottom-3 -left-3 hidden sm:flex items-center gap-2 rounded-2xl border border-slate-100 bg-white px-3 py-2.5 shadow-[0_15px_45px_rgba(15,23,42,0.10)]"
+                className="absolute -bottom-3 -left-3 hidden sm:flex items-center gap-2.5 rounded-2xl border border-slate-100 bg-white px-3.5 py-2.5 shadow-lg"
               >
-                <div className="w-7 h-7 rounded-lg bg-[#30AFFF]/10 flex items-center justify-center">
-                  <Globe2 size={15} className="text-[#30AFFF]" />
+                <div className="w-8 h-8 rounded-xl bg-[#30AFFF]/15 flex items-center justify-center text-[#30AFFF]">
+                  <FaReact size={18} />
                 </div>
-
                 <div>
-                  <div className="text-[10px] text-slate-400">
-                    OPPORTUNITIES
+                  <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">
+                    PRIMARY STACK
                   </div>
-                  <div className="text-xs font-bold text-slate-800">
-                    International markets
+                  <div className="text-xs font-bold text-slate-900">
+                    React 19 & Next.js
                   </div>
                 </div>
               </motion.div>
@@ -576,17 +628,16 @@ const FrontendDeveloprs = () => {
                 initial={{ opacity: 0, x: 15 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5, delay: 1 }}
-                className="absolute -top-3 -right-3 hidden sm:flex items-center gap-2 rounded-2xl border border-slate-100 bg-white px-3 py-2.5 shadow-[0_15px_45px_rgba(15,23,42,0.10)]"
+                className="absolute -top-3 -right-3 hidden sm:flex items-center gap-2.5 rounded-2xl border border-slate-100 bg-white px-3.5 py-2.5 shadow-lg"
               >
                 <div>
-                  <div className="text-[10px] text-slate-400">WORK MODE</div>
-                  <div className="text-xs font-bold text-slate-800">
-                    Remote · Hybrid · On-site
+                  <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">INTERFACE</div>
+                  <div className="text-xs font-bold text-slate-900">
+                    Tailwind & TypeScript
                   </div>
                 </div>
-
-                <div className="w-7 h-7 rounded-lg bg-[#30AFFF]/10 flex items-center justify-center">
-                  <Laptop2 size={15} className="text-[#30AFFF]" />
+                <div className="w-8 h-8 rounded-xl bg-[#30AFFF]/15 flex items-center justify-center text-[#30AFFF]">
+                  <Monitor size={16} />
                 </div>
               </motion.div>
             </motion.div>
@@ -689,103 +740,260 @@ const FrontendDeveloprs = () => {
           </div>
 
           <div className="relative grid sm:grid-cols-2 xl:grid-cols-4 gap-3 mt-8">
-            {globalMarkets.map((market, index) => (
-              <motion.div
-                key={market.country}
-                custom={index}
-                variants={cardReveal}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.1 }}
-                whileHover={{ y: -5 }}
-                className="group rounded-2xl border border-slate-100 bg-white shadow-sm hover:border-[#30AFFF]/30 hover:shadow-[0_15px_45px_rgba(15,23,42,0.10)] transition-all p-4 flex flex-col"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-11 h-11 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-center shadow-sm overflow-hidden">
-                      <img
-                        src={market.flag}
-                        alt={`${market.country} flag`}
-                        className="w-8 h-6 object-cover rounded-sm border border-slate-100"
-                      />
-                    </div>
+            {opportunities.length > 0 ? (
+              opportunities.map((opp, index) => {
+                const displaySalary = opp.salary || "Competitive";
 
-                    <div>
-                      <h3 className="text-sm font-bold text-slate-800">
-                        {market.country}
-                      </h3>
-                      <p className="text-[10px] text-slate-400 mt-0.5">
-                        {market.region}
-                      </p>
-                    </div>
-                  </div>
-
-                  <span className="text-[9px] font-bold tracking-wider rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/5 text-[#159FEF] px-2 py-1">
-                    {market.currency}
-                  </span>
-                </div>
-
-                <div className="mt-5">
-                  <div className="flex items-center gap-1.5 text-[9px] uppercase tracking-[0.16em] text-slate-400 font-bold">
-                    <DollarSign size={11} />
-                    Indicative payout
-                  </div>
-
-                  <div className="text-lg font-black tracking-tight text-slate-900 mt-1">
-                    {market.payout}
-                  </div>
-
-                  <div className="text-[9px] text-slate-400 mt-0.5">
-                    Typical annual range · role dependent
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap gap-1.5 mt-4">
-                  {market.modes.map((mode) => (
-                    <span
-                      key={mode}
-                      className="rounded-full border border-slate-200 bg-slate-50 px-2 py-1 text-[9px] text-slate-600"
-                    >
-                      {mode}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="mt-4 pt-4 border-t border-slate-100 space-y-2.5">
-                  <div className="flex items-start gap-2">
-                    <BriefcaseBusiness
-                      size={13}
-                      className="text-[#30AFFF] mt-0.5 shrink-0"
-                    />
-                    <span className="text-[10px] leading-4 text-slate-500">
-                      {market.focus}
-                    </span>
-                  </div>
-
-                  <div className="flex items-start gap-2">
-                    <Plane
-                      size={13}
-                      className="text-[#30AFFF] mt-0.5 shrink-0"
-                    />
-                    <span className="text-[10px] leading-4 text-slate-500">
-                      {market.relocation}
-                    </span>
-                  </div>
-                </div>
-
-                {/* APPLY BUTTON — RIGHT ALIGNED */}
-                <div className="flex justify-end mt-5 pt-4 border-t border-slate-100 mt-auto">
-                  <button
-                    type="button"
-                    onClick={() => handleMarketApply(market)}
-                    className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-3 py-2 text-[10px] font-bold text-white shadow-sm hover:bg-[#159FEF] transition"
+                return (
+                  <motion.div
+                    key={opp._id || index}
+                    custom={index}
+                    variants={cardReveal}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, amount: 0.1 }}
+                    whileHover={{ y: -5 }}
+                    className="group rounded-2xl border border-slate-100 bg-white shadow-sm hover:border-[#30AFFF]/30 hover:shadow-[0_15px_45px_rgba(15,23,42,0.10)] transition-all p-4 flex flex-col"
                   >
-                    Apply
-                    <ArrowRight size={13} />
-                  </button>
-                </div>
-              </motion.div>
-            ))}
+                    {/* Company Header */}
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-11 h-11 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-center shadow-sm overflow-hidden shrink-0">
+                          {opp.companyLogo ? (
+                            <img
+                              src={opp.companyLogo}
+                              alt={opp.companyName}
+                              className="w-full h-full object-contain p-1"
+                              onError={(e) => {
+                                e.target.style.display = "none";
+                              }}
+                            />
+                          ) : (
+                            <Building2 size={20} className="text-[#30AFFF]" />
+                          )}
+                        </div>
+
+                        <div className="min-w-0">
+                          <h3
+                            className="text-sm font-bold text-slate-800 truncate"
+                            title={opp.companyName}
+                          >
+                            {opp.companyName}
+                          </h3>
+                          <p className="text-[10px] text-slate-400 mt-0.5 truncate">
+                            {opp.roleTitle || opp.roleCategory || "Frontend Developer"}
+                          </p>
+                        </div>
+                      </div>
+
+                      {opp.salaryCurrency && (
+                        <span className="text-[9px] font-bold tracking-wider rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/5 text-[#159FEF] px-2 py-0.5 shrink-0">
+                          {opp.salaryCurrency}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Countries with Flags */}
+                    <div className="mt-4">
+                      <div className="flex items-center gap-1 text-[9px] uppercase tracking-[0.16em] text-slate-400 font-bold mb-1.5">
+                        <Globe2 size={11} className="text-[#30AFFF]" />
+                        <span>Hiring Locations</span>
+                      </div>
+
+                      <div className="flex flex-wrap gap-1">
+                        {opp.countries && opp.countries.length > 0 ? (
+                          opp.countries.map((c, cIdx) => (
+                            <span
+                              key={cIdx}
+                              className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] text-slate-700 font-medium"
+                            >
+                              {c.flag && (
+                                c.flag.startsWith("http") ? (
+                                  <img
+                                    src={c.flag}
+                                    alt={c.countryName || "flag"}
+                                    className="w-3.5 h-2.5 object-cover rounded-2xs"
+                                    onError={(e) => {
+                                      e.target.style.display = "none";
+                                    }}
+                                  />
+                                ) : (
+                                  <span>{c.flag}</span>
+                                )
+                              )}
+                              <span>{c.countryName || "Target Market"}</span>
+                            </span>
+                          ))
+                        ) : (
+                          <span className="text-[10px] text-slate-500 font-medium">
+                            Worldwide / Remote
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Salary */}
+                    <div className="mt-4">
+                      <div className="flex items-center gap-1.5 text-[9px] uppercase tracking-[0.16em] text-slate-400 font-bold">
+                        <DollarSign size={11} />
+                        Indicative Payout
+                      </div>
+
+                      <div className="text-base font-black tracking-tight text-slate-900 mt-1">
+                        {displaySalary}
+                      </div>
+
+                      <div className="text-[9px] text-slate-400 mt-0.5">
+                        {opp.salary
+                          ? "Typical annual range · employer specific"
+                          : "Disclosed upon matching"}
+                      </div>
+                    </div>
+
+                    {/* Required Skills */}
+                    {opp.skills && opp.skills.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-3">
+                        {opp.skills.slice(0, 4).map((skill, sIdx) => (
+                          <span
+                            key={sIdx}
+                            className="rounded-md border border-[#30AFFF]/20 bg-[#30AFFF]/[0.05] px-1.5 py-0.5 text-[9px] font-semibold text-[#159FEF]"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                        {opp.skills.length > 4 && (
+                          <span className="rounded-md bg-slate-50 border border-slate-200 px-1 py-0.5 text-[8px] text-slate-500 font-bold">
+                            +{opp.skills.length - 4}
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Work Modes */}
+                    <div className="flex flex-wrap gap-1 mt-3">
+                      {(opp.workModes || ["Remote", "Hybrid"]).map((mode) => (
+                        <span
+                          key={mode}
+                          className="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[9px] text-slate-600"
+                        >
+                          {mode}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* APPLY BUTTON — RIGHT ALIGNED */}
+                    <div className="flex justify-end mt-4 pt-3 border-t border-slate-100 mt-auto">
+                      <button
+                        type="button"
+                        onClick={() => handleMarketApply(opp)}
+                        className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-3.5 py-2 text-[10px] font-bold text-white shadow-sm hover:bg-[#159FEF] transition cursor-pointer"
+                      >
+                        Apply
+                        <ArrowRight size={13} />
+                      </button>
+                    </div>
+                  </motion.div>
+                );
+              })
+            ) : (
+              globalMarkets.map((market, index) => (
+                <motion.div
+                  key={market.country}
+                  custom={index}
+                  variants={cardReveal}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, amount: 0.1 }}
+                  whileHover={{ y: -5 }}
+                  className="group rounded-2xl border border-slate-100 bg-white shadow-sm hover:border-[#30AFFF]/30 hover:shadow-[0_15px_45px_rgba(15,23,42,0.10)] transition-all p-4 flex flex-col"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-11 h-11 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-center shadow-sm overflow-hidden">
+                        <img
+                          src={market.flag}
+                          alt={`${market.country} flag`}
+                          className="w-8 h-6 object-cover rounded-sm border border-slate-100"
+                        />
+                      </div>
+
+                      <div>
+                        <h3 className="text-sm font-bold text-slate-800">
+                          {market.country}
+                        </h3>
+                        <p className="text-[10px] text-slate-400 mt-0.5">
+                          {market.region}
+                        </p>
+                      </div>
+                    </div>
+
+                    <span className="text-[9px] font-bold tracking-wider rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/5 text-[#159FEF] px-2 py-1">
+                      {market.currency}
+                    </span>
+                  </div>
+
+                  <div className="mt-5">
+                    <div className="flex items-center gap-1.5 text-[9px] uppercase tracking-[0.16em] text-slate-400 font-bold">
+                      <DollarSign size={11} />
+                      Indicative payout
+                    </div>
+
+                    <div className="text-lg font-black tracking-tight text-slate-900 mt-1">
+                      {market.payout}
+                    </div>
+
+                    <div className="text-[9px] text-slate-400 mt-0.5">
+                      Typical annual range · role dependent
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap gap-1.5 mt-4">
+                    {market.modes.map((mode) => (
+                      <span
+                        key={mode}
+                        className="rounded-full border border-slate-200 bg-slate-50 px-2 py-1 text-[9px] text-slate-600"
+                      >
+                        {mode}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="mt-4 pt-4 border-t border-slate-100 space-y-2.5">
+                    <div className="flex items-start gap-2">
+                      <BriefcaseBusiness
+                        size={13}
+                        className="text-[#30AFFF] mt-0.5 shrink-0"
+                      />
+                      <span className="text-[10px] leading-4 text-slate-500">
+                        {market.focus}
+                      </span>
+                    </div>
+
+                    <div className="flex items-start gap-2">
+                      <Plane
+                        size={13}
+                        className="text-[#30AFFF] mt-0.5 shrink-0"
+                      />
+                      <span className="text-[10px] leading-4 text-slate-500">
+                        {market.relocation}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* APPLY BUTTON — RIGHT ALIGNED */}
+                  <div className="flex justify-end mt-5 pt-4 border-t border-slate-100 mt-auto">
+                    <button
+                      type="button"
+                      onClick={() => handleMarketApply(market)}
+                      className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-3 py-2 text-[10px] font-bold text-white shadow-sm hover:bg-[#159FEF] transition"
+                    >
+                      Apply
+                      <ArrowRight size={13} />
+                    </button>
+                  </div>
+                </motion.div>
+              ))
+            )}
           </div>
 
           <div className="relative mt-6 grid md:grid-cols-[1fr_auto] gap-4 items-center rounded-2xl border border-[#30AFFF]/20 bg-[#30AFFF]/[0.04] p-4 shadow-sm">
@@ -1448,11 +1656,22 @@ const FrontendDeveloprs = () => {
           setSelectedMarket(null);
         }}
         role="Frontend Developer"
+        opportunity={selectedMarket}
         initialData={
           selectedMarket
             ? {
-                preferredJobMarket: selectedMarket.country,
-                preferredWorkMode: selectedMarket.modes?.[0] || "",
+                preferredJobMarket:
+                  selectedMarket.countries?.[0]?.countryName ||
+                  selectedMarket.country ||
+                  "",
+                preferredWorkMode:
+                  selectedMarket.workModes?.[0] ||
+                  selectedMarket.modes?.[0] ||
+                  "Remote",
+                companyName: selectedMarket.companyName || "",
+                companyLogo: selectedMarket.companyLogo || "",
+                opportunityId: selectedMarket._id || null,
+                opportunityRole: selectedMarket.roleTitle || "",
               }
             : {}
         }

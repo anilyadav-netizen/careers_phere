@@ -1,8 +1,11 @@
-import React, { useReducer, useState } from "react";
+import React, { useReducer, useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import RoleApplyModal from "../components/RoleApplyModal";
+import { fetchPublicOpportunities } from "../redux/slicer/roleOpportunitySlice";
 import {
   ArrowDownRight,
   ArrowRight,
+  Building2,
   Check,
   ChevronDown,
   Clock3,
@@ -53,8 +56,21 @@ const reducer = (state, action) => {
 const BackendDeveloper = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { openFaq } = state;
+  const reduxDispatch = useDispatch();
+  const { publicList = [], opportunities = [] } = useSelector(
+    (state) => state.roleOpportunities || {}
+  );
+  const activeOpportunities =
+    opportunities.length > 0 ? opportunities : publicList;
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState(null);
+  const [selectedOpportunity, setSelectedOpportunity] = useState(null);
+
+  useEffect(() => {
+    reduxDispatch(
+      fetchPublicOpportunities({ roleCategory: "Backend Developer" })
+    );
+  }, [reduxDispatch]);
 
   const responsibilities = [
     {
@@ -183,10 +199,15 @@ const BackendDeveloper = () => {
     { question: "Can I apply if I have experience with a different database?", answer: "Absolutely. Experience with MySQL, PostgreSQL, MongoDB or another production database can transfer well when you understand data modeling, indexing, queries and consistency." },
   ];
 
-  const openApply = () => setIsApplyModalOpen(true);
+  const openApply = (opp = null) => {
+    setSelectedOpportunity(opp && opp._id ? opp : null);
+    setSelectedCountry(null);
+    setIsApplyModalOpen(true);
+  };
 
   const handleCountryApply = (country) => {
     setSelectedCountry(country);
+    setSelectedOpportunity(null);
     setIsApplyModalOpen(true);
   };
 
@@ -200,19 +221,20 @@ const BackendDeveloper = () => {
         <div className="max-w-[90rem] mx-auto px-5 sm:px-6 lg:px-8 pt-4 pb-10 lg:pt-14 lg:pb-12 relative">
           <div className="grid lg:grid-cols-[1fr_0.92fr] gap-8 lg:gap-12 items-center">
             <div className="min-w-0">
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/5 px-3 py-1.5 text-[10px] uppercase tracking-[0.18em] font-bold text-[#159FEF] mb-3 shadow-sm">
-                <Server size={13} />
-                We're hiring · Backend Developer
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/5 px-3.5 py-1.5 text-[10px] uppercase tracking-[0.18em] font-bold text-[#159FEF] mb-3 shadow-sm">
+                <Server size={13} className="text-[#30AFFF]" />
+                Backend & Systems Engineering · Cloud APIs
               </div>
 
-              <h1 className="text-[28px] md:text-4xl lg:text-5xl font-bold tracking-tight leading-[0.95] max-w-4xl text-slate-900">
-                Build the systems <span className="text-[#30AFFF]">behind the product.</span>
+              <h1 className="text-[28px] md:text-4xl lg:text-5xl font-bold tracking-tight leading-[0.98] max-w-4xl text-slate-900">
+                Architect scalable APIs, databases &{" "}
+                <span className="text-[#30AFFF]">cloud backend systems.</span>
               </h1>
 
-              <p className="mt-3 max-w-2xl text-sm sm:text-base text-slate-500 leading-6">
-                We're looking for a Backend Developer who enjoys turning
-                complex product requirements into reliable APIs, clean data
-                systems and infrastructure that scales.
+              <p className="mt-3.5 max-w-2xl text-sm sm:text-base text-slate-500 leading-relaxed">
+                We're hiring Backend Developers to design resilient REST & GraphQL APIs,
+                optimize high-throughput PostgreSQL and Redis architectures, build microservices,
+                and maintain secure, zero-downtime cloud infrastructure.
               </p>
 
               <div className="mt-6 flex flex-row gap-2 sm:gap-3 w-full">
@@ -236,12 +258,12 @@ const BackendDeveloper = () => {
 
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-7">
                 {[
-                  ["02+", "Years"],
-                  ["07", "Core tools"],
-                  ["06", "Hiring stages"],
-                  ["100%", "Ownership"],
+                  ["8ms", "P99 Latency"],
+                  ["99.99%", "Cloud Uptime"],
+                  ["Node & Go", "Core Runtime"],
+                  ["PostgreSQL", "Database Core"],
                 ].map(([value, label]) => (
-                  <div key={label} className="rounded-2xl border border-slate-100 bg-white px-4 py-3.5 shadow-sm">
+                  <div key={label} className="rounded-2xl border border-[#A0E9FF]/40 bg-white px-4 py-3.5 shadow-xs">
                     <div className="text-xl font-black tracking-tight text-[#30AFFF]">{value}</div>
                     <div className="mt-0.5 text-[10px] uppercase tracking-[0.14em] font-bold text-slate-400">{label}</div>
                   </div>
@@ -249,42 +271,102 @@ const BackendDeveloper = () => {
               </div>
             </div>
 
+            {/* BACKEND ROLE DEFINING TERMINAL & ARCHITECTURE MOCKUP */}
             <div className="relative min-w-0">
-              <div className="overflow-hidden rounded-3xl border border-slate-100 bg-slate-900 shadow-[0_15px_45px_rgba(15,23,42,0.10)]">
-                <div className="relative h-[330px] sm:h-[470px]">
-                  <img
-                    src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1600&q=90"
-                    alt="Backend infrastructure server room"
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/15 to-transparent" />
-
-                  <div className="absolute top-5 left-5 right-5 flex items-center justify-between">
-                    <div className="rounded-full bg-white/90 px-3 py-1.5 text-[9px] uppercase tracking-[0.18em] font-black text-slate-900">
-                      Production infrastructure
-                    </div>
-                    <div className="flex items-center gap-1.5 rounded-full bg-slate-900/75 px-3 py-1.5 text-[9px] uppercase tracking-[0.15em] font-bold text-white backdrop-blur">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#30AFFF]" />
-                      Systems online
+              <div className="overflow-hidden rounded-3xl border border-[#A0E9FF]/60 bg-slate-950 shadow-[0_20px_50px_rgba(48,175,255,0.18)]">
+                {/* Terminal Header */}
+                <div className="flex items-center justify-between px-4 py-3 bg-slate-900/90 border-b border-slate-800">
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-full bg-rose-500/90" />
+                    <span className="w-3 h-3 rounded-full bg-amber-500/90" />
+                    <span className="w-3 h-3 rounded-full bg-emerald-500/90" />
+                    <div className="ml-3 flex items-center gap-1.5 px-3 py-1 rounded-md bg-slate-800 text-[11px] font-mono text-slate-300">
+                      <Terminal size={12} className="text-[#30AFFF]" />
+                      <span>api-cluster-prod (us-east-1)</span>
                     </div>
                   </div>
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-[10px] font-bold text-emerald-400">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                      Services Online
+                    </span>
+                  </div>
+                </div>
 
-                  <div className="absolute left-5 right-5 bottom-5">
-                    <div className="grid grid-cols-3 gap-2">
-                      {[["API", "Healthy"], ["DB", "Stable"], ["CACHE", "Fast"]].map(([name, value]) => (
-                        <div key={name} className="rounded-xl border border-white/15 bg-slate-900/70 backdrop-blur-md p-3">
-                          <div className="text-[9px] uppercase tracking-[0.16em] text-white/45 font-bold">{name}</div>
-                          <div className="mt-1 text-xs font-black text-white">{value}</div>
-                        </div>
-                      ))}
+                {/* Terminal Body */}
+                <div className="p-4 sm:p-5 space-y-3 font-mono text-xs">
+                  <div className="text-slate-500 text-[11px]">
+                    $ pnpm start:api --cluster=production --workers=8
+                  </div>
+                  <div className="text-emerald-400 flex items-center gap-2">
+                    <span>[SYSTEM]</span>
+                    <span className="text-slate-300">Server listening on port 5000 (HTTPS/2)</span>
+                  </div>
+                  <div className="text-sky-400 flex items-center gap-2">
+                    <span>[ROUTER]</span>
+                    <span className="text-emerald-300">GET  /api/v1/jobs</span>
+                    <span className="text-slate-400">200 OK</span>
+                    <span className="text-slate-500">(8ms)</span>
+                  </div>
+                  <div className="text-sky-400 flex items-center gap-2">
+                    <span>[ROUTER]</span>
+                    <span className="text-emerald-300">POST /api/v1/apply</span>
+                    <span className="text-slate-400">201 Created</span>
+                    <span className="text-slate-500">(14ms)</span>
+                  </div>
+                  <div className="text-amber-400 flex items-center gap-2">
+                    <span>[DATABASE]</span>
+                    <span className="text-slate-300">PostgreSQL pool active · 24 connections (3ms)</span>
+                  </div>
+                  <div className="text-purple-400 flex items-center gap-2">
+                    <span>[CACHE]</span>
+                    <span className="text-slate-300">Redis cache HIT 99.4% (TTL: 3600s)</span>
+                  </div>
+                  <div className="text-indigo-400 flex items-center gap-2">
+                    <span>[DOCKER]</span>
+                    <span className="text-slate-300">6 microservices healthy (k8s ready)</span>
+                  </div>
+
+                  {/* Backend Metrics Dashboard Inside */}
+                  <div className="pt-3 border-t border-slate-800 grid grid-cols-3 gap-2">
+                    <div className="rounded-xl border border-slate-800 bg-slate-900/80 p-2.5">
+                      <div className="text-[9px] uppercase tracking-wider text-slate-400 font-bold">API STATUS</div>
+                      <div className="text-sm font-black text-emerald-400 mt-0.5">Healthy (200)</div>
+                      <div className="text-[10px] text-slate-500">45k req/sec</div>
+                    </div>
+                    <div className="rounded-xl border border-slate-800 bg-slate-900/80 p-2.5">
+                      <div className="text-[9px] uppercase tracking-wider text-slate-400 font-bold">DB LATENCY</div>
+                      <div className="text-sm font-black text-[#30AFFF] mt-0.5">3.2ms Pool</div>
+                      <div className="text-[10px] text-slate-500">PostgreSQL 16</div>
+                    </div>
+                    <div className="rounded-xl border border-slate-800 bg-slate-900/80 p-2.5">
+                      <div className="text-[9px] uppercase tracking-wider text-slate-400 font-bold">MEMORY</div>
+                      <div className="text-sm font-black text-slate-200 mt-0.5">1.2 GB / 8 GB</div>
+                      <div className="text-[10px] text-emerald-400">Optimal Load</div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="hidden sm:block absolute top-52 -left-5 w-40 rounded-2xl bg-[#30AFFF] p-4 shadow-xl">
-                <div className="text-[9px] uppercase tracking-[0.16em] font-black text-white/70">Your mindset</div>
-                <div className="mt-1 text-sm font-black text-white">Simple systems. Serious impact.</div>
+              {/* Floating badges */}
+              <div className="absolute -bottom-3 -left-3 hidden sm:flex items-center gap-2.5 rounded-2xl border border-slate-100 bg-white px-3.5 py-2.5 shadow-lg">
+                <div className="w-8 h-8 rounded-xl bg-[#30AFFF]/15 flex items-center justify-center text-[#30AFFF]">
+                  <Database size={16} />
+                </div>
+                <div>
+                  <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">ARCHITECTURE</div>
+                  <div className="text-xs font-bold text-slate-900">PostgreSQL & Redis</div>
+                </div>
+              </div>
+
+              <div className="absolute -top-3 -right-3 hidden sm:flex items-center gap-2.5 rounded-2xl border border-slate-100 bg-white px-3.5 py-2.5 shadow-lg">
+                <div>
+                  <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">DEPLOYMENT</div>
+                  <div className="text-xs font-bold text-slate-900">Docker & AWS Cloud</div>
+                </div>
+                <div className="w-8 h-8 rounded-xl bg-[#30AFFF]/15 flex items-center justify-center text-[#30AFFF]">
+                  <Server size={16} />
+                </div>
               </div>
             </div>
           </div>
@@ -578,58 +660,223 @@ const BackendDeveloper = () => {
             </div>
           </div>
 
-          {/* COUNTRY CARDS */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-3 mt-4">
-            {globalCountries.map((country) => {
-              const details = countryDetails[country.code];
-              return (
-                <div
-                  key={country.code}
-                  className="group rounded-2xl border border-slate-100 bg-white p-4 shadow-sm hover:-translate-y-1 hover:border-[#30AFFF]/30 hover:shadow-[0_15px_45px_rgba(15,23,42,0.10)] transition-all flex flex-col"
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-11 h-11 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center overflow-hidden">
-                        <img src={country.flag} alt={`${country.name} flag`} className="w-8 h-6 object-cover rounded-sm border border-slate-200" />
+          {/* COUNTRY / OPPORTUNITY CARDS */}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-3 mt-4">
+            {activeOpportunities.length > 0 ? (
+              activeOpportunities.map((opp, idx) => {
+                const displaySalary = opp.salary || "Competitive";
+
+                return (
+                  <div
+                    key={opp._id || idx}
+                    className="group rounded-2xl border border-slate-100 bg-white p-4 shadow-sm hover:-translate-y-1 hover:border-[#30AFFF]/30 hover:shadow-[0_15px_45px_rgba(15,23,42,0.10)] transition-all flex flex-col"
+                  >
+                    {/* Company Header */}
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
+                          {opp.companyLogo ? (
+                            <img
+                              src={opp.companyLogo}
+                              alt={opp.companyName}
+                              className="w-full h-full object-contain p-1"
+                              onError={(e) => {
+                                e.target.style.display = "none";
+                              }}
+                            />
+                          ) : (
+                            <Building2 size={18} className="text-[#30AFFF]" />
+                          )}
+                        </div>
+
+                        <div className="min-w-0">
+                          <h3
+                            className="text-sm font-black text-slate-800 truncate"
+                            title={opp.companyName}
+                          >
+                            {opp.companyName}
+                          </h3>
+                          <p className="text-[10px] text-slate-400 mt-0.5 truncate">
+                            {opp.roleTitle || opp.roleCategory || "Backend Developer"}
+                          </p>
+                        </div>
                       </div>
 
-                      <div>
-                        <h3 className="text-sm font-black text-slate-800">{country.name}</h3>
-                        <p className="text-[10px] text-slate-400 mt-0.5">{details.roles}</p>
+                      {opp.salaryCurrency && (
+                        <span className="text-[9px] font-bold tracking-wider rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/5 text-[#159FEF] px-2 py-0.5 shrink-0">
+                          {opp.salaryCurrency}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Countries with Flags */}
+                    <div className="mt-3.5">
+                      <div className="flex items-center gap-1 text-[9px] uppercase tracking-[0.16em] text-slate-400 font-bold mb-1.5">
+                        <Globe2 size={11} className="text-[#30AFFF]" />
+                        <span>Hiring Locations</span>
+                      </div>
+
+                      <div className="flex flex-wrap gap-1">
+                        {opp.countries && opp.countries.length > 0 ? (
+                          opp.countries.map((c, cIdx) => (
+                            <span
+                              key={cIdx}
+                              className="inline-flex items-center gap-1 rounded bg-slate-50 border border-slate-200 px-2 py-0.5 text-[10px] font-medium text-slate-700"
+                            >
+                              {c.flag && (
+                                c.flag.startsWith("http") ? (
+                                  <img
+                                    src={c.flag}
+                                    alt={c.countryName || "flag"}
+                                    className="w-3.5 h-2.5 object-cover rounded-2xs"
+                                    onError={(e) => {
+                                      e.target.style.display = "none";
+                                    }}
+                                  />
+                                ) : (
+                                  <span>{c.flag}</span>
+                                )
+                              )}
+                              <span>{c.countryName || "Target Market"}</span>
+                            </span>
+                          ))
+                        ) : (
+                          <span className="text-[10px] text-slate-500 font-medium">
+                            Worldwide / Remote
+                          </span>
+                        )}
                       </div>
                     </div>
 
-                    <span className="w-2 h-2 rounded-full mt-2 bg-[#30AFFF]" />
-                  </div>
+                    {/* Typical payout */}
+                    <div className="border-t border-slate-100 mt-3 pt-3">
+                      <p className="text-[9px] uppercase tracking-[0.15em] text-slate-400 font-black">
+                        Typical payout
+                      </p>
+                      <p className="text-base font-black tracking-tight mt-0.5 text-slate-900">
+                        {displaySalary}
+                      </p>
+                      <p className="text-[9px] text-slate-400 mt-0.5">
+                        {opp.salary
+                          ? "Annual range · employer specific"
+                          : "Disclosed upon matching"}
+                      </p>
+                    </div>
 
-                  <div className="border-t border-slate-100 mt-4 pt-3">
-                    <p className="text-[9px] uppercase tracking-[0.15em] text-slate-400 font-black">Typical payout</p>
-                    <p className="text-lg font-black tracking-tight mt-1 text-slate-900">{details.salary}</p>
-                    <p className="text-[9px] text-slate-400 mt-0.5">USD equivalent / year</p>
-                  </div>
+                    {/* Skills */}
+                    {opp.skills && opp.skills.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-2.5">
+                        {opp.skills.slice(0, 3).map((skill, sIdx) => (
+                          <span
+                            key={sIdx}
+                            className="rounded-md border border-[#30AFFF]/20 bg-[#30AFFF]/[0.05] px-1.5 py-0.5 text-[9px] font-semibold text-[#159FEF]"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                        {opp.skills.length > 3 && (
+                          <span className="rounded-md bg-slate-50 border border-slate-200 px-1 py-0.5 text-[8px] text-slate-500 font-bold">
+                            +{opp.skills.length - 3}
+                          </span>
+                        )}
+                      </div>
+                    )}
 
-                  <div className="flex flex-wrap gap-1.5 mt-3">
-                    {details.modes.map((mode) => (
-                      <span key={mode} className="rounded-full bg-slate-50 border border-slate-200 px-2 py-1 text-[9px] font-bold text-slate-600">
-                        {mode}
-                      </span>
-                    ))}
-                  </div>
+                    {/* Work Modes */}
+                    <div className="flex flex-wrap gap-1.5 mt-2.5">
+                      {(opp.workModes || ["Remote", "Hybrid"]).map((mode) => (
+                        <span
+                          key={mode}
+                          className="rounded-full bg-slate-50 border border-slate-200 px-2 py-0.5 text-[9px] font-bold text-slate-600"
+                        >
+                          {mode}
+                        </span>
+                      ))}
+                    </div>
 
-                  {/* APPLY BUTTON — RIGHT ALIGNED */}
-                  <div className="mt-4 pt-3 border-t border-slate-100 flex justify-end mt-auto">
-                    <button
-                      type="button"
-                      onClick={() => handleCountryApply(country)}
-                      className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-3 py-2 text-[10px] font-bold text-white shadow-sm hover:bg-[#159FEF] transition"
-                    >
-                      Apply
-                      <ArrowRight size={13} />
-                    </button>
+                    {/* APPLY BUTTON — RIGHT ALIGNED */}
+                    <div className="mt-4 pt-3 border-t border-slate-100 flex justify-end mt-auto">
+                      <button
+                        type="button"
+                        onClick={() => openApply(opp)}
+                        className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-3.5 py-2 text-[10px] font-bold text-white shadow-sm hover:bg-[#159FEF] transition cursor-pointer"
+                      >
+                        Apply
+                        <ArrowRight size={13} />
+                      </button>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })
+            ) : (
+              globalCountries.map((country) => {
+                const details = countryDetails[country.code];
+                return (
+                  <div
+                    key={country.code}
+                    className="group rounded-2xl border border-slate-100 bg-white p-4 shadow-sm hover:-translate-y-1 hover:border-[#30AFFF]/30 hover:shadow-[0_15px_45px_rgba(15,23,42,0.10)] transition-all flex flex-col"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-11 h-11 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center overflow-hidden">
+                          <img
+                            src={country.flag}
+                            alt={`${country.name} flag`}
+                            className="w-8 h-6 object-cover rounded-sm border border-slate-200"
+                          />
+                        </div>
+
+                        <div>
+                          <h3 className="text-sm font-black text-slate-800">
+                            {country.name}
+                          </h3>
+                          <p className="text-[10px] text-slate-400 mt-0.5">
+                            {details.roles}
+                          </p>
+                        </div>
+                      </div>
+
+                      <span className="w-2 h-2 rounded-full mt-2 bg-[#30AFFF]" />
+                    </div>
+
+                    <div className="border-t border-slate-100 mt-4 pt-3">
+                      <p className="text-[9px] uppercase tracking-[0.15em] text-slate-400 font-black">
+                        Typical payout
+                      </p>
+                      <p className="text-lg font-black tracking-tight mt-1 text-slate-900">
+                        {details.salary}
+                      </p>
+                      <p className="text-[9px] text-slate-400 mt-0.5">
+                        USD equivalent / year
+                      </p>
+                    </div>
+
+                    <div className="flex flex-wrap gap-1.5 mt-3">
+                      {details.modes.map((mode) => (
+                        <span
+                          key={mode}
+                          className="rounded-full bg-slate-50 border border-slate-200 px-2 py-1 text-[9px] font-bold text-slate-600"
+                        >
+                          {mode}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* APPLY BUTTON — RIGHT ALIGNED */}
+                    <div className="mt-4 pt-3 border-t border-slate-100 flex justify-end mt-auto">
+                      <button
+                        type="button"
+                        onClick={() => handleCountryApply(country)}
+                        className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-3 py-2 text-[10px] font-bold text-white shadow-sm hover:bg-[#159FEF] transition cursor-pointer"
+                      >
+                        Apply
+                        <ArrowRight size={13} />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })
+            )}
           </div>
 
           <div className="mt-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-1">
@@ -1009,13 +1256,23 @@ const BackendDeveloper = () => {
         onClose={() => {
           setIsApplyModalOpen(false);
           setSelectedCountry(null);
+          setSelectedOpportunity(null);
         }}
         role="Backend Developer"
+        opportunity={selectedOpportunity}
         initialData={
-          selectedCountry
+          selectedOpportunity
+            ? {
+                preferredJobMarket:
+                  selectedOpportunity.countries?.[0]?.countryName || "",
+                preferredWorkMode:
+                  selectedOpportunity.workModes?.[0] || "",
+              }
+            : selectedCountry
             ? {
                 preferredJobMarket: selectedCountry.name,
-                preferredWorkMode: countryDetails[selectedCountry.code].modes?.[0] || "",
+                preferredWorkMode:
+                  countryDetails[selectedCountry.code]?.modes?.[0] || "",
               }
             : {}
         }

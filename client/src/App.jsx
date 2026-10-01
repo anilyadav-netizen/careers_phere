@@ -37,6 +37,7 @@ import { SubscriptionProvider } from "./admin/context/SubscriptionContext";
 import ApplicationDetails from "./admin/pages/ApplicationDetails";
 import Applications from "./admin/pages/Applications";
 import FrontendApplications from "./admin/pages/FrontendApplications";
+import RoleOpportunities from "./admin/pages/RoleOpportunities";
 
 import SubscriptionCreate from "./admin/pages/SubscriptionCreate";
 import SubscriptionEdit from "./admin/pages/SubscriptionEdit";
@@ -57,6 +58,7 @@ import AndriodDevelopers from "./Pages/AndriodDevelopers";
 import FrontendDeveloprs from "./Pages/FrontendDeveloprs";
 import BackendDeveloper from "./Pages/BackendDeveloper";
 import VideoEditor from "./Pages/VideoEditor";
+import UiUxDesigner from "./pages/UiUxDesigner";
 // import MySubscription from "./Pages/MySubscription";
 
 function App() {
@@ -88,6 +90,8 @@ function App() {
               <Route path="/backend" element={<BackendDeveloper />} />
               {/* <Route path="/video-editor" element={<VideoEditor />} /> */}
               <Route path="/videoEditor" element={<VideoEditor />} />
+              <Route path="/uiux-designer" element={<UiUxDesigner />} />
+              <Route path="/uiux" element={<UiUxDesigner />} />
 
               <Route path="/contact" element={<ContactUs />} />
 
@@ -175,6 +179,11 @@ function App() {
                 <Route
                   path="frontend-applications"
                   element={<FrontendApplications />}
+                />
+
+                <Route
+                  path="role-opportunities"
+                  element={<RoleOpportunities />}
                 />
 
                 {/* SUBSCRIPTIONS */}

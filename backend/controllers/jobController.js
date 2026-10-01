@@ -3,6 +3,10 @@ const Category = require("../models/Category");
 const JobApplication = require("../models/JobApplication");
 const SavedJob = require("../models/SavedJob");
 const { uploadToImgBB, deleteFromImgBB } = require("../utils/imgbb");
+const {
+  sendApplicationConfirmation,
+  sendRoleApplicationStatusUpdateEmail,
+} = require("../utils/mailer");
 
 // ============================================================
 // HELPERS
@@ -1823,7 +1827,7 @@ const MAX_JOB_APPLICATIONS = 4;
 exports.applyToJob = async (req, res) => {
   try {
     const jobId = req.params.id;
-    const userId = req.user._id;
+    const userId = req.user ? req.user._id : null;
 
     // ========================================================
     // VALIDATE JOB ID
@@ -1840,11 +1844,10 @@ exports.applyToJob = async (req, res) => {
     // VALIDATE REQUEST JOB ID
     // ========================================================
 
-    if (req.body.jobId !== jobId) {
+    if (req.body.jobId && req.body.jobId !== jobId) {
       return res.status(400).json({
         success: false,
-        message:
-          "Job ID is required and must match the requested job",
+        message: "Job ID is required and must match the requested job",
       });
     }
 
@@ -1865,48 +1868,6 @@ exports.applyToJob = async (req, res) => {
     }
 
     // ========================================================
-    // DUPLICATE APPLICATION CHECK
-    // ========================================================
-
-    const existingApplication = await JobApplication.findOne({
-      applicant: userId,
-      job: jobId,
-    });
-
-    if (existingApplication) {
-      return res.status(400).json({
-        success: false,
-        code: "ALREADY_APPLIED",
-        message: "You have already applied to this job.",
-      });
-    }
-
-    // ========================================================
-    // TOTAL APPLICATION LIMIT
-    // ========================================================
-    // User can apply to maximum 4 jobs in total.
-    // This is NOT subscription based.
-    // There is NO expiry, renewal or purchase logic.
-
-    const applicationsUsed = await JobApplication.countDocuments({
-      applicant: userId,
-    });
-
-    if (applicationsUsed >= MAX_JOB_APPLICATIONS) {
-      return res.status(403).json({
-        success: false,
-        code: "APPLICATION_LIMIT_REACHED",
-        message:
-          "You have reached the maximum limit of 4 job applications. You cannot apply for any more jobs with this account.",
-        data: {
-          applicationsUsed,
-          maxApplications: MAX_JOB_APPLICATIONS,
-          remainingApplications: 0,
-        },
-      });
-    }
-
-    // ========================================================
     // APPLICATION DEADLINE
     // ========================================================
 
@@ -1921,61 +1882,142 @@ exports.applyToJob = async (req, res) => {
     }
 
     // ========================================================
-    // REQUIRED FIELDS
+    // EXTRACT CANDIDATE INFO
     // ========================================================
 
-    const requiredFields = [
-      "name",
-      "email",
-      "phone",
-      "experienceType",
-      "currentLocation",
-      "skills",
-      "passport",
-    ];
+    const applicantName = String(
+      req.body.name || req.body.fullName || ""
+    ).trim();
 
-    const missingField = requiredFields.find(
-      (field) =>
-        !String(req.body[field] || "").trim()
-    );
+    const applicantEmail = String(
+      req.body.email || ""
+    ).trim().toLowerCase();
 
-    if (
-      missingField ||
-      !req.files?.resume?.[0]
-    ) {
+    const applicantPhone = String(
+      req.body.phone || ""
+    ).trim();
+
+    if (!applicantName) {
       return res.status(400).json({
         success: false,
-        message: `Missing required application field: ${
-          missingField || "resume"
-        }`,
+        message: "Full name is required",
       });
+    }
+
+    if (!applicantEmail) {
+      return res.status(400).json({
+        success: false,
+        message: "Email address is required",
+      });
+    }
+
+    if (!applicantPhone) {
+      return res.status(400).json({
+        success: false,
+        message: "Phone number is required",
+      });
+    }
+
+    if (!req.files?.resume?.[0]) {
+      return res.status(400).json({
+        success: false,
+        message: "Resume file is required (.pdf, .doc, or .docx)",
+      });
+    }
+
+    // ========================================================
+    // DUPLICATE APPLICATION CHECK & APPLICATION LIMIT
+    // ========================================================
+
+    let applicationsUsed = 0;
+
+    if (userId) {
+      const existingApplication = await JobApplication.findOne({
+        applicant: userId,
+        job: jobId,
+      });
+
+      if (existingApplication) {
+        return res.status(400).json({
+          success: false,
+          code: "ALREADY_APPLIED",
+          message: "You have already applied to this job.",
+        });
+      }
+
+      applicationsUsed = await JobApplication.countDocuments({
+        applicant: userId,
+      });
+
+      if (applicationsUsed >= MAX_JOB_APPLICATIONS) {
+        return res.status(403).json({
+          success: false,
+          code: "APPLICATION_LIMIT_REACHED",
+          message:
+            "You have reached the maximum limit of 4 job applications. You cannot apply for any more jobs with this account.",
+          data: {
+            applicationsUsed,
+            maxApplications: MAX_JOB_APPLICATIONS,
+            remainingApplications: 0,
+          },
+        });
+      }
+    } else {
+      // Guest user (not logged in) - check by email
+      const existingGuestApp = await JobApplication.findOne({
+        job: jobId,
+        "applicationData.email": applicantEmail,
+      });
+
+      if (existingGuestApp) {
+        return res.status(400).json({
+          success: false,
+          code: "ALREADY_APPLIED",
+          message:
+            "An application has already been submitted for this job with this email address.",
+        });
+      }
+
+      applicationsUsed = await JobApplication.countDocuments({
+        "applicationData.email": applicantEmail,
+      });
+
+      if (applicationsUsed >= MAX_JOB_APPLICATIONS) {
+        return res.status(403).json({
+          success: false,
+          code: "APPLICATION_LIMIT_REACHED",
+          message:
+            "You have reached the maximum limit of 4 job applications with this email address.",
+          data: {
+            applicationsUsed,
+            maxApplications: MAX_JOB_APPLICATIONS,
+            remainingApplications: 0,
+          },
+        });
+      }
     }
 
     // ========================================================
     // SKILLS
     // ========================================================
 
-    let skills;
+    let skills = [];
+    const rawSkills = req.body.skills || req.body.frontendSkills;
 
-    try {
-      skills = parseArray(
-        req.body.skills,
-        "skills"
-      )
-        .map((skill) => String(skill).trim())
-        .filter(Boolean);
-    } catch (error) {
-      return res.status(400).json({
-        success: false,
-        message: error.message,
-      });
-    }
-
-    if (!skills.length) {
-      return res.status(400).json({
-        success: false,
-        message: "Skills are required",
-      });
+    if (rawSkills) {
+      if (typeof rawSkills === "string") {
+        try {
+          const parsed = JSON.parse(rawSkills);
+          skills = Array.isArray(parsed) ? parsed : [parsed];
+        } catch {
+          skills = rawSkills
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean);
+        }
+      } else if (Array.isArray(rawSkills)) {
+        skills = rawSkills;
+      }
     }
 
     // ========================================================
@@ -1998,34 +2040,33 @@ exports.applyToJob = async (req, res) => {
     };
 
     // ========================================================
-    // PROFILE PHOTO
+    // PROFILE PHOTO (OPTIONAL)
     // ========================================================
 
     let profilePhoto;
-
-    const profilePhotoFile =
-      req.files?.profilePhoto?.[0];
+    const profilePhotoFile = req.files?.profilePhoto?.[0];
 
     if (profilePhotoFile) {
-      const uploadResult = await uploadToImgBB(
-        profilePhotoFile.buffer,
-        profilePhotoFile.originalname,
-        {
-          name: `application-profile-${userId}`,
-        }
-      );
-
-      profilePhoto = {
-        url:
-          uploadResult.data.displayUrl ||
-          uploadResult.data.url,
-        filename:
+      try {
+        const uploadResult = await uploadToImgBB(
+          profilePhotoFile.buffer,
           profilePhotoFile.originalname,
-        mimetype:
-          profilePhotoFile.mimetype,
-        size:
-          profilePhotoFile.size,
-      };
+          {
+            name: `application-profile-${userId || "guest"}`,
+          }
+        );
+
+        profilePhoto = {
+          url:
+            uploadResult.data.displayUrl ||
+            uploadResult.data.url,
+          filename: profilePhotoFile.originalname,
+          mimetype: profilePhotoFile.mimetype,
+          size: profilePhotoFile.size,
+        };
+      } catch (uploadErr) {
+        console.warn("Profile photo upload failed:", uploadErr.message);
+      }
     }
 
     // ========================================================
@@ -2037,64 +2078,29 @@ exports.applyToJob = async (req, res) => {
     try {
       application = await JobApplication.create({
         job: jobId,
-        applicant: userId,
+        applicant: userId || null,
         status: "pending",
         appliedAt: new Date(),
         isSendMail: false,
 
         applicationData: {
-          name: req.body.name.trim(),
-
-          email: req.body.email.trim(),
-
-          phone: req.body.phone.trim(),
-
-          experienceType:
-            req.body.experienceType.trim(),
-
-          experience: String(
-            req.body.experience || ""
-          ).trim(),
-
+          name: applicantName,
+          email: applicantEmail,
+          phone: applicantPhone,
+          experienceType: String(req.body.experienceType || "Not specified").trim(),
+          experience: String(req.body.experience || "").trim(),
           skills,
-
-          currentLocation:
-            req.body.currentLocation.trim(),
-
-          expectedSalary: String(
-            req.body.expectedSalary || ""
-          ).trim(),
-
-          noticePeriod: String(
-            req.body.noticePeriod || ""
-          ).trim(),
-
-          linkedin: String(
-            req.body.linkedin || ""
-          ).trim(),
-
-          portfolio: String(
-            req.body.portfolio || ""
-          ).trim(),
-
-          coverLetter: String(
-            req.body.coverLetter || ""
-          ).trim(),
-
-          additionalInfo: String(
-            req.body.additionalInfo || ""
-          ).trim(),
-
-          passport:
-            req.body.passport.trim(),
-
+          currentLocation: String(req.body.currentLocation || "").trim(),
+          expectedSalary: String(req.body.expectedSalary || "").trim(),
+          noticePeriod: String(req.body.noticePeriod || "Not specified").trim(),
+          linkedin: String(req.body.linkedin || "").trim(),
+          portfolio: String(req.body.portfolio || "").trim(),
+          coverLetter: String(req.body.coverLetter || req.body.aboutYou || "").trim(),
+          additionalInfo: String(req.body.additionalInfo || "").trim(),
+          passport: String(req.body.passport || "Not specified").trim(),
           profilePhoto,
-
-          governmentDocument:
-            fileData("governmentDocument"),
-
-          resume:
-            fileData("resume"),
+          governmentDocument: fileData("governmentDocument"),
+          resume: fileData("resume"),
         },
       });
     } catch (error) {
@@ -2103,8 +2109,7 @@ exports.applyToJob = async (req, res) => {
         return res.status(400).json({
           success: false,
           code: "ALREADY_APPLIED",
-          message:
-            "You have already applied to this job.",
+          message: "You have already applied to this job.",
         });
       }
 
@@ -2115,22 +2120,48 @@ exports.applyToJob = async (req, res) => {
     // UPDATE JOB APPLICANT COUNT
     // ========================================================
 
-    job.applicantCount =
-      (job.applicantCount || 0) + 1;
-
+    job.applicantCount = (job.applicantCount || 0) + 1;
     await job.save();
+
+    // ========================================================
+    // SEND IMMEDIATE CONFIRMATION EMAIL (GUEST OR LOGGED IN)
+    // ========================================================
+
+    sendApplicationConfirmation({
+      user: {
+        name: applicantName,
+        email: applicantEmail,
+      },
+      job: {
+        title: job.title,
+        company: job.company,
+        location: job.location,
+        jobType: job.jobType,
+        salary: job.salary,
+      },
+      application,
+    })
+      .then(async () => {
+        await JobApplication.updateOne(
+          { _id: application._id },
+          { $set: { isSendMail: true } }
+        );
+      })
+      .catch((mailErr) => {
+        console.error(
+          "Immediate job application confirmation email error:",
+          mailErr.message
+        );
+      });
 
     // ========================================================
     // FINAL APPLICATION USAGE
     // ========================================================
 
-    const totalApplications =
-      applicationsUsed + 1;
-
+    const totalApplications = applicationsUsed + 1;
     const remainingApplications = Math.max(
       0,
-      MAX_JOB_APPLICATIONS -
-        totalApplications
+      MAX_JOB_APPLICATIONS - totalApplications
     );
 
     // ========================================================
@@ -2139,32 +2170,20 @@ exports.applyToJob = async (req, res) => {
 
     return res.status(201).json({
       success: true,
-      message:
-        "Application submitted successfully",
-
+      message: "Application submitted successfully",
       data: application,
-
       applicationUsage: {
-        applicationsUsed:
-          totalApplications,
-
-        maxApplications:
-          MAX_JOB_APPLICATIONS,
-
+        applicationsUsed: totalApplications,
+        maxApplications: MAX_JOB_APPLICATIONS,
         remainingApplications,
       },
     });
   } catch (error) {
-    console.error(
-      "Apply to job error:",
-      error
-    );
+    console.error("Apply to job error:", error);
 
     return res.status(500).json({
       success: false,
-      message:
-        error.message ||
-        "Failed to submit application",
+      message: error.message || "Failed to submit application",
     });
   }
 };
@@ -2548,6 +2567,38 @@ exports.updateApplicationStatus =
 
       await application.save();
 
+      await application.populate([
+        { path: "applicant", select: "name email mobile" },
+        { path: "job", select: "title company location country" },
+      ]);
+
+      // Send status notification email to candidate
+      const candidateEmail =
+        application.applicationData?.email ||
+        application.applicant?.email;
+
+      const candidateName =
+        application.applicationData?.name ||
+        application.applicant?.name ||
+        "Candidate";
+
+      const jobTitle =
+        application.job?.title || "your job application";
+
+      if (candidateEmail) {
+        sendRoleApplicationStatusUpdateEmail({
+          email: candidateEmail,
+          name: candidateName,
+          roleTitle: jobTitle,
+          status: status,
+        }).catch((emailErr) => {
+          console.error(
+            "Job application status email notification failed:",
+            emailErr.message || emailErr
+          );
+        });
+      }
+
       return res.status(200).json({
         success: true,
         message:
@@ -2569,6 +2620,54 @@ exports.updateApplicationStatus =
       });
     }
   };
+
+// ============================================================
+// DOWNLOAD APPLICATION RESUME (ADMIN)
+// ============================================================
+
+exports.downloadApplicationResume = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!isValidObjectId(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid application ID",
+      });
+    }
+
+    const application = await JobApplication.findById(id);
+
+    if (
+      !application ||
+      !application.applicationData ||
+      !application.applicationData.resume ||
+      !application.applicationData.resume.data
+    ) {
+      return res.status(404).json({
+        success: false,
+        message: "Resume file not found",
+      });
+    }
+
+    const { filename, mimetype, data } =
+      application.applicationData.resume;
+
+    res.setHeader("Content-Type", mimetype || "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `inline; filename="${encodeURIComponent(filename || 'resume.pdf')}"`
+    );
+
+    return res.send(data);
+  } catch (error) {
+    console.error("Download application resume error:", error);
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Failed to download resume",
+    });
+  }
+};
 
 // ============================================================
 // DELETE APPLICATION

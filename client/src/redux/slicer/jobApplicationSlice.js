@@ -9,11 +9,27 @@ import api from "../api";
 
 export const applyToJob = createAsyncThunk(
   "application/applyToJob",
-  async ({ jobId, ...applicationData }, { rejectWithValue }) => {
+  async (arg, { rejectWithValue }) => {
     try {
+      let jobId;
+      let payload;
+
+      if (arg instanceof FormData) {
+        jobId = arg.get("jobId");
+        payload = arg;
+      } else {
+        const { jobId: id, ...applicationData } = arg || {};
+        jobId = id;
+        payload = applicationData;
+      }
+
+      if (!jobId) {
+        return rejectWithValue("Job ID is required");
+      }
+
       const response = await api.post(
         `/jobs/${jobId}/apply`,
-        applicationData
+        payload
       );
 
       return response.data;
@@ -491,16 +507,34 @@ const applicationSlice = createSlice({
           );
 
           if (index !== -1) {
+            const existing = state.adminApplications[index];
             state.adminApplications[index] = {
-              ...state.adminApplications[index],
+              ...existing,
               ...updatedApplication,
+              applicant:
+                updatedApplication.applicant && typeof updatedApplication.applicant === "object"
+                  ? updatedApplication.applicant
+                  : existing.applicant,
+              job:
+                updatedApplication.job && typeof updatedApplication.job === "object"
+                  ? updatedApplication.job
+                  : existing.job,
             };
           }
 
           if (state.currentApplication?._id === updatedApplication._id) {
+            const existingCurrent = state.currentApplication;
             state.currentApplication = {
-              ...state.currentApplication,
+              ...existingCurrent,
               ...updatedApplication,
+              applicant:
+                updatedApplication.applicant && typeof updatedApplication.applicant === "object"
+                  ? updatedApplication.applicant
+                  : existingCurrent.applicant,
+              job:
+                updatedApplication.job && typeof updatedApplication.job === "object"
+                  ? updatedApplication.job
+                  : existingCurrent.job,
             };
           }
         }

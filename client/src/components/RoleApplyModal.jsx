@@ -1,31 +1,29 @@
-
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import {
-  X,
-  Check,
-  Send,
-  Loader2,
   AlertCircle,
   Briefcase,
-  Globe2,
+  Check,
   Code2,
-  Server,
-  Layers,
-  Smartphone,
   Film,
+  Globe2,
+  Layers,
+  Loader2,
+  Send,
+  Server,
+  Smartphone,
+  X,
 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
-  submitFrontendApplication,
   resetSubmitState,
+  submitFrontendApplication,
 } from "../redux/slicer/frontendApplicationSlice";
 
 const ROLE_META = {
   "Frontend Developer": {
     icon: Code2,
-    badgeColor:
-      "bg-[#30AFFF]/10 text-[#0B6F9F] border-[#30AFFF]/30",
+    badgeColor: "bg-[#30AFFF]/10 text-[#0B6F9F] border-[#30AFFF]/30",
     themeColor: "#30AFFF",
     skillsPlaceholder:
       "React, JavaScript, TypeScript, Next.js, Tailwind, HTML/CSS...",
@@ -35,8 +33,7 @@ const ROLE_META = {
 
   "Backend Developer": {
     icon: Server,
-    badgeColor:
-      "bg-[#30AFFF]/10 text-[#0B6F9F] border-[#30AFFF]/30",
+    badgeColor: "bg-[#30AFFF]/10 text-[#0B6F9F] border-[#30AFFF]/30",
     themeColor: "#30AFFF",
     skillsPlaceholder:
       "Node.js, Express, Python, PostgreSQL, MongoDB, Redis, Docker, REST APIs...",
@@ -46,8 +43,7 @@ const ROLE_META = {
 
   "Full Stack Developer": {
     icon: Layers,
-    badgeColor:
-      "bg-[#30AFFF]/10 text-[#0B6F9F] border-[#30AFFF]/30",
+    badgeColor: "bg-[#30AFFF]/10 text-[#0B6F9F] border-[#30AFFF]/30",
     themeColor: "#30AFFF",
     skillsPlaceholder:
       "React, Node.js, Express, MongoDB/SQL, TypeScript, REST/GraphQL, Cloud...",
@@ -57,8 +53,7 @@ const ROLE_META = {
 
   "Android Developer": {
     icon: Smartphone,
-    badgeColor:
-      "bg-[#30AFFF]/10 text-[#0B6F9F] border-[#30AFFF]/30",
+    badgeColor: "bg-[#30AFFF]/10 text-[#0B6F9F] border-[#30AFFF]/30",
     themeColor: "#30AFFF",
     skillsPlaceholder:
       "Kotlin, Java, Android SDK, Jetpack Compose, Coroutines, MVVM, Retrofit...",
@@ -68,8 +63,7 @@ const ROLE_META = {
 
   "Video Editor": {
     icon: Film,
-    badgeColor:
-      "bg-[#30AFFF]/10 text-[#0B6F9F] border-[#30AFFF]/30",
+    badgeColor: "bg-[#30AFFF]/10 text-[#0B6F9F] border-[#30AFFF]/30",
     themeColor: "#30AFFF",
     skillsPlaceholder:
       "Premiere Pro, After Effects, DaVinci Resolve, Motion Design, Blender, Sound Design...",
@@ -82,20 +76,9 @@ const initialFormState = {
   fullName: "",
   email: "",
   phone: "",
-  experience: "",
-  currentCountry: "",
   currentLocation: "",
-  preferredRegion: "",
-  preferredJobMarket: "",
-  preferredWorkMode: "",
-  relocationPreference: "",
-  workAuthorization: "",
   expectedSalary: "",
-  salaryCurrency: "",
-  noticePeriod: "",
-  preferredTimezone: "",
   countryFlexibility: "",
-  portfolio: "",
   linkedin: "",
   frontendSkills: "",
   aboutYou: "",
@@ -106,11 +89,12 @@ const RoleApplyModal = ({
   onClose,
   role = "Frontend Developer",
   initialData = {},
+  opportunity = null,
 }) => {
   const dispatch = useDispatch();
 
   const { submitLoading, submitSuccess, submitError } = useSelector(
-    (state) => state.frontendApplications || {}
+    (state) => state.frontendApplications || {},
   );
 
   const [formData, setFormData] = useState({
@@ -125,8 +109,7 @@ const RoleApplyModal = ({
     icon: Briefcase,
     badgeColor: "bg-blue-50 text-blue-700 border-blue-200",
     themeColor: "#30AFFF",
-    skillsPlaceholder:
-      "Relevant technical skills, libraries, tools...",
+    skillsPlaceholder: "Relevant technical skills, libraries, tools...",
     aboutPlaceholder:
       "Tell us about your experience and why you are a great fit for this role...",
   };
@@ -168,9 +151,7 @@ const RoleApplyModal = ({
     e.preventDefault();
 
     if (!resumeFile) {
-      setLocalError(
-        "Please select a resume file (.pdf, .doc, or .docx)"
-      );
+      setLocalError("Please select a resume file (.pdf, .doc, or .docx)");
       return;
     }
 
@@ -179,6 +160,24 @@ const RoleApplyModal = ({
     const data = new FormData();
 
     data.append("role", role);
+
+    if (opportunity) {
+      if (opportunity.companyName)
+        data.append("companyName", opportunity.companyName);
+      if (opportunity.companyLogo)
+        data.append("companyLogo", opportunity.companyLogo);
+      if (opportunity._id) data.append("opportunityId", opportunity._id);
+      if (opportunity.roleTitle)
+        data.append("opportunityRole", opportunity.roleTitle);
+    } else if (initialData?.companyName) {
+      data.append("companyName", initialData.companyName);
+      if (initialData.companyLogo)
+        data.append("companyLogo", initialData.companyLogo);
+      if (initialData.opportunityId)
+        data.append("opportunityId", initialData.opportunityId);
+      if (initialData.opportunityRole)
+        data.append("opportunityRole", initialData.opportunityRole);
+    }
 
     Object.keys(formData).forEach((key) => {
       data.append(key, formData[key]);
@@ -297,6 +296,12 @@ const RoleApplyModal = ({
                     <RoleIcon size={10} className="shrink-0" />
                     <span className="truncate">{role}</span>
                   </span>
+
+                  {(opportunity?.companyName || initialData?.companyName) && (
+                    <span className="inline-flex max-w-full items-center gap-1 rounded-md border border-amber-300 bg-amber-50 px-1.5 py-0.5 text-[9px] font-bold text-amber-800 sm:px-2 sm:text-[11px]">
+                      🏢 {opportunity?.companyName || initialData?.companyName}
+                    </span>
+                  )}
                 </div>
 
                 <h2
@@ -420,12 +425,9 @@ const RoleApplyModal = ({
                 "
               >
                 Thank you for applying for the{" "}
-                <strong className="text-slate-800">
-                  {role}
-                </strong>{" "}
-                opportunity. Your profile, global market preferences,
-                and resume have been securely submitted to our talent
-                review team.
+                <strong className="text-slate-800">{role}</strong> opportunity.
+                Your profile, skills, and resume have been securely submitted to
+                our talent review team.
               </p>
 
               <div
@@ -492,10 +494,7 @@ const RoleApplyModal = ({
             </div>
           ) : (
             /* Application Form */
-            <form
-              onSubmit={handleSubmit}
-              className="space-y-4 sm:space-y-5"
-            >
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
               {/* Highlight Banner */}
               <div
                 className="
@@ -536,9 +535,8 @@ const RoleApplyModal = ({
                   </h4>
 
                   <p className="mt-0.5 text-[10px] leading-relaxed text-slate-500 sm:text-xs">
-                    Your preferred international market, work mode,
-                    expected compensation, and experience help us pair
-                    you with matching high-impact opportunities.
+                    Your profile, skills, expected compensation, and resume help
+                    us pair you with matching high-impact opportunities.
                   </p>
                 </div>
               </div>
@@ -672,86 +670,6 @@ const RoleApplyModal = ({
                   />
                 </div>
 
-                {/* Experience */}
-                <div className="min-w-0">
-                  <label className="text-[11px] font-semibold text-slate-600">
-                    Experience *
-                  </label>
-
-                  <select
-                    required
-                    name="experience"
-                    value={formData.experience}
-                    onChange={handleInputChange}
-                    className="
-                      mt-1.5
-                      w-full
-                      min-w-0
-                      rounded-xl
-                      border
-                      border-slate-200
-                      bg-white
-                      px-3.5
-                      py-2.5
-                      text-sm
-                      text-slate-700
-                      outline-none
-                      focus:border-blue-500
-                      transition
-                    "
-                  >
-                    <option value="">Select experience</option>
-                    <option>0–1 years</option>
-                    <option>1–2 years</option>
-                    <option>2–4 years</option>
-                    <option>4–6 years</option>
-                    <option>6+ years</option>
-                  </select>
-                </div>
-
-                {/* Current Country */}
-                <div className="min-w-0">
-                  <label className="text-[11px] font-semibold text-slate-600">
-                    Current country *
-                  </label>
-
-                  <select
-                    required
-                    name="currentCountry"
-                    value={formData.currentCountry}
-                    onChange={handleInputChange}
-                    className="
-                      mt-1.5
-                      w-full
-                      min-w-0
-                      rounded-xl
-                      border
-                      border-slate-200
-                      bg-white
-                      px-3.5
-                      py-2.5
-                      text-sm
-                      text-slate-700
-                      outline-none
-                      focus:border-blue-500
-                      transition
-                    "
-                  >
-                    <option value="">Select country</option>
-                    <option>India</option>
-                    <option>United States</option>
-                    <option>United Kingdom</option>
-                    <option>Canada</option>
-                    <option>Australia</option>
-                    <option>Germany</option>
-                    <option>France</option>
-                    <option>Netherlands</option>
-                    <option>Singapore</option>
-                    <option>United Arab Emirates</option>
-                    <option>Other</option>
-                  </select>
-                </div>
-
                 {/* Current Location */}
                 <div className="min-w-0">
                   <label className="text-[11px] font-semibold text-slate-600">
@@ -784,202 +702,6 @@ const RoleApplyModal = ({
                   />
                 </div>
 
-                {/* Preferred Region */}
-                <div className="min-w-0">
-                  <label className="text-[11px] font-semibold text-slate-600">
-                    Preferred region *
-                  </label>
-
-                  <select
-                    required
-                    name="preferredRegion"
-                    value={formData.preferredRegion}
-                    onChange={handleInputChange}
-                    className="
-                      mt-1.5
-                      w-full
-                      min-w-0
-                      rounded-xl
-                      border
-                      border-slate-200
-                      bg-white
-                      px-3.5
-                      py-2.5
-                      text-sm
-                      text-slate-700
-                      outline-none
-                      focus:border-blue-500
-                      transition
-                    "
-                  >
-                    <option value="">Select region</option>
-                    <option>North America</option>
-                    <option>Europe</option>
-                    <option>Asia-Pacific</option>
-                    <option>Middle East</option>
-                    <option>Any global region</option>
-                  </select>
-                </div>
-
-                {/* Preferred Job Market */}
-                <div className="min-w-0">
-                  <label className="text-[11px] font-semibold text-slate-600">
-                    Target job market *
-                  </label>
-
-                  <select
-                    required
-                    name="preferredJobMarket"
-                    value={formData.preferredJobMarket}
-                    onChange={handleInputChange}
-                    className="
-                      mt-1.5
-                      w-full
-                      min-w-0
-                      rounded-xl
-                      border
-                      border-slate-200
-                      bg-white
-                      px-3.5
-                      py-2.5
-                      text-sm
-                      text-slate-700
-                      outline-none
-                      focus:border-blue-500
-                      transition
-                    "
-                  >
-                    <option value="">Select market</option>
-                    <option>🇺🇸 United States</option>
-                    <option>🇬🇧 United Kingdom</option>
-                    <option>🇨🇦 Canada</option>
-                    <option>🇩🇪 Germany</option>
-                    <option>🇦🇺 Australia</option>
-                    <option>🇳🇱 Netherlands</option>
-                    <option>🇸🇬 Singapore</option>
-                    <option>🇦🇪 United Arab Emirates</option>
-                    <option>Any global market</option>
-                  </select>
-                </div>
-
-                {/* Preferred Work Mode */}
-                <div className="min-w-0">
-                  <label className="text-[11px] font-semibold text-slate-600">
-                    Preferred work mode *
-                  </label>
-
-                  <select
-                    required
-                    name="preferredWorkMode"
-                    value={formData.preferredWorkMode}
-                    onChange={handleInputChange}
-                    className="
-                      mt-1.5
-                      w-full
-                      min-w-0
-                      rounded-xl
-                      border
-                      border-slate-200
-                      bg-white
-                      px-3.5
-                      py-2.5
-                      text-sm
-                      text-slate-700
-                      outline-none
-                      focus:border-blue-500
-                      transition
-                    "
-                  >
-                    <option value="">Select work mode</option>
-                    <option>Remote</option>
-                    <option>Hybrid</option>
-                    <option>On-site</option>
-                    <option>Remote or Hybrid</option>
-                    <option>Flexible / Any</option>
-                  </select>
-                </div>
-
-                {/* Relocation Preference */}
-                <div className="min-w-0">
-                  <label className="text-[11px] font-semibold text-slate-600">
-                    Relocation preference
-                  </label>
-
-                  <select
-                    name="relocationPreference"
-                    value={formData.relocationPreference}
-                    onChange={handleInputChange}
-                    className="
-                      mt-1.5
-                      w-full
-                      min-w-0
-                      rounded-xl
-                      border
-                      border-slate-200
-                      bg-white
-                      px-3.5
-                      py-2.5
-                      text-sm
-                      text-slate-700
-                      outline-none
-                      focus:border-blue-500
-                      transition
-                    "
-                  >
-                    <option value="">Select preference</option>
-                    <option>Yes — open to relocation</option>
-                    <option>
-                      Yes — only with relocation support
-                    </option>
-                    <option>No — remote preferred</option>
-                    <option>
-                      Maybe — depends on opportunity
-                    </option>
-                  </select>
-                </div>
-
-                {/* Work Authorization */}
-                <div className="min-w-0 sm:col-span-2">
-                  <label className="text-[11px] font-semibold text-slate-600">
-                    Work authorization / visa sponsorship
-                  </label>
-
-                  <select
-                    name="workAuthorization"
-                    value={formData.workAuthorization}
-                    onChange={handleInputChange}
-                    className="
-                      mt-1.5
-                      w-full
-                      min-w-0
-                      rounded-xl
-                      border
-                      border-slate-200
-                      bg-white
-                      px-3.5
-                      py-2.5
-                      text-sm
-                      text-slate-700
-                      outline-none
-                      focus:border-blue-500
-                      transition
-                    "
-                  >
-                    <option value="">Select status</option>
-                    <option>
-                      Authorized to work in my preferred market
-                    </option>
-                    <option>Need employer sponsorship</option>
-                    <option>
-                      Open to employer sponsorship
-                    </option>
-                    <option>
-                      Remote only / no local authorization needed
-                    </option>
-                    <option>Not sure</option>
-                  </select>
-                </div>
-
                 {/* Expected Annual Salary */}
                 <div className="min-w-0">
                   <label className="text-[11px] font-semibold text-slate-600">
@@ -994,153 +716,6 @@ const RoleApplyModal = ({
                     value={formData.expectedSalary}
                     onChange={handleInputChange}
                     placeholder="e.g. 80000"
-                    className="
-                      mt-1.5
-                      w-full
-                      min-w-0
-                      rounded-xl
-                      border
-                      border-slate-200
-                      bg-white
-                      px-3.5
-                      py-2.5
-                      text-sm
-                      text-slate-900
-                      outline-none
-                      placeholder:text-slate-400
-                      focus:border-blue-500
-                      transition
-                    "
-                  />
-                </div>
-
-                {/* Salary Currency */}
-                <div className="min-w-0">
-                  <label className="text-[11px] font-semibold text-slate-600">
-                    Salary currency *
-                  </label>
-
-                  <select
-                    required
-                    name="salaryCurrency"
-                    value={formData.salaryCurrency}
-                    onChange={handleInputChange}
-                    className="
-                      mt-1.5
-                      w-full
-                      min-w-0
-                      rounded-xl
-                      border
-                      border-slate-200
-                      bg-white
-                      px-3.5
-                      py-2.5
-                      text-sm
-                      text-slate-700
-                      outline-none
-                      focus:border-blue-500
-                      transition
-                    "
-                  >
-                    <option value="">Select currency</option>
-                    <option>USD — US Dollar</option>
-                    <option>GBP — British Pound</option>
-                    <option>CAD — Canadian Dollar</option>
-                    <option>EUR — Euro</option>
-                    <option>AUD — Australian Dollar</option>
-                    <option>SGD — Singapore Dollar</option>
-                    <option>AED — UAE Dirham</option>
-                  </select>
-                </div>
-
-                {/* Notice Period */}
-                <div className="min-w-0">
-                  <label className="text-[11px] font-semibold text-slate-600">
-                    Availability / notice period *
-                  </label>
-
-                  <select
-                    required
-                    name="noticePeriod"
-                    value={formData.noticePeriod}
-                    onChange={handleInputChange}
-                    className="
-                      mt-1.5
-                      w-full
-                      min-w-0
-                      rounded-xl
-                      border
-                      border-slate-200
-                      bg-white
-                      px-3.5
-                      py-2.5
-                      text-sm
-                      text-slate-700
-                      outline-none
-                      focus:border-blue-500
-                      transition
-                    "
-                  >
-                    <option value="">Select availability</option>
-                    <option>Immediately available</option>
-                    <option>Within 15 days</option>
-                    <option>Within 30 days</option>
-                    <option>30–60 days</option>
-                    <option>60+ days</option>
-                  </select>
-                </div>
-
-                {/* Working Timezone */}
-                <div className="min-w-0">
-                  <label className="text-[11px] font-semibold text-slate-600">
-                    Preferred working timezone
-                  </label>
-
-                  <select
-                    name="preferredTimezone"
-                    value={formData.preferredTimezone}
-                    onChange={handleInputChange}
-                    className="
-                      mt-1.5
-                      w-full
-                      min-w-0
-                      rounded-xl
-                      border
-                      border-slate-200
-                      bg-white
-                      px-3.5
-                      py-2.5
-                      text-sm
-                      text-slate-700
-                      outline-none
-                      focus:border-blue-500
-                      transition
-                    "
-                  >
-                    <option value="">Select timezone</option>
-                    <option>IST — India</option>
-                    <option>GMT — United Kingdom</option>
-                    <option>EST — US Eastern</option>
-                    <option>CST — US Central</option>
-                    <option>PST — US Pacific</option>
-                    <option>CET — Central Europe</option>
-                    <option>AEST — Australia Eastern</option>
-                    <option>Flexible / Any timezone</option>
-                  </select>
-                </div>
-
-                {/* Portfolio / Showreel */}
-                <div className="min-w-0">
-                  <label className="text-[11px] font-semibold text-slate-600">
-                    Portfolio / GitHub / Showreel link
-                  </label>
-
-                  <input
-                    type="url"
-                    name="portfolio"
-                    value={formData.portfolio}
-                    onChange={handleInputChange}
-                    placeholder="https://..."
                     className="
                       mt-1.5
                       w-full
@@ -1325,9 +900,8 @@ const RoleApplyModal = ({
                 "
               >
                 <p className="max-w-sm text-[10px] leading-relaxed text-slate-400">
-                  By applying, you confirm your information is
-                  authentic. Opportunities and visa sponsorships depend
-                  on employer requirements.
+                  By applying, you confirm your information is authentic.
+                  Opportunities depend on employer requirements.
                 </p>
 
                 <div
@@ -1416,4 +990,3 @@ const RoleApplyModal = ({
 };
 
 export default RoleApplyModal;
-

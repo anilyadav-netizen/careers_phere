@@ -5,11 +5,14 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   BriefcaseBusiness,
   ChevronDown,
+  CreditCard,
   FileText,
+  Images,
   Info,
   LogIn,
   LogOut,
   Menu,
+  Palette,
   Phone,
   Search,
   UserPlus,
@@ -72,31 +75,36 @@ const Navbar = () => {
       path: "/jobs",
       icon: Search,
     },
-    // {
-    //   name: "Video Editor",
-    //   path: "/videoEditor",
-    //   icon: CreditCard,
-    // },
-    // {
-    //   name: "FullStack",
-    //   path: "/fullStack",
-    //   icon: Images,
-    // },
-    // {
-    //   name: "Andriod",
-    //   path: "/andriod",
-    //   icon: Images,
-    // },
-    // {
-    //   name: "Frontend",
-    //   path: "/frontend",
-    //   icon: Images,
-    // },
-    // {
-    //   name: "Backend",
-    //   path: "/backend",
-    //   icon: Images,
-    // },
+    {
+      name: "Video Editor",
+      path: "/videoEditor",
+      icon: CreditCard,
+    },
+    {
+      name: "FullStack",
+      path: "/fullStack",
+      icon: Images,
+    },
+    {
+      name: "Andriod",
+      path: "/andriod",
+      icon: Images,
+    },
+    {
+      name: "Frontend",
+      path: "/frontend",
+      icon: Images,
+    },
+    {
+      name: "Backend",
+      path: "/backend",
+      icon: Images,
+    },
+    {
+      name: "UI/UX",
+      path: "/uiux-designer",
+      icon: Palette,
+    },
     {
       name: "About Us",
       path: "/about",

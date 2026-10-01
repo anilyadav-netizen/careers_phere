@@ -10,6 +10,7 @@ import testimonialReducer from "../redux/slicer/testimonialSlice";
 import userSubscriptionReducer from "../redux/slicer/userSubscriptionSlice";
 import testimonialsReducer from "../redux/slicer/userTestimonialSlice";
 import frontendApplicationReducer from "../redux/slicer/frontendApplicationSlice";
+import roleOpportunityReducer from "../redux/slicer/roleOpportunitySlice";
 
 export const store = configureStore({
   reducer: {
@@ -24,5 +25,6 @@ export const store = configureStore({
     userSubscription: userSubscriptionReducer,
     application: applicationReducer,
     frontendApplications: frontendApplicationReducer,
+    roleOpportunities: roleOpportunityReducer,
   },
 });

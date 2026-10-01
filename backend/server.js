@@ -18,6 +18,7 @@ const adminSubscriptionRoutes = require("./routes/adminSubscriptionRoutes");
 const testimonialRoutes = require("./routes/testimonialRoutes");
 const adminTestimonialRoutes = require("./routes/adminTestimonialRoutes");
 const frontendApplicationRoutes = require("./routes/frontendApplicationRoutes");
+const roleOpportunityRoutes = require("./routes/roleOpportunityRoutes");
 
 const errorHandler = require("./middleware/error");
 const {
@@ -54,6 +55,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/testimonials", testimonialRoutes);
 app.use("/api/admin/testimonials", adminTestimonialRoutes);
 app.use("/api/frontend-applications", frontendApplicationRoutes);
+app.use("/api/role-opportunities", roleOpportunityRoutes);
 
 // ==========================
 // HEALTH CHECK
