@@ -1,46 +1,53 @@
 // src/admin/pages/Users.jsx
-import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import {
-  Users as UsersIcon,
-  Search,
-  CreditCard,
-  UserX,
-  UserPlus,
-  Pencil,
-  Trash2,
-  X,
-  CheckCircle2,
   AlertCircle,
   AlertTriangle,
+  Calendar,
+  CheckCircle2,
+  MapPin,
+  Pencil,
+  Phone,
   RefreshCw,
   Save,
-  Calendar,
-  MapPin,
-  Briefcase,
-  Phone,
+  Search,
+  Trash2,
+  UserPlus,
+  Users as UsersIcon,
+  UserX,
+  X,
 } from "lucide-react";
-import StateCard from "../components/StateCard";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
-  getAllUsersAdmin,
-  deleteUserAdmin,
-  updateUserAdmin,
-  toggleUserActive,
-  toggleUserVerified,
   clearUserMessages,
+  deleteUserAdmin,
+  getAllUsersAdmin,
+  toggleUserActive,
+  updateUserAdmin,
 } from "../../redux/slicer/adminUserSlice";
+import StateCard from "../components/StateCard";
 
 const Users = () => {
   const dispatch = useDispatch();
 
   // Redux state
   const users = useSelector((state) => state.adminUser?.users || []);
-  const loading = useSelector((state) => state.adminUser?.fetchLoading || false);
+  const loading = useSelector(
+    (state) => state.adminUser?.fetchLoading || false,
+  );
   const error = useSelector((state) => state.adminUser?.fetchError || null);
-  const deleteLoading = useSelector((state) => state.adminUser?.deleteLoading || false);
-  const updateLoading = useSelector((state) => state.adminUser?.updateLoading || false);
-  const successMessage = useSelector((state) => state.adminUser?.successMessage || null);
-  const statistics = useSelector((state) => state.adminUser?.statistics || null);
+  const deleteLoading = useSelector(
+    (state) => state.adminUser?.deleteLoading || false,
+  );
+  const updateLoading = useSelector(
+    (state) => state.adminUser?.updateLoading || false,
+  );
+  const successMessage = useSelector(
+    (state) => state.adminUser?.successMessage || null,
+  );
+  const statistics = useSelector(
+    (state) => state.adminUser?.statistics || null,
+  );
   const total = useSelector((state) => state.adminUser?.total || 0);
   const totalPages = useSelector((state) => state.adminUser?.totalPages || 1);
 
@@ -56,20 +63,23 @@ const Users = () => {
   const [notification, setNotification] = useState(null);
 
   // Fetch users
-  const fetchUsers = useCallback((page = 1) => {
-    const params = {
-      page,
-      limit: 20,
-      sortBy: "createdAt",
-      sortOrder: "desc",
-    };
-    
-    if (searchTerm) params.search = searchTerm;
-    if (filterType === "active") params.isActive = "true";
-    else if (filterType === "inactive") params.isActive = "false";
-    
-    dispatch(getAllUsersAdmin(params));
-  }, [dispatch, searchTerm, filterType]);
+  const fetchUsers = useCallback(
+    (page = 1) => {
+      const params = {
+        page,
+        limit: 20,
+        sortBy: "createdAt",
+        sortOrder: "desc",
+      };
+
+      if (searchTerm) params.search = searchTerm;
+      if (filterType === "active") params.isActive = "true";
+      else if (filterType === "inactive") params.isActive = "false";
+
+      dispatch(getAllUsersAdmin(params));
+    },
+    [dispatch, searchTerm, filterType],
+  );
 
   useEffect(() => {
     fetchUsers(currentPage);
@@ -97,7 +107,8 @@ const Users = () => {
       return {
         totalUsers: statistics.totalUsers || 0,
         activeSubscriptions: statistics.activeUsers || 0,
-        withoutSubscription: (statistics.totalUsers || 0) - (statistics.activeUsers || 0),
+        withoutSubscription:
+          (statistics.totalUsers || 0) - (statistics.activeUsers || 0),
         recentlyRegistered: 0, // Calculate from users list
       };
     }
@@ -105,7 +116,7 @@ const Users = () => {
     const totalUsers = users.length;
     const activeUsers = users.filter((user) => user.isActive).length;
     const verifiedUsers = users.filter((user) => user.isVerified).length;
-    
+
     const recentlyRegistered = users.filter((user) => {
       const joinDate = new Date(user.createdAt);
       const thirtyDaysAgo = new Date();
@@ -132,7 +143,7 @@ const Users = () => {
         (user) =>
           user.name?.toLowerCase().includes(searchLower) ||
           user.email?.toLowerCase().includes(searchLower) ||
-          user.mobile?.toLowerCase().includes(searchLower)
+          user.mobile?.toLowerCase().includes(searchLower),
       );
     }
 
@@ -259,7 +270,9 @@ const Users = () => {
 
   // Error state
   if (error && users.length === 0) {
-    return <UsersErrorState error={error} onRetry={() => fetchUsers(currentPage)} />;
+    return (
+      <UsersErrorState error={error} onRetry={() => fetchUsers(currentPage)} />
+    );
   }
 
   return (
@@ -274,7 +287,7 @@ const Users = () => {
             Manage Users
           </h1>
           <p className="text-sm text-slate-500 mt-1">
-            View, manage and monitor all registered CareerSphere users.
+            View, manage and monitor all registered CareerNova users.
           </p>
           <p className="text-xs text-slate-400 mt-0.5">
             Total: {total} users • Page {currentPage} of {totalPages}
@@ -377,14 +390,18 @@ const Users = () => {
                   <option value="name">Name A-Z</option>
                 </select>
 
-                {(searchTerm || filterType !== "all" || sortOrder !== "newest") && (
+                {(searchTerm ||
+                  filterType !== "all" ||
+                  sortOrder !== "newest") && (
                   <button
                     onClick={clearFilters}
                     className="w-full sm:w-auto p-2.5 rounded-xl border border-slate-200 hover:bg-slate-100 transition-colors flex items-center justify-center gap-2"
                     title="Clear filters"
                   >
                     <X className="w-4 h-4 text-slate-500" />
-                    <span className="sm:hidden text-sm text-slate-600">Clear</span>
+                    <span className="sm:hidden text-sm text-slate-600">
+                      Clear
+                    </span>
                   </button>
                 )}
               </div>
@@ -450,7 +467,9 @@ const Users = () => {
 
                       {/* Role */}
                       <td className="px-6 py-4">
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getRoleBadge(user.role)}`}>
+                        <span
+                          className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getRoleBadge(user.role)}`}
+                        >
                           {user.role || "jobseeker"}
                         </span>
                       </td>
@@ -558,7 +577,9 @@ const Users = () => {
                         <p className="text-xs text-slate-500 truncate">
                           {user.email || "No email"}
                         </p>
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getRoleBadge(user.role)} mt-1`}>
+                        <span
+                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getRoleBadge(user.role)} mt-1`}
+                        >
                           {user.role || "jobseeker"}
                         </span>
                       </div>
@@ -638,18 +659,21 @@ const Users = () => {
         {totalPages > 1 && (
           <div className="flex items-center justify-between px-6 py-4 border-t border-slate-100">
             <div className="text-sm text-slate-500">
-              Showing {((currentPage - 1) * 20) + 1} to {Math.min(currentPage * 20, total)} of {total} users
+              Showing {(currentPage - 1) * 20 + 1} to{" "}
+              {Math.min(currentPage * 20, total)} of {total} users
             </div>
             <div className="flex gap-2">
               <button
-                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                 disabled={currentPage === 1}
                 className="px-3 py-1.5 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Previous
               </button>
               <button
-                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                }
                 disabled={currentPage === totalPages}
                 className="px-3 py-1.5 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
@@ -712,7 +736,10 @@ const UsersLoadingState = () => (
     </div>
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
       {[...Array(4)].map((_, i) => (
-        <div key={i} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+        <div
+          key={i}
+          className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200"
+        >
           <div className="h-4 bg-slate-200 rounded w-24 mb-4"></div>
           <div className="h-8 bg-slate-200 rounded w-16"></div>
         </div>
@@ -767,7 +794,7 @@ const UsersEmptyState = ({ hasFilters, onClear }) => (
     <p className="text-sm text-slate-500 text-center mb-4 max-w-sm">
       {hasFilters
         ? "Try adjusting your search or filter criteria to find what you're looking for."
-        : "When users register on CareerSphere, they will appear here."}
+        : "When users register on CareerNova, they will appear here."}
     </p>
     {hasFilters && (
       <button
@@ -819,52 +846,77 @@ const EditUserModal = ({ user, onClose, onSave, isLoading }) => {
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-slate-100 sticky top-0 bg-white">
           <div>
             <h3 className="text-lg font-semibold text-slate-900">Edit User</h3>
-            <p className="text-sm text-slate-500 mt-0.5">Update user information</p>
+            <p className="text-sm text-slate-500 mt-0.5">
+              Update user information
+            </p>
           </div>
-          <button onClick={onClose} className="p-2 rounded-lg hover:bg-slate-100 transition-colors">
+          <button
+            onClick={onClose}
+            className="p-2 rounded-lg hover:bg-slate-100 transition-colors"
+          >
             <X className="w-5 h-5 text-slate-500" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Full Name *</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1">
+              Full Name *
+            </label>
             <input
               type="text"
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               className={`w-full px-4 py-2.5 rounded-xl border ${errors.name ? "border-red-300" : "border-slate-200"} focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none text-sm`}
             />
-            {errors.name && <p className="text-xs text-red-600 mt-1">{errors.name}</p>}
+            {errors.name && (
+              <p className="text-xs text-red-600 mt-1">{errors.name}</p>
+            )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Email Address *</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1">
+              Email Address *
+            </label>
             <input
               type="email"
               value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
               className={`w-full px-4 py-2.5 rounded-xl border ${errors.email ? "border-red-300" : "border-slate-200"} focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none text-sm`}
             />
-            {errors.email && <p className="text-xs text-red-600 mt-1">{errors.email}</p>}
+            {errors.email && (
+              <p className="text-xs text-red-600 mt-1">{errors.email}</p>
+            )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Mobile Number</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1">
+              Mobile Number
+            </label>
             <input
               type="tel"
               value={formData.mobile}
-              onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, mobile: e.target.value })
+              }
               className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none text-sm"
               placeholder="+91 XXXXX XXXXX"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Role</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1">
+              Role
+            </label>
             <select
               value={formData.role}
-              onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, role: e.target.value })
+              }
               className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none text-sm"
             >
               <option value="jobseeker">Job Seeker</option>
@@ -874,11 +926,15 @@ const EditUserModal = ({ user, onClose, onSave, isLoading }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Location</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1">
+              Location
+            </label>
             <input
               type="text"
               value={formData.location}
-              onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, location: e.target.value })
+              }
               className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none text-sm"
               placeholder="e.g., Bangalore, India"
             />
@@ -889,7 +945,9 @@ const EditUserModal = ({ user, onClose, onSave, isLoading }) => {
               <input
                 type="checkbox"
                 checked={formData.isActive}
-                onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                onChange={(e) =>
+                  setFormData({ ...formData, isActive: e.target.checked })
+                }
                 className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
               />
               Active
@@ -898,7 +956,9 @@ const EditUserModal = ({ user, onClose, onSave, isLoading }) => {
               <input
                 type="checkbox"
                 checked={formData.isVerified}
-                onChange={(e) => setFormData({ ...formData, isVerified: e.target.checked })}
+                onChange={(e) =>
+                  setFormData({ ...formData, isVerified: e.target.checked })
+                }
                 className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
               />
               Verified
@@ -939,12 +999,18 @@ const DeleteUserModal = ({ user, onClose, onConfirm, isDeleting }) => {
               <AlertTriangle className="w-6 h-6 text-red-600" />
             </div>
             <div className="flex-1">
-              <h3 className="text-lg font-semibold text-slate-900">Delete User?</h3>
+              <h3 className="text-lg font-semibold text-slate-900">
+                Delete User?
+              </h3>
               <p className="text-sm text-slate-500 mt-1">
-                Are you sure you want to delete {user?.name}? This action cannot be undone.
+                Are you sure you want to delete {user?.name}? This action cannot
+                be undone.
               </p>
             </div>
-            <button onClick={onClose} className="p-2 rounded-lg hover:bg-slate-100 transition-colors">
+            <button
+              onClick={onClose}
+              className="p-2 rounded-lg hover:bg-slate-100 transition-colors"
+            >
               <X className="w-5 h-5 text-slate-500" />
             </button>
           </div>
@@ -952,10 +1018,19 @@ const DeleteUserModal = ({ user, onClose, onConfirm, isDeleting }) => {
           <div className="mt-4 p-4 bg-slate-50 rounded-xl">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex items-center justify-center text-sm font-semibold flex-shrink-0">
-                {user?.name ? user.name.split(" ").map((word) => word[0]).join("").toUpperCase().slice(0, 2) : "U"}
+                {user?.name
+                  ? user.name
+                      .split(" ")
+                      .map((word) => word[0])
+                      .join("")
+                      .toUpperCase()
+                      .slice(0, 2)
+                  : "U"}
               </div>
               <div>
-                <p className="text-sm font-medium text-slate-800">{user?.name}</p>
+                <p className="text-sm font-medium text-slate-800">
+                  {user?.name}
+                </p>
                 <p className="text-xs text-slate-500">{user?.email}</p>
               </div>
             </div>

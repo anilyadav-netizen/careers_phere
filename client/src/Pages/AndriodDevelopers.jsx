@@ -1,31 +1,31 @@
-import React, { useEffect, useReducer, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import RoleApplyModal from "../components/RoleApplyModal";
-import { fetchPublicOpportunities } from "../redux/slicer/roleOpportunitySlice";
+import AOS from "aos";
+import "aos/dist/aos.css";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
+  BadgeDollarSign,
+  BriefcaseBusiness,
+  Building2,
   Check,
   ChevronDown,
   Code2,
   Database,
+  DollarSign,
   Globe2,
+  Laptop2,
   Layers3,
   Mail,
   MapPin,
-  Sparkles,
-  Smartphone,
-  DollarSign,
   Plane,
-  BriefcaseBusiness,
-  Building2,
-  Laptop2,
   ShieldCheck,
-  BadgeDollarSign,
+  Smartphone,
+  Sparkles,
 } from "lucide-react";
-import { FaLinkedinIn, FaGithub, FaAndroid } from "react-icons/fa";
-import { motion, AnimatePresence } from "framer-motion";
-import AOS from "aos";
-import "aos/dist/aos.css";
+import { useEffect, useReducer, useState } from "react";
+import { FaAndroid, FaGithub, FaLinkedinIn } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import RoleApplyModal from "../components/RoleApplyModal";
+import { fetchPublicOpportunities } from "../redux/slicer/roleOpportunitySlice";
 
 /* ---------------- REDUCER ---------------- */
 
@@ -58,7 +58,7 @@ const AndroidDeveloper = () => {
   const { openFaq, selectedOpportunity } = state;
   const reduxDispatch = useDispatch();
   const { publicList = [], opportunities = [] } = useSelector(
-    (state) => state.roleOpportunities || {}
+    (state) => state.roleOpportunities || {},
   );
   const activeOpportunities =
     opportunities.length > 0 ? opportunities : publicList;
@@ -66,7 +66,7 @@ const AndroidDeveloper = () => {
 
   useEffect(() => {
     reduxDispatch(
-      fetchPublicOpportunities({ roleCategory: "Android Developer" })
+      fetchPublicOpportunities({ roleCategory: "Android Developer" }),
     );
   }, [reduxDispatch]);
 
@@ -159,10 +159,26 @@ const AndroidDeveloper = () => {
   ];
 
   const process = [
-    { number: "01", title: "Application", desc: "Submit your profile, experience, preferred country and mobile projects." },
-    { number: "02", title: "Profile Review", desc: "Our team reviews your experience, skills and global opportunity preferences." },
-    { number: "03", title: "Technical Round", desc: "Discuss Android concepts, architecture and real-world projects." },
-    { number: "04", title: "Final Interview", desc: "Meet the team and discuss your role, location and expectations." },
+    {
+      number: "01",
+      title: "Application",
+      desc: "Submit your profile, experience, preferred country and mobile projects.",
+    },
+    {
+      number: "02",
+      title: "Profile Review",
+      desc: "Our team reviews your experience, skills and global opportunity preferences.",
+    },
+    {
+      number: "03",
+      title: "Technical Round",
+      desc: "Discuss Android concepts, architecture and real-world projects.",
+    },
+    {
+      number: "04",
+      title: "Final Interview",
+      desc: "Meet the team and discuss your role, location and expectations.",
+    },
   ];
 
   const globalOpportunities = [
@@ -242,24 +258,31 @@ const AndroidDeveloper = () => {
 
   const faqs = [
     {
-      question: "Can I apply for an international Android opportunity from my current country?",
-      answer: "Yes. Many opportunities can be remote and may accept candidates from different countries. Each role can have its own location, work authorization and relocation requirements.",
+      question:
+        "Can I apply for an international Android opportunity from my current country?",
+      answer:
+        "Yes. Many opportunities can be remote and may accept candidates from different countries. Each role can have its own location, work authorization and relocation requirements.",
     },
     {
       question: "Are remote, hybrid and on-site opportunities available?",
-      answer: "Yes. CareerSphere can showcase different work arrangements depending on the opportunity. Always check the individual role for its available work mode and eligible countries.",
+      answer:
+        "Yes. CareerNova can showcase different work arrangements depending on the opportunity. Always check the individual role for its available work mode and eligible countries.",
     },
     {
       question: "Can I select multiple preferred countries?",
-      answer: "Yes. You can mention your preferred countries or regions and also indicate whether you are open to nearby countries or other international opportunities.",
+      answer:
+        "Yes. You can mention your preferred countries or regions and also indicate whether you are open to nearby countries or other international opportunities.",
     },
     {
-      question: "Can international jobs offer salary in USD or another currency?",
-      answer: "Yes. International opportunities may advertise compensation in USD, EUR, GBP, CAD, AUD or another local currency. You can specify your expected salary and preferred currency in the application.",
+      question:
+        "Can international jobs offer salary in USD or another currency?",
+      answer:
+        "Yes. International opportunities may advertise compensation in USD, EUR, GBP, CAD, AUD or another local currency. You can specify your expected salary and preferred currency in the application.",
     },
     {
       question: "Do I need relocation or work authorization?",
-      answer: "It depends on the role. Remote positions may have different requirements, while on-site international roles can require appropriate work authorization or relocation eligibility.",
+      answer:
+        "It depends on the role. Remote positions may have different requirements, while on-site international roles can require appropriate work authorization or relocation eligibility.",
     },
   ];
 
@@ -309,11 +332,17 @@ const AndroidDeveloper = () => {
                 <motion.h1
                   initial={{ opacity: 0, y: 35 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{
+                    duration: 0.8,
+                    delay: 0.25,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
                   className="text-[28px] md:text-5xl lg:text-[2.5rem] xl:text-[3.8rem] leading-[0.98] font-bold tracking-tight text-slate-900"
                 >
                   Build native mobile apps with{" "}
-                  <span className="text-[#30AFFF]">Kotlin & Jetpack Compose.</span>
+                  <span className="text-[#30AFFF]">
+                    Kotlin & Jetpack Compose.
+                  </span>
                 </motion.h1>
 
                 <motion.p
@@ -323,8 +352,9 @@ const AndroidDeveloper = () => {
                   className="mt-3.5 max-w-2xl text-sm sm:text-base leading-relaxed text-slate-500"
                 >
                   We're hiring Android Developers to craft smooth, responsive,
-                  battery-efficient Android applications with Kotlin, modern MVVM architecture,
-                  and native performance for millions of mobile users worldwide.
+                  battery-efficient Android applications with Kotlin, modern
+                  MVVM architecture, and native performance for millions of
+                  mobile users worldwide.
                 </motion.p>
 
                 <motion.div
@@ -416,8 +446,12 @@ const AndroidDeveloper = () => {
                         <FaAndroid size={16} />
                       </div>
                       <div>
-                        <div className="text-xs font-bold text-white">CareerSphere Android</div>
-                        <div className="text-[9px] text-[#30AFFF]">Kotlin 2.0 · Jetpack Compose</div>
+                        <div className="text-xs font-bold text-white">
+                          CareerNova Android
+                        </div>
+                        <div className="text-[9px] text-[#30AFFF]">
+                          Kotlin 2.0 · Jetpack Compose
+                        </div>
                       </div>
                     </div>
                     <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[9px] font-bold">
@@ -429,13 +463,16 @@ const AndroidDeveloper = () => {
                   <div className="p-4 space-y-3 flex-1">
                     {/* Live Jetpack Compose Code Preview */}
                     <div className="rounded-xl bg-slate-950 p-3 font-mono text-[10px] text-slate-300 border border-slate-800">
-                      <div className="text-slate-500">// Kotlin Compose Screen</div>
+                      <div className="text-slate-500">
+                        // Kotlin Compose Screen
+                      </div>
                       <div>
                         <span className="text-[#30AFFF]">@Composable</span>
                       </div>
                       <div>
                         <span className="text-rose-400">fun</span>{" "}
-                        <span className="text-amber-300">AndroidJobFeed</span>() &#123;
+                        <span className="text-amber-300">AndroidJobFeed</span>()
+                        &#123;
                       </div>
                       <div className="pl-3 text-slate-400">
                         LazyColumn(modifier = Modifier.fillMaxSize()) &#123;
@@ -454,7 +491,9 @@ const AndroidDeveloper = () => {
                     <div className="rounded-xl bg-gradient-to-r from-[#30AFFF]/20 to-sky-500/10 border border-[#30AFFF]/40 p-3">
                       <div className="flex items-center justify-between text-xs font-bold text-white">
                         <span>Application Status</span>
-                        <span className="text-emerald-400 text-[10px]">Shortlisted</span>
+                        <span className="text-emerald-400 text-[10px]">
+                          Shortlisted
+                        </span>
                       </div>
                       <div className="text-[11px] text-slate-300 mt-1">
                         Senior Android Developer · Remote Global
@@ -486,15 +525,23 @@ const AndroidDeveloper = () => {
                   <FaAndroid size={16} />
                 </div>
                 <div>
-                  <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">PLATFORM</div>
-                  <div className="text-xs font-bold text-slate-900">Kotlin & Android SDK</div>
+                  <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">
+                    PLATFORM
+                  </div>
+                  <div className="text-xs font-bold text-slate-900">
+                    Kotlin & Android SDK
+                  </div>
                 </div>
               </div>
 
               <div className="absolute -top-3 -right-3 hidden sm:flex items-center gap-2.5 rounded-2xl border border-slate-100 bg-white px-3.5 py-2.5 shadow-lg">
                 <div>
-                  <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">STORE RATING</div>
-                  <div className="text-xs font-bold text-slate-900">Google Play 4.9★</div>
+                  <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">
+                    STORE RATING
+                  </div>
+                  <div className="text-xs font-bold text-slate-900">
+                    Google Play 4.9★
+                  </div>
                 </div>
                 <div className="w-8 h-8 rounded-xl bg-amber-500/15 flex items-center justify-center text-amber-500">
                   <Sparkles size={16} />
@@ -535,7 +582,10 @@ const AndroidDeveloper = () => {
         className="relative overflow-hidden border-y border-slate-100 bg-slate-50/60"
       >
         <div className="max-w-[90rem] mx-auto px-5 sm:px-6 lg:px-8 py-10 lg:py-14">
-          <div data-aos="fade-up" className="flex flex-col items-center text-center gap-3 mb-8">
+          <div
+            data-aos="fade-up"
+            className="flex flex-col items-center text-center gap-3 mb-8"
+          >
             <p className="inline-flex items-center gap-2 justify-center rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/5 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-[#159FEF] font-bold">
               <Globe2 size={13} />
               Global opportunity
@@ -547,285 +597,299 @@ const AndroidDeveloper = () => {
 
             <p className="text-sm text-slate-500 leading-6 max-w-2xl">
               Explore opportunities by country, work mode and compensation.
-              Select the market that matches your career goals and tell us
-              your preference in the application.
+              Select the market that matches your career goals and tell us your
+              preference in the application.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
-            {activeOpportunities.length > 0 ? (
-              activeOpportunities.map((opp, index) => {
-                const displaySalary = opp.salary || "Competitive";
+            {activeOpportunities.length > 0
+              ? activeOpportunities.map((opp, index) => {
+                  const displaySalary = opp.salary || "Competitive";
 
-                return (
-                  <motion.div
-                    key={opp._id || index}
-                    data-aos="fade-up"
-                    data-aos-delay={index * 70}
-                    whileHover={{ y: -5 }}
-                    className="group rounded-2xl border border-slate-100 bg-white p-5 shadow-sm hover:border-[#30AFFF]/30 hover:shadow-[0_15px_45px_rgba(15,23,42,0.10)] transition-all flex flex-col"
-                  >
-                    {/* Header */}
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex items-center gap-3 min-w-0">
-                        <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 overflow-hidden shadow-2xs">
-                          {opp.companyLogo ? (
-                            <img
-                              src={opp.companyLogo}
-                              alt={opp.companyName}
-                              className="w-full h-full object-contain p-1"
-                              onError={(e) => {
-                                e.target.style.display = "none";
-                              }}
-                            />
+                  return (
+                    <motion.div
+                      key={opp._id || index}
+                      data-aos="fade-up"
+                      data-aos-delay={index * 70}
+                      whileHover={{ y: -5 }}
+                      className="group rounded-2xl border border-slate-100 bg-white p-5 shadow-sm hover:border-[#30AFFF]/30 hover:shadow-[0_15px_45px_rgba(15,23,42,0.10)] transition-all flex flex-col"
+                    >
+                      {/* Header */}
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 overflow-hidden shadow-2xs">
+                            {opp.companyLogo ? (
+                              <img
+                                src={opp.companyLogo}
+                                alt={opp.companyName}
+                                className="w-full h-full object-contain p-1"
+                                onError={(e) => {
+                                  e.target.style.display = "none";
+                                }}
+                              />
+                            ) : (
+                              <Building2 size={20} className="text-[#30AFFF]" />
+                            )}
+                          </div>
+
+                          <div className="min-w-0">
+                            <h3
+                              className="font-bold text-slate-800 truncate"
+                              title={opp.companyName}
+                            >
+                              {opp.companyName}
+                            </h3>
+                            <p className="text-xs text-slate-400 mt-0.5 truncate">
+                              {opp.roleTitle ||
+                                opp.roleCategory ||
+                                "Android Developer"}
+                            </p>
+                          </div>
+                        </div>
+
+                        {opp.salaryCurrency && (
+                          <span className="text-[10px] font-bold rounded-md bg-[#30AFFF]/10 text-[#159FEF] px-2 py-0.5 shrink-0">
+                            {opp.salaryCurrency}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Countries with Flags */}
+                      <div className="mt-4">
+                        <p className="text-[10px] uppercase tracking-wide text-slate-400 font-bold mb-1.5 flex items-center gap-1">
+                          <Globe2 size={12} className="text-[#30AFFF]" />
+                          <span>Hiring Locations</span>
+                        </p>
+
+                        <div className="flex flex-wrap gap-1">
+                          {opp.countries && opp.countries.length > 0 ? (
+                            opp.countries.map((c, cIdx) => (
+                              <span
+                                key={cIdx}
+                                className="inline-flex items-center gap-1 rounded bg-slate-50 border border-slate-200 px-2 py-0.5 text-[11px] font-medium text-slate-700"
+                              >
+                                {c.flag &&
+                                  (c.flag.startsWith("http") ? (
+                                    <img
+                                      src={c.flag}
+                                      alt={c.countryName || "flag"}
+                                      className="w-3.5 h-2.5 object-cover rounded-2xs"
+                                      onError={(e) => {
+                                        e.target.style.display = "none";
+                                      }}
+                                    />
+                                  ) : (
+                                    <span>{c.flag}</span>
+                                  ))}
+                                <span>{c.countryName || "Target Market"}</span>
+                              </span>
+                            ))
                           ) : (
-                            <Building2 size={20} className="text-[#30AFFF]" />
+                            <span className="text-xs text-slate-500 font-medium">
+                              Worldwide / Remote
+                            </span>
                           )}
                         </div>
-
-                        <div className="min-w-0">
-                          <h3
-                            className="font-bold text-slate-800 truncate"
-                            title={opp.companyName}
-                          >
-                            {opp.companyName}
-                          </h3>
-                          <p className="text-xs text-slate-400 mt-0.5 truncate">
-                            {opp.roleTitle || opp.roleCategory || "Android Developer"}
-                          </p>
-                        </div>
                       </div>
 
-                      {opp.salaryCurrency && (
-                        <span className="text-[10px] font-bold rounded-md bg-[#30AFFF]/10 text-[#159FEF] px-2 py-0.5 shrink-0">
-                          {opp.salaryCurrency}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Countries with Flags */}
-                    <div className="mt-4">
-                      <p className="text-[10px] uppercase tracking-wide text-slate-400 font-bold mb-1.5 flex items-center gap-1">
-                        <Globe2 size={12} className="text-[#30AFFF]" />
-                        <span>Hiring Locations</span>
-                      </p>
-
-                      <div className="flex flex-wrap gap-1">
-                        {opp.countries && opp.countries.length > 0 ? (
-                          opp.countries.map((c, cIdx) => (
-                            <span
-                              key={cIdx}
-                              className="inline-flex items-center gap-1 rounded bg-slate-50 border border-slate-200 px-2 py-0.5 text-[11px] font-medium text-slate-700"
-                            >
-                              {c.flag && (
-                                c.flag.startsWith("http") ? (
-                                  <img
-                                    src={c.flag}
-                                    alt={c.countryName || "flag"}
-                                    className="w-3.5 h-2.5 object-cover rounded-2xs"
-                                    onError={(e) => {
-                                      e.target.style.display = "none";
-                                    }}
-                                  />
-                                ) : (
-                                  <span>{c.flag}</span>
-                                )
-                              )}
-                              <span>{c.countryName || "Target Market"}</span>
+                      {/* Indicative payout */}
+                      <div className="mt-4 rounded-2xl border border-[#30AFFF]/20 bg-[#30AFFF]/[0.04] p-4">
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="flex items-center gap-2">
+                            <BadgeDollarSign
+                              size={17}
+                              className="text-[#30AFFF]"
+                            />
+                            <span className="text-xs font-medium text-slate-500">
+                              Indicative payout
                             </span>
-                          ))
-                        ) : (
-                          <span className="text-xs text-slate-500 font-medium">
-                            Worldwide / Remote
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Indicative payout */}
-                    <div className="mt-4 rounded-2xl border border-[#30AFFF]/20 bg-[#30AFFF]/[0.04] p-4">
-                      <div className="flex items-center justify-between gap-3">
-                        <div className="flex items-center gap-2">
-                          <BadgeDollarSign size={17} className="text-[#30AFFF]" />
-                          <span className="text-xs font-medium text-slate-500">
-                            Indicative payout
+                          </div>
+                          <span className="text-[11px] text-slate-400">
+                            {opp.salary ? "Annual range" : "Negotiable"}
                           </span>
                         </div>
-                        <span className="text-[11px] text-slate-400">
-                          {opp.salary ? "Annual range" : "Negotiable"}
-                        </span>
+
+                        <p className="text-xl font-black text-slate-900 mt-1">
+                          {displaySalary}
+                        </p>
                       </div>
 
-                      <p className="text-xl font-black text-slate-900 mt-1">
-                        {displaySalary}
-                      </p>
-                    </div>
+                      {/* Skills */}
+                      {opp.skills && opp.skills.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-3">
+                          {opp.skills.slice(0, 4).map((skill, sIdx) => (
+                            <span
+                              key={sIdx}
+                              className="rounded-md border border-[#30AFFF]/20 bg-[#30AFFF]/[0.05] px-2 py-0.5 text-[10px] font-semibold text-[#159FEF]"
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                          {opp.skills.length > 4 && (
+                            <span className="rounded-md bg-slate-50 border border-slate-200 px-1.5 py-0.5 text-[9px] text-slate-500 font-bold">
+                              +{opp.skills.length - 4}
+                            </span>
+                          )}
+                        </div>
+                      )}
 
-                    {/* Skills */}
-                    {opp.skills && opp.skills.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mt-3">
-                        {opp.skills.slice(0, 4).map((skill, sIdx) => (
+                      {/* Modes */}
+                      <div className="flex flex-wrap gap-1.5 mt-3">
+                        {(opp.workModes || ["Remote", "Hybrid"]).map((mode) => (
                           <span
-                            key={sIdx}
-                            className="rounded-md border border-[#30AFFF]/20 bg-[#30AFFF]/[0.05] px-2 py-0.5 text-[10px] font-semibold text-[#159FEF]"
+                            key={mode}
+                            className="rounded-full bg-slate-50 border border-slate-200 px-2 py-1 text-[10px] font-medium text-slate-600"
                           >
-                            {skill}
+                            {mode}
                           </span>
                         ))}
-                        {opp.skills.length > 4 && (
-                          <span className="rounded-md bg-slate-50 border border-slate-200 px-1.5 py-0.5 text-[9px] text-slate-500 font-bold">
-                            +{opp.skills.length - 4}
-                          </span>
-                        )}
                       </div>
-                    )}
 
-                    {/* Modes */}
-                    <div className="flex flex-wrap gap-1.5 mt-3">
-                      {(opp.workModes || ["Remote", "Hybrid"]).map((mode) => (
-                        <span
-                          key={mode}
-                          className="rounded-full bg-slate-50 border border-slate-200 px-2 py-1 text-[10px] font-medium text-slate-600"
+                      {/* APPLY BUTTON — RIGHT ALIGNED */}
+                      <div className="flex justify-end mt-5 pt-4 border-t border-slate-100 mt-auto">
+                        <button
+                          onClick={() => handleOpportunitySelect(opp)}
+                          className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[#159FEF] transition cursor-pointer"
                         >
-                          {mode}
-                        </span>
-                      ))}
-                    </div>
+                          Apply
+                          <ArrowRight size={13} />
+                        </button>
+                      </div>
+                    </motion.div>
+                  );
+                })
+              : globalOpportunities.map((item, index) => {
+                  const Icon = item.icon;
+                  return (
+                    <motion.div
+                      key={item.country}
+                      data-aos="fade-up"
+                      data-aos-delay={index * 70}
+                      whileHover={{ y: -5 }}
+                      className="group rounded-2xl border border-slate-100 bg-white p-5 shadow-sm hover:border-[#30AFFF]/30 hover:shadow-[0_15px_45px_rgba(15,23,42,0.10)] transition-all flex flex-col"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 overflow-hidden">
+                            <img
+                              src={item.flag}
+                              alt={`${item.country} flag`}
+                              className="w-8 h-6 object-cover rounded-sm border border-slate-200 shadow-sm"
+                            />
+                          </div>
 
-                    {/* APPLY BUTTON — RIGHT ALIGNED */}
-                    <div className="flex justify-end mt-5 pt-4 border-t border-slate-100 mt-auto">
-                      <button
-                        onClick={() => handleOpportunitySelect(opp)}
-                        className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[#159FEF] transition cursor-pointer"
-                      >
-                        Apply
-                        <ArrowRight size={13} />
-                      </button>
-                    </div>
-                  </motion.div>
-                );
-              })
-            ) : (
-              globalOpportunities.map((item, index) => {
-                const Icon = item.icon;
-                return (
-                  <motion.div
-                    key={item.country}
-                    data-aos="fade-up"
-                    data-aos-delay={index * 70}
-                    whileHover={{ y: -5 }}
-                    className="group rounded-2xl border border-slate-100 bg-white p-5 shadow-sm hover:border-[#30AFFF]/30 hover:shadow-[0_15px_45px_rgba(15,23,42,0.10)] transition-all flex flex-col"
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 overflow-hidden">
-                          <img
-                            src={item.flag}
-                            alt={`${item.country} flag`}
-                            className="w-8 h-6 object-cover rounded-sm border border-slate-200 shadow-sm"
-                          />
+                          <div>
+                            <h3 className="font-bold text-slate-800">
+                              {item.country}
+                            </h3>
+                            <p className="text-xs text-slate-400 mt-0.5">
+                              {item.region}
+                            </p>
+                          </div>
                         </div>
 
-                        <div>
-                          <h3 className="font-bold text-slate-800">
-                            {item.country}
-                          </h3>
-                          <p className="text-xs text-slate-400 mt-0.5">
-                            {item.region}
-                          </p>
+                        <div className="w-9 h-9 rounded-lg bg-[#30AFFF]/10 text-[#30AFFF] flex items-center justify-center">
+                          <Icon size={18} />
                         </div>
                       </div>
 
-                      <div className="w-9 h-9 rounded-lg bg-[#30AFFF]/10 text-[#30AFFF] flex items-center justify-center">
-                        <Icon size={18} />
-                      </div>
-                    </div>
+                      <div className="mt-5 rounded-2xl border border-[#30AFFF]/20 bg-[#30AFFF]/[0.04] p-4">
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="flex items-center gap-2">
+                            <BadgeDollarSign
+                              size={17}
+                              className="text-[#30AFFF]"
+                            />
+                            <span className="text-xs font-medium text-slate-500">
+                              Indicative payout
+                            </span>
+                          </div>
 
-                    <div className="mt-5 rounded-2xl border border-[#30AFFF]/20 bg-[#30AFFF]/[0.04] p-4">
-                      <div className="flex items-center justify-between gap-3">
-                        <div className="flex items-center gap-2">
-                          <BadgeDollarSign size={17} className="text-[#30AFFF]" />
-                          <span className="text-xs font-medium text-slate-500">
-                            Indicative payout
+                          <span className="text-[11px] text-slate-400">
+                            {item.currency}
                           </span>
                         </div>
 
-                        <span className="text-[11px] text-slate-400">
-                          {item.currency}
-                        </span>
+                        <p className="text-xl font-black text-slate-900 mt-1">
+                          {item.payout}
+                        </p>
                       </div>
 
-                      <p className="text-xl font-black text-slate-900 mt-1">
-                        {item.payout}
-                      </p>
-                    </div>
-
-                    <div className="mt-4 space-y-3">
-                      <div className="flex items-start gap-3">
-                        <MapPin size={16} className="text-[#30AFFF] mt-0.5 shrink-0" />
-                        <div>
-                          <p className="text-[11px] uppercase tracking-wide text-slate-400">
-                            Available in
-                          </p>
-                          <p className="text-sm text-slate-600 mt-0.5">
-                            {item.location}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-3">
-                        <Laptop2 size={16} className="text-[#30AFFF] mt-0.5 shrink-0" />
-                        <div>
-                          <p className="text-[11px] uppercase tracking-wide text-slate-400">
-                            Work mode
-                          </p>
-                          <p className="text-sm text-slate-600 mt-0.5">
-                            {item.mode}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="rounded-lg bg-slate-50 p-3">
-                          <div className="flex items-center gap-1.5">
-                            <Plane size={14} className="text-[#30AFFF]" />
-                            <span className="text-[10px] uppercase tracking-wide text-slate-400">
-                              Relocation
-                            </span>
+                      <div className="mt-4 space-y-3">
+                        <div className="flex items-start gap-3">
+                          <MapPin
+                            size={16}
+                            className="text-[#30AFFF] mt-0.5 shrink-0"
+                          />
+                          <div>
+                            <p className="text-[11px] uppercase tracking-wide text-slate-400">
+                              Available in
+                            </p>
+                            <p className="text-sm text-slate-600 mt-0.5">
+                              {item.location}
+                            </p>
                           </div>
-                          <p className="text-xs text-slate-600 mt-1 leading-5">
-                            {item.relocation}
-                          </p>
                         </div>
 
-                        <div className="rounded-lg bg-slate-50 p-3">
-                          <div className="flex items-center gap-1.5">
-                            <ShieldCheck size={14} className="text-[#30AFFF]" />
-                            <span className="text-[10px] uppercase tracking-wide text-slate-400">
-                              Sponsorship
-                            </span>
+                        <div className="flex items-start gap-3">
+                          <Laptop2
+                            size={16}
+                            className="text-[#30AFFF] mt-0.5 shrink-0"
+                          />
+                          <div>
+                            <p className="text-[11px] uppercase tracking-wide text-slate-400">
+                              Work mode
+                            </p>
+                            <p className="text-sm text-slate-600 mt-0.5">
+                              {item.mode}
+                            </p>
                           </div>
-                          <p className="text-xs text-slate-600 mt-1 leading-5">
-                            {item.sponsorship}
-                          </p>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="rounded-lg bg-slate-50 p-3">
+                            <div className="flex items-center gap-1.5">
+                              <Plane size={14} className="text-[#30AFFF]" />
+                              <span className="text-[10px] uppercase tracking-wide text-slate-400">
+                                Relocation
+                              </span>
+                            </div>
+                            <p className="text-xs text-slate-600 mt-1 leading-5">
+                              {item.relocation}
+                            </p>
+                          </div>
+
+                          <div className="rounded-lg bg-slate-50 p-3">
+                            <div className="flex items-center gap-1.5">
+                              <ShieldCheck
+                                size={14}
+                                className="text-[#30AFFF]"
+                              />
+                              <span className="text-[10px] uppercase tracking-wide text-slate-400">
+                                Sponsorship
+                              </span>
+                            </div>
+                            <p className="text-xs text-slate-600 mt-1 leading-5">
+                              {item.sponsorship}
+                            </p>
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    {/* APPLY BUTTON — RIGHT ALIGNED */}
-                    <div className="flex justify-end mt-5 pt-4 border-t border-slate-100 mt-auto">
-                      <button
-                        onClick={() => handleOpportunitySelect(item)}
-                        className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[#159FEF] transition"
-                      >
-                        Apply
-                        <ArrowRight size={13} />
-                      </button>
-                    </div>
-                  </motion.div>
-                );
-              })
-            )}
+                      {/* APPLY BUTTON — RIGHT ALIGNED */}
+                      <div className="flex justify-end mt-5 pt-4 border-t border-slate-100 mt-auto">
+                        <button
+                          onClick={() => handleOpportunitySelect(item)}
+                          className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[#159FEF] transition"
+                        >
+                          Apply
+                          <ArrowRight size={13} />
+                        </button>
+                      </div>
+                    </motion.div>
+                  );
+                })}
           </div>
 
           <div
@@ -844,8 +908,8 @@ const AndroidDeveloper = () => {
                 <p className="text-xs sm:text-sm text-slate-500 leading-5 mt-1">
                   Select your preferred country, work mode, salary currency,
                   expected payout, relocation preference and sponsorship
-                  requirement. This gives recruiters a much clearer picture
-                  of the opportunity you're looking for.
+                  requirement. This gives recruiters a much clearer picture of
+                  the opportunity you're looking for.
                 </p>
               </div>
 
@@ -868,7 +932,10 @@ const AndroidDeveloper = () => {
       </section>
 
       {/* ROLE */}
-      <section id="role" className="relative overflow-hidden border-y border-slate-100 bg-white">
+      <section
+        id="role"
+        className="relative overflow-hidden border-y border-slate-100 bg-white"
+      >
         <div className="max-w-[90rem] mx-auto px-5 sm:px-6 lg:px-8 py-10 lg:py-14">
           <div className="grid lg:grid-cols-[0.72fr_1.28fr] gap-8 lg:gap-12 items-start">
             <div data-aos="fade-right" className="lg:sticky lg:top-24 min-w-0">
@@ -898,8 +965,8 @@ const AndroidDeveloper = () => {
                 </h2>
 
                 <p className="text-sm text-slate-500 leading-6 mt-3">
-                  Own mobile experiences, solve meaningful problems and
-                  directly influence products built for a global audience.
+                  Own mobile experiences, solve meaningful problems and directly
+                  influence products built for a global audience.
                 </p>
               </div>
             </div>
@@ -916,9 +983,7 @@ const AndroidDeveloper = () => {
                     <div className="w-8 h-8 rounded-lg bg-[#30AFFF]/10 text-[#30AFFF] flex items-center justify-center text-xs font-bold mb-4">
                       {String(index + 1).padStart(2, "0")}
                     </div>
-                    <p className="text-sm leading-6 text-slate-600">
-                      {item}
-                    </p>
+                    <p className="text-sm leading-6 text-slate-600">{item}</p>
                   </div>
                 ))}
               </div>
@@ -949,7 +1014,10 @@ const AndroidDeveloper = () => {
       {/* STACK */}
       <section id="stack" className="relative overflow-hidden bg-slate-50/60">
         <div className="max-w-[90rem] mx-auto px-5 sm:px-6 lg:px-8 py-10 lg:py-14">
-          <div data-aos="fade-up" className="flex flex-col items-center text-center gap-3 mb-8">
+          <div
+            data-aos="fade-up"
+            className="flex flex-col items-center text-center gap-3 mb-8"
+          >
             <p className="inline-flex items-center justify-center rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/5 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-[#159FEF] font-bold">
               Technology
             </p>
@@ -959,9 +1027,9 @@ const AndroidDeveloper = () => {
             </h2>
 
             <p className="text-sm text-slate-500 leading-6 max-w-md">
-              You don't need to know every tool. Strong Android fundamentals
-              and the ability to work in modern global engineering teams
-              matter more.
+              You don't need to know every tool. Strong Android fundamentals and
+              the ability to work in modern global engineering teams matter
+              more.
             </p>
           </div>
 
@@ -983,9 +1051,7 @@ const AndroidDeveloper = () => {
                     <h3 className="font-bold text-slate-800 text-sm">
                       {tech.name}
                     </h3>
-                    <p className="text-xs text-slate-500 mt-1">
-                      {tech.desc}
-                    </p>
+                    <p className="text-xs text-slate-500 mt-1">{tech.desc}</p>
                   </div>
 
                   <ArrowRight
@@ -1038,9 +1104,7 @@ const AndroidDeveloper = () => {
                       <div className="w-5 h-5 mt-0.5 rounded-full bg-[#30AFFF]/10 text-[#30AFFF] flex items-center justify-center shrink-0">
                         <Check size={12} />
                       </div>
-                      <p className="text-sm leading-6 text-slate-600">
-                        {item}
-                      </p>
+                      <p className="text-sm leading-6 text-slate-600">{item}</p>
                     </div>
                   ))}
                 </div>
@@ -1076,9 +1140,7 @@ const AndroidDeveloper = () => {
                     <div className="w-5 h-5 mt-0.5 rounded-md bg-[#30AFFF]/10 text-[#30AFFF] flex items-center justify-center shrink-0">
                       <Check size={12} />
                     </div>
-                    <p className="text-sm leading-6 text-slate-600">
-                      {item}
-                    </p>
+                    <p className="text-sm leading-6 text-slate-600">{item}</p>
                   </div>
                 ))}
               </div>
@@ -1090,7 +1152,10 @@ const AndroidDeveloper = () => {
       {/* PROCESS */}
       <section id="process" className="relative overflow-hidden bg-slate-50/60">
         <div className="max-w-[90rem] mx-auto px-5 sm:px-6 lg:px-8 py-10 lg:py-14">
-          <div data-aos="fade-up" className="max-w-2xl mx-auto mb-8 text-center">
+          <div
+            data-aos="fade-up"
+            className="max-w-2xl mx-auto mb-8 text-center"
+          >
             <p className="inline-flex items-center justify-center rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/5 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-[#159FEF] font-bold">
               Hiring process
             </p>
@@ -1118,13 +1183,14 @@ const AndroidDeveloper = () => {
                   </span>
 
                   {index < process.length - 1 && (
-                    <ArrowRight size={16} className="hidden lg:block text-slate-300" />
+                    <ArrowRight
+                      size={16}
+                      className="hidden lg:block text-slate-300"
+                    />
                   )}
                 </div>
 
-                <h3 className="font-bold mt-5 text-slate-800">
-                  {item.title}
-                </h3>
+                <h3 className="font-bold mt-5 text-slate-800">{item.title}</h3>
 
                 <p className="text-sm text-slate-500 leading-6 mt-2">
                   {item.desc}
@@ -1167,8 +1233,7 @@ const AndroidDeveloper = () => {
 
               <p className="text-sm sm:text-base text-slate-600 leading-6 mt-4 max-w-xl">
                 Choose your preferred country, work mode, compensation and
-                relocation preference and explore opportunities beyond
-                borders.
+                relocation preference and explore opportunities beyond borders.
               </p>
 
               <motion.button
@@ -1186,7 +1251,10 @@ const AndroidDeveloper = () => {
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="relative overflow-hidden bg-slate-50/60 border-y border-slate-100">
+      <section
+        id="faq"
+        className="relative overflow-hidden bg-slate-50/60 border-y border-slate-100"
+      >
         <div className="max-w-[90rem] mx-auto px-5 sm:px-6 lg:px-8 py-10 lg:py-14">
           <div className="grid lg:grid-cols-[0.7fr_1.3fr] gap-6 lg:gap-12">
             <div
@@ -1217,9 +1285,7 @@ const AndroidDeveloper = () => {
                 return (
                   <div key={faq.question}>
                     <button
-                      onClick={() =>
-                        dispatch({ type: "TOGGLE_FAQ", index })
-                      }
+                      onClick={() => dispatch({ type: "TOGGLE_FAQ", index })}
                       className="w-full flex items-center justify-between gap-5 py-5 text-left group"
                     >
                       <span className="text-sm sm:text-base font-semibold text-slate-700 group-hover:text-[#30AFFF] transition">
@@ -1409,7 +1475,8 @@ const AndroidDeveloper = () => {
                   </button>
                 </div>
                 <p className="text-[11px] text-slate-400 mt-4">
-                  ⚡ Takes less than 2 minutes · PDF / DOC / DOCX resume supported
+                  ⚡ Takes less than 2 minutes · PDF / DOC / DOCX resume
+                  supported
                 </p>
               </div>
             </motion.div>
@@ -1424,7 +1491,11 @@ const AndroidDeveloper = () => {
           dispatch({ type: "SET_OPPORTUNITY", payload: null });
         }}
         role="Android Developer"
-        opportunity={selectedOpportunity && selectedOpportunity._id ? selectedOpportunity : null}
+        opportunity={
+          selectedOpportunity && selectedOpportunity._id
+            ? selectedOpportunity
+            : null
+        }
         initialData={
           selectedOpportunity
             ? {

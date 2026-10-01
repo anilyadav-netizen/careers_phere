@@ -19,13 +19,8 @@ const Subscription = () => {
   const { isAuthenticated } = useSelector((state) => state.auth || {});
 
   // Subscription state
-  const {
-    subscriptions,
-    fetchLoading,
-    fetchError,
-    mySubscription,
-    history,
-  } = useSelector((state) => state.userSubscription);
+  const { subscriptions, fetchLoading, fetchError, mySubscription, history } =
+    useSelector((state) => state.userSubscription);
 
   // =====================================================
   // FETCH SUBSCRIPTION PLANS + USER'S SUBSCRIPTIONS
@@ -107,9 +102,7 @@ const Subscription = () => {
   if (fetchLoading) {
     return (
       <main className="flex min-h-[60vh] items-center justify-center bg-[#f8fafc]">
-        <p className="text-sm font-medium text-[#30AFFF]">
-          Loading plans...
-        </p>
+        <p className="text-sm font-medium text-[#30AFFF]">Loading plans...</p>
       </main>
     );
   }
@@ -120,9 +113,7 @@ const Subscription = () => {
   if (fetchError) {
     return (
       <main className="flex min-h-[60vh] items-center justify-center bg-[#f8fafc]">
-        <p className="text-sm font-medium text-red-500">
-          {fetchError}
-        </p>
+        <p className="text-sm font-medium text-red-500">{fetchError}</p>
       </main>
     );
   }
@@ -138,12 +129,11 @@ const Subscription = () => {
         <div className="relative mx-auto max-w-4xl text-center">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#30AFFF]/20 bg-[#A0E9FF]/40 px-4 py-2 text-sm font-semibold text-[#159FEF]">
             <Sparkles size={16} />
-            CareerSphere Plans
+            CareerNova Plans
           </div>
 
           <h1 className="text-xl font-bold tracking-tight text-slate-900 md:text-3xl xl:text-[44px]">
-            Choose the plan that{" "}
-            <span>fits your career</span>
+            Choose the plan that <span>fits your career</span>
           </h1>
 
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-slate-500 sm:text-base sm:leading-8 lg:text-lg">
@@ -175,9 +165,7 @@ const Subscription = () => {
               const hasDiscount = plan.discountPercentage > 0;
 
               const originalPrice = hasDiscount
-                ? Math.round(
-                    plan.price / (1 - plan.discountPercentage / 100)
-                  )
+                ? Math.round(plan.price / (1 - plan.discountPercentage / 100))
                 : null;
 
               return (
@@ -197,8 +185,7 @@ const Subscription = () => {
                           borderColor: isSelected
                             ? "#30AFFF"
                             : "rgba(48,175,255,0.4)",
-                          boxShadow:
-                            "0 20px 40px -10px rgba(48,175,255,0.20)",
+                          boxShadow: "0 20px 40px -10px rgba(48,175,255,0.20)",
                         }
                       : undefined
                   }
@@ -283,10 +270,7 @@ const Subscription = () => {
                       : `Go ${plan.planName}`}
 
                     {!isAlreadyPurchased && (
-                      <ArrowRight
-                        size={16}
-                        className="sm:size-[17px]"
-                      />
+                      <ArrowRight size={16} className="sm:size-[17px]" />
                     )}
                   </button>
 
@@ -323,9 +307,7 @@ const Subscription = () => {
                     ====================================================== */}
                     <div className="mt-5 flex flex-wrap gap-4 text-xs text-slate-400">
                       <span>
-                        {plan.numberOfCountries ||
-                          plan.countries?.length ||
-                          1}{" "}
+                        {plan.numberOfCountries || plan.countries?.length || 1}{" "}
                         countries
                       </span>
 
@@ -343,8 +325,7 @@ const Subscription = () => {
                     ====================================================== */}
                     {plan.countries?.length > 0 && (
                       <p className="mt-3 text-xs leading-5 text-slate-500">
-                        Available in:{" "}
-                        {plan.countries.join(", ")}
+                        Available in: {plan.countries.join(", ")}
                       </p>
                     )}
                   </div>

@@ -43,8 +43,7 @@ const loadRazorpayScript = () => {
 
     const script = document.createElement("script");
 
-    script.src =
-      "https://checkout.razorpay.com/v1/checkout.js";
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
 
     script.onload = () => resolve(true);
     script.onerror = () => resolve(false);
@@ -140,8 +139,7 @@ const Purchases = () => {
       setErrorMsg(
         typeof err === "string"
           ? err
-          : err?.message ||
-              "Activation failed. Please try again.",
+          : err?.message || "Activation failed. Please try again.",
       );
     } finally {
       setProcessing(false);
@@ -190,7 +188,7 @@ const Purchases = () => {
         key: order.keyId,
         amount: order.amount,
         currency: order.currency,
-        name: "CareerSphere",
+        name: "CareerNova",
         description: `${planName} Plan Subscription`,
         order_id: order.orderId,
 
@@ -202,14 +200,11 @@ const Purchases = () => {
           try {
             await dispatch(
               verifySubscriptionPayment({
-                razorpay_order_id:
-                  response.razorpay_order_id,
+                razorpay_order_id: response.razorpay_order_id,
 
-                razorpay_payment_id:
-                  response.razorpay_payment_id,
+                razorpay_payment_id: response.razorpay_payment_id,
 
-                razorpay_signature:
-                  response.razorpay_signature,
+                razorpay_signature: response.razorpay_signature,
 
                 subscriptionId,
                 autoRenew: false,
@@ -220,9 +215,7 @@ const Purchases = () => {
              * Refresh latest subscription data
              * after successful payment verification.
              */
-            await dispatch(
-              fetchMySubscription(),
-            ).unwrap();
+            await dispatch(fetchMySubscription()).unwrap();
 
             /*
              * Show success feedback.
@@ -244,8 +237,7 @@ const Purchases = () => {
             setErrorMsg(
               typeof err === "string"
                 ? err
-                : err?.message ||
-                    "Payment verification failed.",
+                : err?.message || "Payment verification failed.",
             );
           } finally {
             setProcessing(false);
@@ -263,7 +255,7 @@ const Purchases = () => {
         },
 
         /* ---------------------------------------------
-           CAREERSPHERE THEME
+           CareerNova THEME
         --------------------------------------------- */
 
         theme: {
@@ -275,25 +267,19 @@ const Purchases = () => {
          CREATE RAZORPAY OBJECT
       ------------------------------------------------ */
 
-      const razorpayObject = new window.Razorpay(
-        options,
-      );
+      const razorpayObject = new window.Razorpay(options);
 
       /* -----------------------------------------------
          PAYMENT FAILED
       ------------------------------------------------ */
 
-      razorpayObject.on(
-        "payment.failed",
-        function (response) {
-          setErrorMsg(
-            response.error?.description ||
-              "Payment failed. Please try again.",
-          );
+      razorpayObject.on("payment.failed", function (response) {
+        setErrorMsg(
+          response.error?.description || "Payment failed. Please try again.",
+        );
 
-          setProcessing(false);
-        },
-      );
+        setProcessing(false);
+      });
 
       /* -----------------------------------------------
          OPEN CHECKOUT
@@ -304,8 +290,7 @@ const Purchases = () => {
       setErrorMsg(
         typeof err === "string"
           ? err
-          : err?.message ||
-              "Unable to start payment. Please try again.",
+          : err?.message || "Unable to start payment. Please try again.",
       );
 
       setProcessing(false);
@@ -350,9 +335,7 @@ const Purchases = () => {
                 Secure Checkout
               </p>
 
-              <p className="text-[11px] text-slate-400">
-                Protected payment
-              </p>
+              <p className="text-[11px] text-slate-400">Protected payment</p>
             </div>
           </div>
         </div>
@@ -371,22 +354,19 @@ const Purchases = () => {
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-[#A0E9FF] bg-[#A0E9FF]/20 px-3.5 py-2 text-xs font-bold uppercase tracking-[0.12em] text-[#159FEF]">
               <Sparkles size={14} />
-
-              CareerSphere Premium Checkout
+              CareerNova Premium Checkout
             </div>
 
             <h1 className="mt-4 text-[29px] font-black leading-[1.08] tracking-[-0.035em] text-slate-900 sm:mt-5 sm:text-4xl lg:text-5xl">
               Complete your
-
               <span className="block bg-gradient-to-r from-[#159FEF] to-[#30AFFF] bg-clip-text text-transparent">
                 subscription securely.
               </span>
             </h1>
 
             <p className="mt-3 max-w-2xl text-[13px] leading-5.5 text-slate-500 sm:text-base sm:leading-7">
-              Unlock premium career tools with a secure and
-              seamless checkout experience designed for every
-              device.
+              Unlock premium career tools with a secure and seamless checkout
+              experience designed for every device.
             </p>
           </div>
         </div>
@@ -446,9 +426,7 @@ const Purchases = () => {
 
                   {!isFree && (
                     <div className="flex items-center justify-between gap-4 text-sm">
-                      <span className="text-slate-500">
-                        GST (18%)
-                      </span>
+                      <span className="text-slate-500">GST (18%)</span>
 
                       <span className="font-bold text-slate-900">
                         ₹{tax.toLocaleString("en-IN")}
@@ -466,27 +444,19 @@ const Purchases = () => {
                     </div>
 
                     <span className="text-[28px] font-black tracking-tight text-[#159FEF] sm:text-3xl">
-                      ₹
-                      {isFree
-                        ? 0
-                        : total.toLocaleString("en-IN")}
+                      ₹{isFree ? 0 : total.toLocaleString("en-IN")}
                     </span>
                   </div>
                 </div>
 
                 <button
-                  onClick={
-                    isFree
-                      ? handleFreeActivation
-                      : handlePayment
-                  }
+                  onClick={isFree ? handleFreeActivation : handlePayment}
                   disabled={processing}
                   className="mt-6 flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#159FEF] via-[#30AFFF] to-[#5CCBFF] py-4 text-sm font-black text-white shadow-[0_10px_25px_rgba(48,175,255,0.25)] transition hover:brightness-105 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-70 sm:mt-7"
                 >
                   {processing ? (
                     <>
                       <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-
                       Processing...
                     </>
                   ) : (
@@ -495,9 +465,7 @@ const Purchases = () => {
 
                       {isFree
                         ? "Activate for Free"
-                        : `Pay ₹${total.toLocaleString(
-                            "en-IN",
-                          )}`}
+                        : `Pay ₹${total.toLocaleString("en-IN")}`}
                     </>
                   )}
                 </button>
@@ -514,10 +482,9 @@ const Purchases = () => {
                       </p>
 
                       <p className="mt-1 text-xs leading-5 text-slate-500">
-                        Your payment details are encrypted and
-                        securely processed by Razorpay.
-                        CareerSphere does not store your card
-                        details.
+                        Your payment details are encrypted and securely
+                        processed by Razorpay. CareerNova does not store your
+                        card details.
                       </p>
                     </div>
                   </div>
@@ -526,14 +493,12 @@ const Purchases = () => {
                 <div className="mt-5 flex items-center justify-center gap-2 text-[11px] font-medium text-slate-400">
                   <LockKeyhole size={12} />
 
-                  <span>
-                    Secure checkout • Encrypted payment
-                  </span>
+                  <span>Secure checkout • Encrypted payment</span>
                 </div>
 
                 <p className="mt-3 text-center text-[10px] leading-5 text-slate-400">
-                  By continuing, you agree to CareerSphere's
-                  Terms of Service and Subscription Policy.
+                  By continuing, you agree to CareerNova's Terms of Service and
+                  Subscription Policy.
                 </p>
               </div>
             </div>
@@ -553,10 +518,7 @@ const Purchases = () => {
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex items-center gap-4">
                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[#A0E9FF]/70 bg-[#A0E9FF]/20 text-[#159FEF] shadow-sm sm:h-14 sm:w-14">
-                      <PlanIcon
-                        size={25}
-                        strokeWidth={2.1}
-                      />
+                      <PlanIcon size={25} strokeWidth={2.1} />
                     </div>
 
                     <div>
@@ -571,9 +533,7 @@ const Purchases = () => {
                   </div>
 
                   <button
-                    onClick={() =>
-                      navigate("/subscription")
-                    }
+                    onClick={() => navigate("/subscription")}
                     className="self-start rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-[#159FEF] transition hover:border-[#A0E9FF] hover:bg-[#A0E9FF]/10 sm:self-center"
                   >
                     Change Plan
@@ -593,21 +553,15 @@ const Purchases = () => {
                           className="flex items-start gap-2.5 rounded-xl bg-slate-50 px-3 py-2.5 text-[13px] leading-5 text-slate-600 transition hover:bg-[#A0E9FF]/10"
                         >
                           <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#A0E9FF]/30 text-[#159FEF]">
-                            <Check
-                              size={12}
-                              strokeWidth={3}
-                            />
+                            <Check size={12} strokeWidth={3} />
                           </span>
 
-                          <span>
-                            {String(feature).trim()}
-                          </span>
+                          <span>{String(feature).trim()}</span>
                         </div>
                       ))
                     ) : (
                       <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-500 sm:col-span-2">
-                        No additional benefits listed for
-                        this plan.
+                        No additional benefits listed for this plan.
                       </div>
                     )}
                   </div>
@@ -630,26 +584,24 @@ const Purchases = () => {
                     </h2>
 
                     <p className="mt-1.5 text-sm leading-6 text-slate-500">
-                      Select your preferred payment method in
-                      the secure Razorpay checkout. You can pay
-                      using UPI, cards, or net banking.
+                      Select your preferred payment method in the secure
+                      Razorpay checkout. You can pay using UPI, cards, or net
+                      banking.
                     </p>
                   </div>
                 </div>
 
                 <div className="mt-5 grid gap-3 sm:grid-cols-3">
-                  {[
-                    "UPI",
-                    "Credit / Debit Cards",
-                    "Net Banking",
-                  ].map((method) => (
-                    <div
-                      key={method}
-                      className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-center text-xs font-bold text-slate-600 transition hover:border-[#A0E9FF] hover:bg-[#A0E9FF]/10"
-                    >
-                      {method}
-                    </div>
-                  ))}
+                  {["UPI", "Credit / Debit Cards", "Net Banking"].map(
+                    (method) => (
+                      <div
+                        key={method}
+                        className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-center text-xs font-bold text-slate-600 transition hover:border-[#A0E9FF] hover:bg-[#A0E9FF]/10"
+                      >
+                        {method}
+                      </div>
+                    ),
+                  )}
                 </div>
               </div>
             )}
@@ -673,10 +625,7 @@ const Purchases = () => {
       ================================================= */}
 
       {feedback && (
-        <FeedbackModal
-          {...feedback}
-          onClose={() => setFeedback(null)}
-        />
+        <FeedbackModal {...feedback} onClose={() => setFeedback(null)} />
       )}
     </main>
   );

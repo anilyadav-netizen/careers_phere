@@ -1,36 +1,34 @@
 // src/admin/pages/Jobs.jsx
-import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import {
-  Search,
-  Plus,
-  Pencil,
-  Trash2,
-  X,
-  CheckCircle2,
   AlertCircle,
   AlertTriangle,
+  Briefcase,
+  Building2,
+  Calendar,
+  CheckCircle2,
+  IndianRupee,
+  MapPin,
+  Pencil,
+  Plus,
+  PlusCircle,
   RefreshCw,
   Save,
-  Briefcase,
-  Calendar,
-  MapPin,
-  Building2,
+  Search,
+  Trash2,
   Users,
-  IndianRupee,
-  PlusCircle,
+  X,
 } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import {
+  deleteJob,
+  getAllJobsAdmin,
+  toggleJobStatus,
+  updateJob,
+} from "../../redux/slicer/jobSlice";
 import StateCard from "../components/StateCard";
 import { useJobCategories } from "../context/JobCategoryContext";
-import {
-  getAllJobsAdmin,
-  deleteJob,
-  updateJob,
-  toggleJobStatus,
-  toggleFeatured,
-  toggleUrgent,
-} from "../../redux/slicer/jobSlice";
 
 const Jobs = () => {
   const navigate = useNavigate();
@@ -40,12 +38,18 @@ const Jobs = () => {
   const jobs = useSelector((state) => state.jobs?.adminJobs || []);
   const loading = useSelector((state) => state.jobs?.loading || false);
   const error = useSelector((state) => state.jobs?.error || null);
-  const deleteLoading = useSelector((state) => state.jobs?.deleteLoading || false);
-  const updateLoading = useSelector((state) => state.jobs?.updateLoading || false);
-  const successMessage = useSelector((state) => state.jobs?.successMessage || null);
+  const deleteLoading = useSelector(
+    (state) => state.jobs?.deleteLoading || false,
+  );
+  const updateLoading = useSelector(
+    (state) => state.jobs?.updateLoading || false,
+  );
+  const successMessage = useSelector(
+    (state) => state.jobs?.successMessage || null,
+  );
 
   const { categories, activeCategories } = useJobCategories();
-  
+
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [sortOrder, setSortOrder] = useState("newest");
@@ -110,7 +114,7 @@ const Jobs = () => {
       // Try to get category name from categories list
       const catName = categoryNameById[job.categoryId];
       if (catName) return catName;
-      
+
       // If not found, try to get from job's categoryName or category field
       return job.categoryName || job.category?.name || "Deleted Category";
     },
@@ -153,7 +157,9 @@ const Jobs = () => {
         result.sort((a, b) => (a.company || "").localeCompare(b.company || ""));
         break;
       case "applicants":
-        result.sort((a, b) => (b.applicantCount || 0) - (a.applicantCount || 0));
+        result.sort(
+          (a, b) => (b.applicantCount || 0) - (a.applicantCount || 0),
+        );
         break;
       default:
         break;
@@ -173,7 +179,7 @@ const Jobs = () => {
     try {
       // Get the job ID
       const jobId = updatedJob.id || updatedJob._id;
-      
+
       if (!jobId) {
         showNotification("Job ID is missing", "error");
         return;
@@ -187,23 +193,31 @@ const Jobs = () => {
         ...jobData,
         categoryId: jobData.category || jobData.categoryId,
       };
-      
+
       // Remove the category field if it exists (use categoryId instead)
       delete submitData.category;
 
-      const result = await dispatch(updateJob({
-        id: jobId,
-        jobData: submitData
-      })).unwrap();
+      const result = await dispatch(
+        updateJob({
+          id: jobId,
+          jobData: submitData,
+        }),
+      ).unwrap();
 
       if (result?.success) {
-        showNotification(result?.message || "Job updated successfully", "success");
+        showNotification(
+          result?.message || "Job updated successfully",
+          "success",
+        );
         setIsEditModalOpen(false);
         setEditingJob(null);
         await fetchJobs(); // Refresh the list
       }
     } catch (err) {
-      showNotification(typeof err === 'string' ? err : "Failed to update job", "error");
+      showNotification(
+        typeof err === "string" ? err : "Failed to update job",
+        "error",
+      );
     }
   };
 
@@ -218,33 +232,46 @@ const Jobs = () => {
     if (!deletingJob) return;
 
     try {
-      const result = await dispatch(deleteJob(deletingJob.id || deletingJob._id)).unwrap();
+      const result = await dispatch(
+        deleteJob(deletingJob.id || deletingJob._id),
+      ).unwrap();
 
       if (result?.success) {
-        showNotification(result?.message || "Job deleted successfully", "success");
+        showNotification(
+          result?.message || "Job deleted successfully",
+          "success",
+        );
         setIsDeleteModalOpen(false);
         setDeletingJob(null);
         await fetchJobs(); // Refresh the list
       }
     } catch (err) {
-      showNotification(typeof err === 'string' ? err : "Failed to delete job", "error");
+      showNotification(
+        typeof err === "string" ? err : "Failed to delete job",
+        "error",
+      );
     }
   };
 
   // Toggle job status
   const handleToggleStatus = async (job, newStatus) => {
     try {
-      const result = await dispatch(toggleJobStatus({
-        id: job.id || job._id,
-        status: newStatus
-      })).unwrap();
+      const result = await dispatch(
+        toggleJobStatus({
+          id: job.id || job._id,
+          status: newStatus,
+        }),
+      ).unwrap();
 
       if (result?.success) {
         showNotification(result?.message || "Job status updated", "success");
         await fetchJobs();
       }
     } catch (err) {
-      showNotification(typeof err === 'string' ? err : "Failed to update status", "error");
+      showNotification(
+        typeof err === "string" ? err : "Failed to update status",
+        "error",
+      );
     }
   };
 
@@ -302,7 +329,7 @@ const Jobs = () => {
             Manage Jobs
           </h1>
           <p className="text-sm text-slate-500 mt-1">
-            Create, manage and monitor job opportunities on CareerSphere.
+            Create, manage and monitor job opportunities on CareerNova.
           </p>
         </div>
         <button
@@ -686,9 +713,11 @@ const JobModal = ({ mode, job, categories, onClose, onSave, existingJobs }) => {
   const [newSkill, setNewSkill] = useState("");
   const [errors, setErrors] = useState({});
   const [isSaving, setIsSaving] = useState(false);
-  
+
   const hasSelectedCategory = categories.some(
-    (category) => category.id === formData.categoryId || category._id === formData.categoryId,
+    (category) =>
+      category.id === formData.categoryId ||
+      category._id === formData.categoryId,
   );
 
   const validate = () => {
@@ -732,13 +761,15 @@ const JobModal = ({ mode, job, categories, onClose, onSave, existingJobs }) => {
       );
 
       // Get the actual category ID
-      const categoryObjectId = selectedCategory?._id || selectedCategory?.id || formData.categoryId;
+      const categoryObjectId =
+        selectedCategory?._id || selectedCategory?.id || formData.categoryId;
 
       const jobData = {
         title: formData.title.trim(),
         company: formData.company.trim(),
         categoryId: categoryObjectId, // Use categoryId (not category)
-        categoryName: selectedCategory?.name || job?.categoryName || "Deleted Category",
+        categoryName:
+          selectedCategory?.name || job?.categoryName || "Deleted Category",
         location: formData.location.trim(),
         jobType: formData.jobType,
         experience: formData.experience,
@@ -1320,7 +1351,7 @@ const JobsEmptyState = ({ hasFilters, onClear, onAdd }) => (
     <p className="text-sm text-slate-500 text-center mb-4 max-w-sm">
       {hasFilters
         ? "Try adjusting your search or filter criteria to find what you're looking for."
-        : "Start by adding your first job posting on CareerSphere."}
+        : "Start by adding your first job posting on CareerNova."}
     </p>
     {hasFilters ? (
       <button

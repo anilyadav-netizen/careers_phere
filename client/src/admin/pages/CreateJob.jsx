@@ -1,27 +1,33 @@
 // src/admin/pages/CreateJob.jsx
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import {
   ArrowLeft,
-  Save,
+  Briefcase,
   PlusCircle,
+  Save,
   Trash2,
   X,
-  Briefcase,
 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { getAdminCategories } from "../../redux/slicer/categorySlice";
-import { createJob } from "../../redux/slicer/jobSlice"; 
+import { createJob } from "../../redux/slicer/jobSlice";
 
 const CreateJob = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const categories = useSelector((state) => state.categories?.categories || []);
-  const categoriesLoading = useSelector((state) => state.categories?.loading || false);
-  const categoriesError = useSelector((state) => state.categories?.error || null);
-  
-  const createLoading = useSelector((state) => state.jobs?.createLoading || false);
+  const categoriesLoading = useSelector(
+    (state) => state.categories?.loading || false,
+  );
+  const categoriesError = useSelector(
+    (state) => state.categories?.error || null,
+  );
+
+  const createLoading = useSelector(
+    (state) => state.jobs?.createLoading || false,
+  );
   const createError = useSelector((state) => state.jobs?.createError || null);
 
   const [formData, setFormData] = useState({
@@ -95,12 +101,10 @@ const CreateJob = () => {
   };
 
   const handleCategoryChange = (categoryId) => {
-    const selectedCategory = categories.find(
-      (category) => {
-        const id = category._id || category.id;
-        return String(id) === String(categoryId);
-      }
-    );
+    const selectedCategory = categories.find((category) => {
+      const id = category._id || category.id;
+      return String(id) === String(categoryId);
+    });
 
     console.log("Selected category:", selectedCategory);
     console.log("Category ID being sent:", categoryId);
@@ -119,12 +123,10 @@ const CreateJob = () => {
     setIsSaving(true);
 
     try {
-      const selectedCategory = categories.find(
-        (category) => {
-          const id = category._id || category.id;
-          return String(id) === String(formData.categoryId);
-        }
-      );
+      const selectedCategory = categories.find((category) => {
+        const id = category._id || category.id;
+        return String(id) === String(formData.categoryId);
+      });
 
       if (!selectedCategory) {
         showNotification("Invalid category selected", "error");
@@ -137,7 +139,9 @@ const CreateJob = () => {
       console.log("Selected category object:", selectedCategory);
       console.log("Category ObjectId being sent:", categoryObjectId);
 
-      const responsibilities = formData.responsibilities.filter((r) => r.trim());
+      const responsibilities = formData.responsibilities.filter((r) =>
+        r.trim(),
+      );
       const requirements = formData.requirements.filter((r) => r.trim());
 
       const jobData = {
@@ -160,20 +164,25 @@ const CreateJob = () => {
 
       // Dispatch the createJob thunk
       const result = await dispatch(createJob(jobData)).unwrap();
-      
+
       // Check if job was created successfully
       if (result?.success) {
-        showNotification(result?.message || "Job created successfully", "success");
-        
+        showNotification(
+          result?.message || "Job created successfully",
+          "success",
+        );
+
         // Redirect after showing notification
         setTimeout(() => {
           navigate("/admin/jobs");
         }, 1500);
       }
-
     } catch (err) {
       console.error("Create job error:", err);
-      showNotification(typeof err === 'string' ? err : "Failed to create job", "error");
+      showNotification(
+        typeof err === "string" ? err : "Failed to create job",
+        "error",
+      );
     } finally {
       setIsSaving(false);
     }
@@ -257,7 +266,7 @@ const CreateJob = () => {
             Create New Job
           </h1>
           <p className="text-sm text-slate-500 mt-1">
-            Add a new job opportunity to CareerSphere.
+            Add a new job opportunity to CareerNova.
           </p>
         </div>
       </div>
@@ -326,7 +335,9 @@ const CreateJob = () => {
                   disabled={categoriesLoading}
                 >
                   <option value="">
-                    {categoriesLoading ? "Loading categories..." : "Select Category"}
+                    {categoriesLoading
+                      ? "Loading categories..."
+                      : "Select Category"}
                   </option>
                   {categories.map((cat) => {
                     const catId = cat._id || cat.id;

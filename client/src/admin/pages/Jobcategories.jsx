@@ -1,52 +1,52 @@
 // src/admin/pages/JobCategories.jsx
-import React, { useState, useEffect, useMemo, useCallback } from "react";
 import {
-  Search,
-  Plus,
-  Pencil,
-  Trash2,
-  X,
-  CheckCircle2,
   AlertCircle,
   AlertTriangle,
+  BarChart3,
+  Briefcase,
+  Building2,
+  Calendar,
+  CheckCircle2,
+  Code2,
+  Factory,
+  FolderOpen,
+  GraduationCap,
+  Grid,
+  HeartPulse,
+  Image as ImageIcon,
+  Layers,
+  Leaf,
+  List,
+  Megaphone,
+  Palette,
+  Pencil,
+  Plus,
   RefreshCw,
   Save,
-  Briefcase,
-  Calendar,
-  FolderOpen,
-  Code2,
-  TrendingUp,
-  HeartPulse,
-  Building2,
-  Palette,
-  Users,
-  Megaphone,
-  BarChart3,
-  GraduationCap,
   Scale,
-  Truck,
-  UtensilsCrossed,
+  Search,
   Shield,
-  Factory,
-  Leaf,
-  Layers,
-  Grid,
-  List,
   SlidersHorizontal,
+  Trash2,
+  TrendingUp,
+  Truck,
   Upload,
-  Image as ImageIcon,
+  Users,
+  UtensilsCrossed,
+  X,
 } from "lucide-react";
-import StateCard from "../components/StateCard";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getAdminCategories,
-  createCategory,
-  updateCategory,
-  deleteCategory,
   clearCategoryError,
   clearCategoryMessage,
   clearCategoryState,
+  createCategory,
+  deleteCategory,
+  getAdminCategories,
+  updateCategory,
 } from "../../redux/slicer/categorySlice";
+import StateCard from "../components/StateCard";
 
 // Fallback icon mapping (used when no image is available)
 const iconMap = {
@@ -97,7 +97,7 @@ const JobCategories = () => {
         // Keep original for editing
         original: cat,
       })),
-    [rawCategories]
+    [rawCategories],
   );
 
   // Local UI state
@@ -140,11 +140,11 @@ const JobCategories = () => {
   const statistics = useMemo(() => {
     const totalCategories = categories.length;
     const activeCategories = categories.filter(
-      (cat) => cat.status === "active"
+      (cat) => cat.status === "active",
     ).length;
     const totalJobs = categories.reduce(
       (sum, cat) => sum + (cat.totalJobs || 0),
-      0
+      0,
     );
     return { totalCategories, activeCategories, totalJobs };
   }, [categories]);
@@ -158,7 +158,7 @@ const JobCategories = () => {
         (cat) =>
           cat.name.toLowerCase().includes(searchLower) ||
           (cat.description &&
-            cat.description.toLowerCase().includes(searchLower))
+            cat.description.toLowerCase().includes(searchLower)),
       );
     }
     switch (filterType) {
@@ -195,55 +195,51 @@ const JobCategories = () => {
 
   // Handlers with Redux dispatch
 
-const handleAddCategory = async (newCategory, file) => {
-  const formData = new FormData();
+  const handleAddCategory = async (newCategory, file) => {
+    const formData = new FormData();
 
-  formData.append("name", newCategory.name);
-  formData.append(
-    "shortDescription",
-    newCategory.shortDescription || ""
-  );
-  formData.append(
-    "isActive",
-    newCategory.isActive ? "true" : "false"
-  );
+    formData.append("name", newCategory.name);
+    formData.append("shortDescription", newCategory.shortDescription || "");
+    formData.append("isActive", newCategory.isActive ? "true" : "false");
 
-  if (file) {
-    formData.append("image", file);
-  }
+    if (file) {
+      formData.append("image", file);
+    }
 
-  console.log("Category file:", file);
-  console.log("Category file name:", file?.name);
+    console.log("Category file:", file);
+    console.log("Category file name:", file?.name);
 
-  await dispatch(createCategory(formData));
-};
+    await dispatch(createCategory(formData));
+  };
 
   const handleEditCategory = (category) => {
     setEditingCategory(category);
     setIsEditModalOpen(true);
   };
 
- const handleSaveCategory = async (updatedCategory, file) => {
-  // Make sure we have the ID
-  console.log("Saving category with ID:", updatedCategory.id);
-  
-  const formData = new FormData();
-  formData.append("name", updatedCategory.name);
-  formData.append("shortDescription", updatedCategory.shortDescription || "");
-  formData.append("isActive", updatedCategory.isActive ? "true" : "false");
-  if (file) {
-    formData.append("image", file);
-  }
-  
-  // Pass the ID correctly
-  await dispatch(updateCategory({ 
-    id: updatedCategory.id,  // Make sure this exists
-    formData 
-  }));
-  
-  setIsEditModalOpen(false);
-  setEditingCategory(null);
-};
+  const handleSaveCategory = async (updatedCategory, file) => {
+    // Make sure we have the ID
+    console.log("Saving category with ID:", updatedCategory.id);
+
+    const formData = new FormData();
+    formData.append("name", updatedCategory.name);
+    formData.append("shortDescription", updatedCategory.shortDescription || "");
+    formData.append("isActive", updatedCategory.isActive ? "true" : "false");
+    if (file) {
+      formData.append("image", file);
+    }
+
+    // Pass the ID correctly
+    await dispatch(
+      updateCategory({
+        id: updatedCategory.id, // Make sure this exists
+        formData,
+      }),
+    );
+
+    setIsEditModalOpen(false);
+    setEditingCategory(null);
+  };
 
   const handleDeleteCategory = (category) => {
     setDeletingCategory(category);
@@ -300,7 +296,10 @@ const handleAddCategory = async (newCategory, file) => {
   // Error state
   if (error) {
     return (
-      <CategoriesErrorState error={error} onRetry={() => dispatch(getAdminCategories())} />
+      <CategoriesErrorState
+        error={error}
+        onRetry={() => dispatch(getAdminCategories())}
+      />
     );
   }
 
@@ -316,7 +315,7 @@ const handleAddCategory = async (newCategory, file) => {
             Job Categories
           </h1>
           <p className="text-sm text-slate-500 mt-1">
-            Manage and organize job categories available on CareerSphere.
+            Manage and organize job categories available on CareerNova.
           </p>
         </div>
         <button
@@ -431,14 +430,18 @@ const handleAddCategory = async (newCategory, file) => {
                   <option value="most-jobs">Most Jobs</option>
                   <option value="least-jobs">Least Jobs</option>
                 </select>
-                {(searchTerm || filterType !== "all" || sortOrder !== "newest") && (
+                {(searchTerm ||
+                  filterType !== "all" ||
+                  sortOrder !== "newest") && (
                   <button
                     onClick={clearFilters}
                     className="w-full sm:w-auto p-2.5 rounded-xl border border-slate-200 hover:bg-slate-100 transition-colors flex items-center justify-center gap-2"
                     title="Clear filters"
                   >
                     <X className="w-4 h-4 text-slate-500" />
-                    <span className="sm:hidden text-sm text-slate-600">Clear</span>
+                    <span className="sm:hidden text-sm text-slate-600">
+                      Clear
+                    </span>
                   </button>
                 )}
               </div>
@@ -523,7 +526,9 @@ const handleAddCategory = async (newCategory, file) => {
                                     : "bg-slate-400"
                                 }`}
                               ></span>
-                              {category.status === "active" ? "Active" : "Inactive"}
+                              {category.status === "active"
+                                ? "Active"
+                                : "Inactive"}
                             </span>
                           </td>
                           <td className="px-6 py-4">
@@ -817,7 +822,7 @@ const CategoriesEmptyState = ({ hasFilters, onClear, onAdd }) => (
     <p className="text-sm text-slate-500 text-center mb-4 max-w-sm">
       {hasFilters
         ? "Try adjusting your search or filter criteria to find what you're looking for."
-        : "Start by adding your first job category to organize jobs on CareerSphere."}
+        : "Start by adding your first job category to organize jobs on CareerNova."}
     </p>
     {hasFilters ? (
       <button
@@ -851,7 +856,8 @@ const CategoryModal = ({
   const initialFormData = {
     name: category?.name || "",
     shortDescription: category?.description || category?.shortDescription || "",
-    isActive: category?.status === "active" ? true : (category?.isActive ?? true),
+    isActive:
+      category?.status === "active" ? true : (category?.isActive ?? true),
   };
 
   const [formData, setFormData] = useState(initialFormData);
@@ -889,12 +895,13 @@ const CategoryModal = ({
     if (!formData.shortDescription.trim()) {
       newErrors.shortDescription = "Short description is required";
     } else if (formData.shortDescription.length > 200) {
-      newErrors.shortDescription = "Short description cannot exceed 200 characters";
+      newErrors.shortDescription =
+        "Short description cannot exceed 200 characters";
     }
     const duplicate = existingCategories.find(
       (cat) =>
         cat.name.toLowerCase() === formData.name.toLowerCase() &&
-        cat.id !== category?.id
+        cat.id !== category?.id,
     );
     if (duplicate) {
       newErrors.name = "A category with this name already exists";
@@ -904,22 +911,22 @@ const CategoryModal = ({
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!validate()) return;
+    if (!validate()) return;
 
-  if (mode === "edit") {
-    await onSave(
-      {
-        ...formData,
-        id: category?.id || category?._id,
-      },
-      selectedFile
-    );
-  } else {
-    await onSave(formData, selectedFile);
-  }
-};
+    if (mode === "edit") {
+      await onSave(
+        {
+          ...formData,
+          id: category?.id || category?._id,
+        },
+        selectedFile,
+      );
+    } else {
+      await onSave(formData, selectedFile);
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -984,7 +991,9 @@ const CategoryModal = ({
             />
             <div className="flex justify-between mt-1">
               {errors.shortDescription && (
-                <p className="text-xs text-red-600">{errors.shortDescription}</p>
+                <p className="text-xs text-red-600">
+                  {errors.shortDescription}
+                </p>
               )}
               <p className="text-xs text-slate-400 text-right">
                 {formData.shortDescription.length}/200
@@ -1000,7 +1009,10 @@ const CategoryModal = ({
             <select
               value={formData.isActive ? "active" : "inactive"}
               onChange={(e) =>
-                setFormData({ ...formData, isActive: e.target.value === "active" })
+                setFormData({
+                  ...formData,
+                  isActive: e.target.value === "active",
+                })
               }
               className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none text-sm"
             >
@@ -1077,8 +1089,8 @@ const CategoryModal = ({
               {isSaving
                 ? "Saving..."
                 : mode === "add"
-                ? "Add Category"
-                : "Save Changes"}
+                  ? "Add Category"
+                  : "Save Changes"}
             </button>
           </div>
         </form>

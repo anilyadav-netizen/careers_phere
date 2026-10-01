@@ -1,53 +1,35 @@
-
-import React, { useEffect, useState } from "react";
+import AOS from "aos";
+import "aos/dist/aos.css";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
+  Building2,
   Check,
   ChevronDown,
+  Clapperboard,
   Film,
-  Video,
+  Globe2,
+  Layers,
+  Mail,
+  Palette,
   Play,
   Scissors,
-  Sparkles,
   Sliders,
-  Layers,
-  Wand2,
-  Volume2,
+  Sparkles,
   Tv,
-  Globe2,
-  Laptop2,
-  Mail,
-  Send,
-  Loader2,
-  AlertCircle,
-  Clock3,
-  DollarSign,
-  MonitorPlay,
-  Clapperboard,
-  Palette,
-  Camera,
-  X,
-  Menu,
-  Building2,
+  Volume2,
+  Wand2,
 } from "lucide-react";
-import {
-  FaYoutube,
-  FaLinkedinIn,
-  FaInstagram,
-  FaVimeoV,
-  FaBehance,
-} from "react-icons/fa";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
+import { FaInstagram, FaLinkedinIn, FaVimeoV, FaYoutube } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import RoleApplyModal from "../components/RoleApplyModal";
 import { fetchPublicOpportunities } from "../redux/slicer/roleOpportunitySlice";
-import AOS from "aos";
-import "aos/dist/aos.css";
 
 const VideoEditor = () => {
   const dispatch = useDispatch();
   const { publicList: opportunities = [], publicLoading } = useSelector(
-    (state) => state.roleOpportunities || {}
+    (state) => state.roleOpportunities || {},
   );
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -381,7 +363,12 @@ const VideoEditor = () => {
 
         <div className="relative max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 lg:pt-14 lg:pb-12">
           <div className="grid lg:grid-cols-[1fr_0.92fr] gap-8 lg:gap-12 items-center">
-            <motion.div initial="hidden" animate="visible" variants={softReveal} className="min-w-0">
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={softReveal}
+              className="min-w-0"
+            >
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -407,9 +394,10 @@ const VideoEditor = () => {
               </h1>
 
               <p className="mt-3.5 max-w-2xl text-sm sm:text-base text-slate-500 leading-relaxed">
-                We're hiring Video Editors & Motion Artists who understand narrative
-                rhythm, kinetic typography, punchy sound design, and cinematic color
-                grading to produce viral content and high-retention documentaries seen by millions.
+                We're hiring Video Editors & Motion Artists who understand
+                narrative rhythm, kinetic typography, punchy sound design, and
+                cinematic color grading to produce viral content and
+                high-retention documentaries seen by millions.
               </p>
 
               <div className="flex flex-row gap-3 mt-6">
@@ -531,12 +519,16 @@ const VideoEditor = () => {
                 <div className="mt-3 rounded-xl bg-slate-900/90 border border-slate-800 p-2.5 space-y-2">
                   <div className="flex items-center justify-between text-[10px] font-mono text-slate-400 pb-1 border-b border-slate-800">
                     <span>TIMELINE TRACKS</span>
-                    <span className="text-slate-500">100% Zoom · Frame Accurate</span>
+                    <span className="text-slate-500">
+                      100% Zoom · Frame Accurate
+                    </span>
                   </div>
 
                   {/* Video Track 2 (Motion/VFX) */}
                   <div className="flex items-center gap-2">
-                    <span className="w-6 text-[10px] font-mono text-purple-400 shrink-0">V2</span>
+                    <span className="w-6 text-[10px] font-mono text-purple-400 shrink-0">
+                      V2
+                    </span>
                     <div className="flex-1 h-6 rounded-md bg-purple-500/25 border border-purple-500/40 flex items-center px-2 text-[10px] font-mono text-purple-200 truncate">
                       [VFX_Kinetic_LowerThirds.aep]
                     </div>
@@ -544,16 +536,24 @@ const VideoEditor = () => {
 
                   {/* Video Track 1 (A-Roll 4K) */}
                   <div className="flex items-center gap-2">
-                    <span className="w-6 text-[10px] font-mono text-[#30AFFF] shrink-0">V1</span>
+                    <span className="w-6 text-[10px] font-mono text-[#30AFFF] shrink-0">
+                      V1
+                    </span>
                     <div className="flex-1 h-6 rounded-md bg-[#30AFFF]/25 border border-[#30AFFF]/40 flex items-center justify-between px-2 text-[10px] font-mono text-sky-200">
-                      <span className="truncate">[Scene04_A_Roll_4K_60FPS.mov]</span>
-                      <span className="text-[9px] text-[#30AFFF]">Color Graded</span>
+                      <span className="truncate">
+                        [Scene04_A_Roll_4K_60FPS.mov]
+                      </span>
+                      <span className="text-[9px] text-[#30AFFF]">
+                        Color Graded
+                      </span>
                     </div>
                   </div>
 
                   {/* Audio Track 1 (Dialogue) */}
                   <div className="flex items-center gap-2">
-                    <span className="w-6 text-[10px] font-mono text-emerald-400 shrink-0">A1</span>
+                    <span className="w-6 text-[10px] font-mono text-emerald-400 shrink-0">
+                      A1
+                    </span>
                     <div className="flex-1 h-6 rounded-md bg-emerald-500/25 border border-emerald-500/40 flex items-center px-2 text-[10px] font-mono text-emerald-200 truncate">
                       [Voiceover_Dialogue_Normalized.wav] ~ -14 LUFS
                     </div>
@@ -561,7 +561,9 @@ const VideoEditor = () => {
 
                   {/* Audio Track 2 (SFX & Music) */}
                   <div className="flex items-center gap-2">
-                    <span className="w-6 text-[10px] font-mono text-amber-400 shrink-0">A2</span>
+                    <span className="w-6 text-[10px] font-mono text-amber-400 shrink-0">
+                      A2
+                    </span>
                     <div className="flex-1 h-6 rounded-md bg-amber-500/25 border border-amber-500/40 flex items-center px-2 text-[10px] font-mono text-amber-200 truncate">
                       [BGM_Cinematic_BeatDrop_Impacts.wav]
                     </div>
@@ -586,7 +588,9 @@ const VideoEditor = () => {
 
               <div className="absolute -top-3 -right-3 hidden sm:flex items-center gap-2.5 rounded-2xl border border-slate-100 bg-white px-3.5 py-2.5 shadow-lg">
                 <div>
-                  <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">COLOR & SOUND</div>
+                  <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">
+                    COLOR & SOUND
+                  </div>
                   <div className="text-xs font-bold text-slate-900">
                     DaVinci Resolve Studio
                   </div>
@@ -614,9 +618,9 @@ const VideoEditor = () => {
             </h2>
 
             <p className="text-sm sm:text-base leading-relaxed text-slate-500 max-w-3xl mx-auto mt-3">
-              As our Video Editor, you’ll take concepts, scripts, and multi-cam footage
-              to shape dynamic visual narratives with sound design, color grading, and
-              kinetic motion design.
+              As our Video Editor, you’ll take concepts, scripts, and multi-cam
+              footage to shape dynamic visual narratives with sound design,
+              color grading, and kinetic motion design.
             </p>
           </div>
 
@@ -676,8 +680,9 @@ const VideoEditor = () => {
             </h2>
 
             <p className="text-sm text-slate-500 max-w-2xl mx-auto mt-2">
-              We leverage standard high-performance software for rapid multi-track sequencing,
-              audio sweetening, color grading, and dynamic visual effects.
+              We leverage standard high-performance software for rapid
+              multi-track sequencing, audio sweetening, color grading, and
+              dynamic visual effects.
             </p>
           </div>
 
@@ -746,132 +751,198 @@ const VideoEditor = () => {
             </h2>
 
             <p className="text-sm text-slate-500 max-w-2xl mx-auto mt-2">
-              Explore international video editing roles offering competitive compensation in
-              global currencies, remote setups, or studio relocation support.
+              Explore international video editing roles offering competitive
+              compensation in global currencies, remote setups, or studio
+              relocation support.
             </p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
-            {opportunities.length > 0 ? (
-              opportunities.map((opp, idx) => {
-                const displaySalary = opp.salary || "Competitive";
+            {opportunities.length > 0
+              ? opportunities.map((opp, idx) => {
+                  const displaySalary = opp.salary || "Competitive";
 
-                return (
+                  return (
+                    <div
+                      key={opp._id || idx}
+                      data-aos="fade-up"
+                      data-aos-delay={idx * 40}
+                      className="rounded-2xl border border-slate-100 bg-[#F7FCFF] p-4 hover:border-[#30AFFF]/60 hover:bg-white transition shadow-xs flex flex-col"
+                    >
+                      {/* Company Header */}
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-10 h-10 rounded-xl border border-slate-100 bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
+                            {opp.companyLogo ? (
+                              <img
+                                src={opp.companyLogo}
+                                alt={opp.companyName}
+                                className="w-full h-full object-contain p-1"
+                                onError={(e) => {
+                                  e.target.style.display = "none";
+                                }}
+                              />
+                            ) : (
+                              <Building2 size={18} className="text-[#30AFFF]" />
+                            )}
+                          </div>
+
+                          <div className="min-w-0">
+                            <h4
+                              className="text-sm font-bold text-slate-900 truncate"
+                              title={opp.companyName}
+                            >
+                              {opp.companyName}
+                            </h4>
+                            <span className="text-[10px] text-slate-400 truncate block">
+                              {opp.roleTitle ||
+                                opp.roleCategory ||
+                                "Video Editor"}
+                            </span>
+                          </div>
+                        </div>
+
+                        {opp.salaryCurrency && (
+                          <span className="text-[9px] font-bold rounded-md bg-[#30AFFF]/10 text-[#0B6F9F] px-2 py-0.5 shrink-0">
+                            {opp.salaryCurrency}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Countries with Flags */}
+                      <div className="mt-3 pt-3 border-t border-slate-100">
+                        <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-1.5 flex items-center gap-1">
+                          <Globe2 size={11} className="text-[#30AFFF]" />
+                          <span>Hiring In</span>
+                        </div>
+
+                        <div className="flex flex-wrap gap-1">
+                          {opp.countries && opp.countries.length > 0 ? (
+                            opp.countries.map((c, cIdx) => (
+                              <span
+                                key={cIdx}
+                                className="inline-flex items-center gap-1 rounded bg-white border border-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-700"
+                              >
+                                {c.flag &&
+                                  (c.flag.startsWith("http") ? (
+                                    <img
+                                      src={c.flag}
+                                      alt={c.countryName || "flag"}
+                                      className="w-3.5 h-2.5 object-cover rounded-2xs"
+                                      onError={(e) => {
+                                        e.target.style.display = "none";
+                                      }}
+                                    />
+                                  ) : (
+                                    <span>{c.flag}</span>
+                                  ))}
+                                <span>{c.countryName || "Worldwide"}</span>
+                              </span>
+                            ))
+                          ) : (
+                            <span className="text-[10px] text-slate-500">
+                              Worldwide / Remote
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Expected Payout / Salary */}
+                      <div className="mt-3 pt-3 border-t border-slate-100">
+                        <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">
+                          Expected Payout
+                        </div>
+                        <div className="text-sm font-black text-slate-900 mt-0.5">
+                          {displaySalary}
+                        </div>
+                      </div>
+
+                      {/* Skills */}
+                      {opp.skills && opp.skills.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-2.5">
+                          {opp.skills.slice(0, 4).map((skill, sIdx) => (
+                            <span
+                              key={sIdx}
+                              className="text-[9px] font-bold bg-[#30AFFF]/10 text-[#0B6F9F] px-2 py-0.5 rounded"
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                          {opp.skills.length > 4 && (
+                            <span className="text-[8px] font-bold bg-white text-slate-500 px-1 py-0.5 rounded border border-slate-100">
+                              +{opp.skills.length - 4}
+                            </span>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Modes */}
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {(opp.workModes || ["Remote", "Hybrid"]).map((m) => (
+                          <span
+                            key={m}
+                            className="text-[9px] font-bold bg-white text-slate-600 px-2 py-0.5 rounded border border-slate-100"
+                          >
+                            {m}
+                          </span>
+                        ))}
+                      </div>
+
+                      {/* APPLY BUTTON */}
+                      <div className="flex justify-end mt-4 pt-3 border-t border-slate-100 mt-auto">
+                        <button
+                          type="button"
+                          onClick={() => goToApplicationForm(opp)}
+                          className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-3.5 py-2 text-[10px] font-bold text-white hover:bg-[#30AFFF] transition cursor-pointer"
+                        >
+                          Apply
+                          <ArrowRight size={13} className="shrink-0" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })
+              : globalMarkets.map((market, idx) => (
                   <div
-                    key={opp._id || idx}
+                    key={idx}
                     data-aos="fade-up"
                     data-aos-delay={idx * 40}
                     className="rounded-2xl border border-slate-100 bg-[#F7FCFF] p-4 hover:border-[#30AFFF]/60 hover:bg-white transition shadow-xs flex flex-col"
                   >
-                    {/* Company Header */}
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex items-center gap-3 min-w-0">
-                        <div className="w-10 h-10 rounded-xl border border-slate-100 bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
-                          {opp.companyLogo ? (
-                            <img
-                              src={opp.companyLogo}
-                              alt={opp.companyName}
-                              className="w-full h-full object-contain p-1"
-                              onError={(e) => {
-                                e.target.style.display = "none";
-                              }}
-                            />
-                          ) : (
-                            <Building2 size={18} className="text-[#30AFFF]" />
-                          )}
-                        </div>
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={market.flag}
+                        alt={market.country}
+                        className="w-7 h-5 rounded object-cover shadow-xs"
+                      />
 
-                        <div className="min-w-0">
-                          <h4
-                            className="text-sm font-bold text-slate-900 truncate"
-                            title={opp.companyName}
-                          >
-                            {opp.companyName}
-                          </h4>
-                          <span className="text-[10px] text-slate-400 truncate block">
-                            {opp.roleTitle || opp.roleCategory || "Video Editor"}
-                          </span>
-                        </div>
-                      </div>
+                      <div className="min-w-0">
+                        <h4 className="text-sm font-bold text-slate-900">
+                          {market.country}
+                        </h4>
 
-                      {opp.salaryCurrency && (
-                        <span className="text-[9px] font-bold rounded-md bg-[#30AFFF]/10 text-[#0B6F9F] px-2 py-0.5 shrink-0">
-                          {opp.salaryCurrency}
+                        <span className="text-[10px] text-slate-400">
+                          {market.region}
                         </span>
-                      )}
-                    </div>
-
-                    {/* Countries with Flags */}
-                    <div className="mt-3 pt-3 border-t border-slate-100">
-                      <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-1.5 flex items-center gap-1">
-                        <Globe2 size={11} className="text-[#30AFFF]" />
-                        <span>Hiring In</span>
-                      </div>
-
-                      <div className="flex flex-wrap gap-1">
-                        {opp.countries && opp.countries.length > 0 ? (
-                          opp.countries.map((c, cIdx) => (
-                            <span
-                              key={cIdx}
-                              className="inline-flex items-center gap-1 rounded bg-white border border-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-700"
-                            >
-                              {c.flag && (
-                                c.flag.startsWith("http") ? (
-                                  <img
-                                    src={c.flag}
-                                    alt={c.countryName || "flag"}
-                                    className="w-3.5 h-2.5 object-cover rounded-2xs"
-                                    onError={(e) => {
-                                      e.target.style.display = "none";
-                                    }}
-                                  />
-                                ) : (
-                                  <span>{c.flag}</span>
-                                )
-                              )}
-                              <span>{c.countryName || "Worldwide"}</span>
-                            </span>
-                          ))
-                        ) : (
-                          <span className="text-[10px] text-slate-500">
-                            Worldwide / Remote
-                          </span>
-                        )}
                       </div>
                     </div>
 
-                    {/* Expected Payout / Salary */}
                     <div className="mt-3 pt-3 border-t border-slate-100">
                       <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">
                         Expected Payout
                       </div>
-                      <div className="text-sm font-black text-slate-900 mt-0.5">
-                        {displaySalary}
+
+                      <div className="text-sm font-black text-slate-900">
+                        {market.payout}
                       </div>
                     </div>
 
-                    {/* Skills */}
-                    {opp.skills && opp.skills.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mt-2.5">
-                        {opp.skills.slice(0, 4).map((skill, sIdx) => (
-                          <span
-                            key={sIdx}
-                            className="text-[9px] font-bold bg-[#30AFFF]/10 text-[#0B6F9F] px-2 py-0.5 rounded"
-                          >
-                            {skill}
-                          </span>
-                        ))}
-                        {opp.skills.length > 4 && (
-                          <span className="text-[8px] font-bold bg-white text-slate-500 px-1 py-0.5 rounded border border-slate-100">
-                            +{opp.skills.length - 4}
-                          </span>
-                        )}
-                      </div>
-                    )}
+                    <div className="mt-2 text-[11px] text-[#0B6F9F] font-semibold">
+                      {market.focus}
+                    </div>
 
-                    {/* Modes */}
                     <div className="flex flex-wrap gap-1 mt-2">
-                      {(opp.workModes || ["Remote", "Hybrid"]).map((m) => (
+                      {market.modes.map((m) => (
                         <span
                           key={m}
                           className="text-[9px] font-bold bg-white text-slate-600 px-2 py-0.5 rounded border border-slate-100"
@@ -885,81 +956,15 @@ const VideoEditor = () => {
                     <div className="flex justify-end mt-4 pt-3 border-t border-slate-100 mt-auto">
                       <button
                         type="button"
-                        onClick={() => goToApplicationForm(opp)}
-                        className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-3.5 py-2 text-[10px] font-bold text-white hover:bg-[#30AFFF] transition cursor-pointer"
+                        onClick={() => goToApplicationForm(null)}
+                        className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-3 py-2 text-[10px] font-bold text-white hover:bg-[#30AFFF] transition cursor-pointer"
                       >
                         Apply
                         <ArrowRight size={13} className="shrink-0" />
                       </button>
                     </div>
                   </div>
-                );
-              })
-            ) : (
-              globalMarkets.map((market, idx) => (
-                <div
-                  key={idx}
-                  data-aos="fade-up"
-                  data-aos-delay={idx * 40}
-                  className="rounded-2xl border border-slate-100 bg-[#F7FCFF] p-4 hover:border-[#30AFFF]/60 hover:bg-white transition shadow-xs flex flex-col"
-                >
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={market.flag}
-                      alt={market.country}
-                      className="w-7 h-5 rounded object-cover shadow-xs"
-                    />
-
-                    <div className="min-w-0">
-                      <h4 className="text-sm font-bold text-slate-900">
-                        {market.country}
-                      </h4>
-
-                      <span className="text-[10px] text-slate-400">
-                        {market.region}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="mt-3 pt-3 border-t border-slate-100">
-                    <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">
-                      Expected Payout
-                    </div>
-
-                    <div className="text-sm font-black text-slate-900">
-                      {market.payout}
-                    </div>
-                  </div>
-
-                  <div className="mt-2 text-[11px] text-[#0B6F9F] font-semibold">
-                    {market.focus}
-                  </div>
-
-                  <div className="flex flex-wrap gap-1 mt-2">
-                    {market.modes.map((m) => (
-                      <span
-                        key={m}
-                        className="text-[9px] font-bold bg-white text-slate-600 px-2 py-0.5 rounded border border-slate-100"
-                      >
-                        {m}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* APPLY BUTTON */}
-                  <div className="flex justify-end mt-4 pt-3 border-t border-slate-100 mt-auto">
-                    <button
-                      type="button"
-                      onClick={() => goToApplicationForm(null)}
-                      className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-3 py-2 text-[10px] font-bold text-white hover:bg-[#30AFFF] transition cursor-pointer"
-                    >
-                      Apply
-                      <ArrowRight size={13} className="shrink-0" />
-                    </button>
-                  </div>
-                </div>
-              ))
-            )}
+                ))}
           </div>
         </div>
       </section>
@@ -1112,10 +1117,7 @@ const VideoEditor = () => {
       <section id="apply" className="bg-[#F7FCFF]">
         <div className="max-w-[90rem] mx-auto px-5 sm:px-6 lg:px-8 py-8 lg:py-12">
           <div className="grid lg:grid-cols-[0.68fr_1.32fr] gap-6 lg:gap-10 items-start">
-            <motion.div
-              data-aos="fade-right"
-              className="lg:sticky lg:top-24"
-            >
+            <motion.div data-aos="fade-right" className="lg:sticky lg:top-24">
               <div className="inline-flex items-center rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[#0B6F9F] font-bold shadow-sm">
                 Video Editor Application
               </div>
@@ -1125,8 +1127,9 @@ const VideoEditor = () => {
               </h2>
 
               <p className="text-xs sm:text-sm leading-relaxed text-slate-500 mt-3 max-w-md">
-                Tell us about your editing expertise, share your showreel and best project
-                links, and select your preferred global market and compensation expectations.
+                Tell us about your editing expertise, share your showreel and
+                best project links, and select your preferred global market and
+                compensation expectations.
               </p>
 
               <div className="space-y-3 mt-6">
@@ -1134,7 +1137,7 @@ const VideoEditor = () => {
                   <div className="w-8 h-8 rounded-lg bg-[#30AFFF] flex items-center justify-center text-white">
                     <Mail size={14} className="text-[#30AFFF]" />
                   </div>
-                  creative@careersphere.com
+                  creative@CareerNova.com
                 </div>
 
                 <div className="flex items-center gap-3 text-xs text-slate-500">
@@ -1224,9 +1227,10 @@ const VideoEditor = () => {
                 </h3>
 
                 <p className="text-sm text-slate-600 mt-3 leading-relaxed">
-                  Click the button below to launch our official application popup.
-                  Submit your contact info, showreel & portfolio links, editing suite
-                  proficiencies, and upload your CV directly to our production lead.
+                  Click the button below to launch our official application
+                  popup. Submit your contact info, showreel & portfolio links,
+                  editing suite proficiencies, and upload your CV directly to
+                  our production lead.
                 </p>
 
                 <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -1241,7 +1245,8 @@ const VideoEditor = () => {
                 </div>
 
                 <p className="text-[11px] text-slate-400 mt-4">
-                  ⚡ Takes less than 2 minutes · PDF / DOC / DOCX resume supported
+                  ⚡ Takes less than 2 minutes · PDF / DOC / DOCX resume
+                  supported
                 </p>
               </div>
             </motion.div>
@@ -1323,7 +1328,8 @@ const VideoEditor = () => {
 
           <div className="mt-6 pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-[10px] text-slate-400">
             <span>
-              © {new Date().getFullYear()} Video Editor Careers. All rights reserved.
+              © {new Date().getFullYear()} Video Editor Careers. All rights
+              reserved.
             </span>
 
             <span>Crafted for visual storytellers and motion artists.</span>
@@ -1335,4 +1341,3 @@ const VideoEditor = () => {
 };
 
 export default VideoEditor;
-

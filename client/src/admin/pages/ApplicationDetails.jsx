@@ -1,30 +1,29 @@
 // src/admin/pages/ApplicationDetails.jsx
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import {
-  ArrowLeft,
-  Mail,
-  Phone,
-  MapPin,
-  Briefcase,
-  FileText,
-  Link2,
-  Globe,
-  Calendar,
-  Clock,
-  CheckCircle2,
-  XCircle,
   AlertCircle,
-  DownloadCloud,
-  X,
-  Eye,
-  FileText as FileTextIcon,
-  Building2,
-  UserCheck,
-  RefreshCw,
+  ArrowLeft,
   Award,
+  Briefcase,
+  Building2,
+  Calendar,
+  CheckCircle2,
+  Clock,
+  DownloadCloud,
+  Eye,
+  FileText,
+  FileText as FileTextIcon,
+  Globe,
+  Link2,
+  Mail,
+  MapPin,
+  Phone,
+  UserCheck,
+  X,
+  XCircle,
 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   getApplicationByIdAdmin,
   updateApplicationStatus,
@@ -136,18 +135,14 @@ const ApplicationDetails = () => {
     null;
 
   const resumeFileName =
-    application?.applicationData?.resume ||
-    application?.resume ||
-    null;
+    application?.applicationData?.resume || application?.resume || null;
 
   const jobTitle =
     application?.job?.title ||
     application?.applicationData?.role ||
     "Role Application";
 
-  const companyName =
-    application?.job?.company ||
-    "CareerSphere";
+  const companyName = application?.job?.company || "CareerNova";
 
   const isGuest =
     !application?.applicant &&
@@ -675,7 +670,9 @@ const DocumentPreviewModal = ({ document, onClose }) => {
         </div>
 
         <div className="flex items-center justify-between p-4 border-t border-slate-100 bg-white">
-          <p className="text-xs text-slate-500 truncate">Previewing: {fileName}</p>
+          <p className="text-xs text-slate-500 truncate">
+            Previewing: {fileName}
+          </p>
           <div className="flex gap-2">
             <a
               href={url}

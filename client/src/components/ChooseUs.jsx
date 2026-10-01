@@ -1,14 +1,13 @@
-import React from "react";
 import {
   ArrowRight,
   Award,
   BriefcaseBusiness,
   CheckCircle2,
+  Plane,
   ShieldCheck,
   Sparkles,
   TrendingUp,
   Users,
-  Plane,
 } from "lucide-react";
 
 const ChooseUs = () => {
@@ -67,24 +66,22 @@ const ChooseUs = () => {
 
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#A0E9FF]/60 bg-[#A0E9FF]/20 px-4 py-2 text-xs font-bold text-[#159FEF] sm:text-sm">
             <Sparkles size={15} className="text-[#30AFFF]" />
-            Why Choose CareerSphere
+            Why Choose CareerNova
           </div>
 
           {/* Heading */}
 
           <h2 className="text-xl font-bold leading-tight tracking-tight text-slate-900 md:text-3xl lg:text-4xl">
             Everything You Need to{" "}
-            <span className="text-[#159FEF]">
-              Build Your Career
-            </span>
+            <span className="text-[#159FEF]">Build Your Career</span>
           </h2>
 
           {/* Description */}
 
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-slate-500 sm:text-base sm:leading-7">
-            CareerSphere brings jobs, professionals and career resources
-            together in one powerful platform designed to help you discover
-            opportunities and grow professionally.
+            CareerNova brings jobs, professionals and career resources together
+            in one powerful platform designed to help you discover opportunities
+            and grow professionally.
           </p>
         </div>
 
@@ -323,10 +320,7 @@ const ChooseUs = () => {
 
               <div className="max-w-2xl">
                 <div className="mb-3 flex items-center gap-2">
-                  <CheckCircle2
-                    size={18}
-                    className="text-[#A0E9FF]"
-                  />
+                  <CheckCircle2 size={18} className="text-[#A0E9FF]" />
 
                   <span className="text-xs font-bold uppercase tracking-wider text-[#A0E9FF]">
                     Your Career Starts Here
@@ -335,14 +329,12 @@ const ChooseUs = () => {
 
                 <h3 className="text-xl font-bold leading-tight text-white md:text-3xl lg:text-3xl">
                   Find the opportunity that{" "}
-                  <span className="text-[#A0E9FF]">
-                    moves you forward.
-                  </span>
+                  <span className="text-[#A0E9FF]">moves you forward.</span>
                 </h3>
 
                 <p className="mt-3 max-w-xl text-sm leading-6 text-white/80 sm:text-base">
-                  Create your profile, explore opportunities and take the
-                  next step toward your professional goals.
+                  Create your profile, explore opportunities and take the next
+                  step toward your professional goals.
                 </p>
               </div>
 

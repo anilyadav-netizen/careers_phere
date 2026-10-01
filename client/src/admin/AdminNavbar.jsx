@@ -1,12 +1,6 @@
-import React, { useEffect } from "react";
+import { Bell, ChevronDown, Menu, Search, UserRound } from "lucide-react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Menu,
-  Bell,
-  Search,
-  ChevronDown,
-  UserRound,
-} from "lucide-react";
 
 import { getProfile } from "../redux/slicer/authSlice";
 
@@ -22,10 +16,8 @@ const AdminNavbar = ({ setSidebarOpen }) => {
   return (
     <header className="sticky top-0 z-30 flex h-20 shrink-0 items-center border-b border-slate-200 bg-white/95 px-3 backdrop-blur sm:px-5 lg:px-8">
       <div className="flex w-full items-center justify-between gap-3">
-
         {/* LEFT */}
         <div className="flex min-w-0 items-center gap-3">
-
           {/* MOBILE MENU */}
           <button
             type="button"
@@ -41,14 +33,13 @@ const AdminNavbar = ({ setSidebarOpen }) => {
             </h2>
 
             <p className="hidden text-xs text-slate-400 sm:block">
-              Manage your CareerSphere platform
+              Manage your CareerNova platform
             </p>
           </div>
         </div>
 
         {/* RIGHT */}
         <div className="flex items-center gap-2 sm:gap-3">
-
           {/* SEARCH */}
           {/* <div className="hidden items-center rounded-xl border border-slate-200 bg-slate-50 px-3 lg:flex">
             <Search
@@ -94,9 +85,7 @@ const AdminNavbar = ({ setSidebarOpen }) => {
             {/* PROFILE DATA */}
             <div className="hidden text-left md:block">
               <p className="max-w-[120px] truncate text-xs font-bold text-slate-700">
-                {loading
-                  ? "Loading..."
-                  : user?.name || "Admin"}
+                {loading ? "Loading..." : user?.name || "Admin"}
               </p>
 
               <p className="max-w-[120px] truncate text-[10px] text-slate-400">

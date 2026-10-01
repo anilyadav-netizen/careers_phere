@@ -1,5 +1,3 @@
-
-import React, { useMemo, useState } from "react";
 import {
   ArrowRight,
   BookOpen,
@@ -17,6 +15,7 @@ import {
   X,
   Zap,
 } from "lucide-react";
+import { useMemo, useState } from "react";
 
 const SkillDevelopment = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -42,17 +41,11 @@ const SkillDevelopment = () => {
       icon: Users,
       bg: "bg-[#A0E9FF]/40",
       color: "text-[#159FEF]",
-      skills: [
-        "Communication",
-        "Leadership",
-        "Teamwork",
-        "Problem Solving",
-      ],
+      skills: ["Communication", "Leadership", "Teamwork", "Problem Solving"],
     },
     {
       title: "Career Skills",
-      description:
-        "Build skills that help you grow and advance your career.",
+      description: "Build skills that help you grow and advance your career.",
       icon: TrendingUp,
       bg: "bg-[#A0E9FF]/40",
       color: "text-[#159FEF]",
@@ -70,12 +63,7 @@ const SkillDevelopment = () => {
       icon: BriefcaseBusiness,
       bg: "bg-[#A0E9FF]/40",
       color: "text-[#159FEF]",
-      skills: [
-        "Marketing",
-        "Project Management",
-        "Sales",
-        "Business Strategy",
-      ],
+      skills: ["Marketing", "Project Management", "Sales", "Business Strategy"],
     },
   ];
 
@@ -149,12 +137,7 @@ const SkillDevelopment = () => {
       title: "Frontend Developer",
       description:
         "Master the skills required to build modern and responsive web applications.",
-      skills: [
-        "HTML & CSS",
-        "JavaScript",
-        "React.js",
-        "Git & GitHub",
-      ],
+      skills: ["HTML & CSS", "JavaScript", "React.js", "Git & GitHub"],
       duration: "10 Weeks",
       level: "Beginner to Advanced",
       progress: 65,
@@ -166,12 +149,7 @@ const SkillDevelopment = () => {
       title: "Full Stack Developer",
       description:
         "Learn frontend and backend technologies to become a complete web developer.",
-      skills: [
-        "React.js",
-        "Node.js",
-        "Express.js",
-        "MongoDB",
-      ],
+      skills: ["React.js", "Node.js", "Express.js", "MongoDB"],
       duration: "16 Weeks",
       level: "Intermediate",
       progress: 40,
@@ -183,12 +161,7 @@ const SkillDevelopment = () => {
       title: "Career Ready Professional",
       description:
         "Develop the professional skills needed to succeed in today's workplace.",
-      skills: [
-        "Communication",
-        "Leadership",
-        "Interview",
-        "Networking",
-      ],
+      skills: ["Communication", "Leadership", "Interview", "Networking"],
       duration: "6 Weeks",
       level: "All Levels",
       progress: 80,
@@ -212,7 +185,7 @@ const SkillDevelopment = () => {
     return popularSkills.filter(
       (skill) =>
         skill.name.toLowerCase().includes(search) ||
-        skill.category.toLowerCase().includes(search)
+        skill.category.toLowerCase().includes(search),
     );
   }, [searchTerm]);
 
@@ -242,8 +215,8 @@ const SkillDevelopment = () => {
             </h1>
 
             <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-[#A0E9FF] sm:text-base sm:leading-7">
-              Learn the skills employers are looking for and take your career
-              to the next level with CareerSphere.
+              Learn the skills employers are looking for and take your career to
+              the next level with CareerNova.
             </p>
 
             {/* SEARCH */}
@@ -533,10 +506,7 @@ const SkillDevelopment = () => {
                       </div>
                     </div>
 
-                    <Zap
-                      size={17}
-                      className="shrink-0 text-amber-400"
-                    />
+                    <Zap size={17} className="shrink-0 text-amber-400" />
                   </div>
 
                   <p className="mt-4 text-xs leading-5 text-slate-500">
@@ -711,13 +681,7 @@ const SkillDevelopment = () => {
 // STAT CARD
 // =============================================================
 
-const StatCard = ({
-  icon: Icon,
-  value,
-  label,
-  bg,
-  color,
-}) => {
+const StatCard = ({ icon: Icon, value, label, bg, color }) => {
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-3.5 shadow-sm sm:p-4">
       <div className="flex items-center gap-3">
@@ -745,11 +709,7 @@ const StatCard = ({
 // BENEFIT
 // =============================================================
 
-const Benefit = ({
-  icon: Icon,
-  title,
-  description,
-}) => {
+const Benefit = ({ icon: Icon, title, description }) => {
   return (
     <div className="flex gap-3">
       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#A0E9FF]/40 text-[#159FEF]">
@@ -757,13 +717,9 @@ const Benefit = ({
       </div>
 
       <div>
-        <h3 className="text-sm font-bold text-slate-800">
-          {title}
-        </h3>
+        <h3 className="text-sm font-bold text-slate-800">{title}</h3>
 
-        <p className="mt-1 text-xs leading-5 text-slate-500">
-          {description}
-        </p>
+        <p className="mt-1 text-xs leading-5 text-slate-500">{description}</p>
       </div>
     </div>
   );
@@ -778,4 +734,3 @@ const MessageIcon = (props) => {
 };
 
 export default SkillDevelopment;
-

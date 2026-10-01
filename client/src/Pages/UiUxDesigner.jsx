@@ -271,9 +271,10 @@ const UiUxDesigner = () => {
               </h1>
 
               <p className="mt-4 max-w-2xl text-[13px] sm:text-sm md:text-base text-slate-500 leading-relaxed">
-                Connect with world-class product teams and tech startups hiring UI/UX Designers.
-                Architect user journeys, high-fidelity Figma prototypes, scalable design tokens,
-                and WCAG-accessible interfaces that delight global users.
+                Connect with world-class product teams and tech startups hiring
+                UI/UX Designers. Architect user journeys, high-fidelity Figma
+                prototypes, scalable design tokens, and WCAG-accessible
+                interfaces that delight global users.
               </p>
 
               <div className="mt-7 flex w-full flex-col gap-3 sm:flex-row sm:w-auto">
@@ -350,10 +351,18 @@ const UiUxDesigner = () => {
                 {/* Figma Tool Icons Strip */}
                 <div className="mt-2.5 flex items-center justify-between px-3 py-1.5 rounded-xl bg-slate-900/90 border border-slate-800 text-xs text-slate-400">
                   <div className="flex items-center gap-3">
-                    <span className="text-[#30AFFF] font-bold cursor-pointer"># Frame</span>
-                    <span className="hover:text-white cursor-pointer">■ Shape</span>
-                    <span className="hover:text-white cursor-pointer">✎ Pen</span>
-                    <span className="hover:text-white cursor-pointer">T Text</span>
+                    <span className="text-[#30AFFF] font-bold cursor-pointer">
+                      # Frame
+                    </span>
+                    <span className="hover:text-white cursor-pointer">
+                      ■ Shape
+                    </span>
+                    <span className="hover:text-white cursor-pointer">
+                      ✎ Pen
+                    </span>
+                    <span className="hover:text-white cursor-pointer">
+                      T Text
+                    </span>
                   </div>
                   <div className="flex items-center gap-2 text-[10px] font-mono text-slate-500">
                     <span>100%</span>
@@ -367,7 +376,8 @@ const UiUxDesigner = () => {
                   <div
                     className="absolute inset-0 opacity-15"
                     style={{
-                      backgroundImage: "radial-gradient(#30AFFF 1px, transparent 1px)",
+                      backgroundImage:
+                        "radial-gradient(#30AFFF 1px, transparent 1px)",
                       backgroundSize: "20px 20px",
                     }}
                   />
@@ -382,7 +392,9 @@ const UiUxDesigner = () => {
                     <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                       <div className="flex items-center gap-1.5">
                         <div className="w-4 h-4 rounded-full bg-[#30AFFF]" />
-                        <span className="text-[10px] font-bold text-slate-900">AppScreen</span>
+                        <span className="text-[10px] font-bold text-slate-900">
+                          AppScreen
+                        </span>
                       </div>
                       <span className="text-[8px] px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 font-bold">
                         Published
@@ -397,17 +409,34 @@ const UiUxDesigner = () => {
 
                     {/* Color Palette Swatches inside artboard */}
                     <div className="mt-3 pt-2 border-t border-slate-100 flex items-center gap-1.5">
-                      <span className="text-[8px] font-bold text-slate-400">Tokens:</span>
-                      <span className="w-3.5 h-3.5 rounded-full bg-[#30AFFF] border border-white shadow-xs" title="#30AFFF" />
-                      <span className="w-3.5 h-3.5 rounded-full bg-[#102B36] border border-white shadow-xs" title="#102B36" />
-                      <span className="w-3.5 h-3.5 rounded-full bg-[#10B981] border border-white shadow-xs" title="#10B981" />
-                      <span className="w-3.5 h-3.5 rounded-full bg-[#F7FCFF] border border-slate-200 shadow-xs" title="#F7FCFF" />
+                      <span className="text-[8px] font-bold text-slate-400">
+                        Tokens:
+                      </span>
+                      <span
+                        className="w-3.5 h-3.5 rounded-full bg-[#30AFFF] border border-white shadow-xs"
+                        title="#30AFFF"
+                      />
+                      <span
+                        className="w-3.5 h-3.5 rounded-full bg-[#102B36] border border-white shadow-xs"
+                        title="#102B36"
+                      />
+                      <span
+                        className="w-3.5 h-3.5 rounded-full bg-[#10B981] border border-white shadow-xs"
+                        title="#10B981"
+                      />
+                      <span
+                        className="w-3.5 h-3.5 rounded-full bg-[#F7FCFF] border border-slate-200 shadow-xs"
+                        title="#F7FCFF"
+                      />
                     </div>
                   </div>
 
                   {/* Simulated Figma Multiplayer Cursor */}
                   <div className="absolute bottom-5 right-6 flex items-start gap-1">
-                    <MousePointer size={16} className="text-purple-400 fill-purple-400 -rotate-12" />
+                    <MousePointer
+                      size={16}
+                      className="text-purple-400 fill-purple-400 -rotate-12"
+                    />
                     <span className="px-2 py-0.5 rounded-md bg-purple-600 text-white text-[9px] font-bold shadow-md">
                       Alex (Editing Hero...)
                     </span>
@@ -421,15 +450,23 @@ const UiUxDesigner = () => {
                   <SiFigma size={16} />
                 </div>
                 <div>
-                  <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">TOOLING</div>
-                  <div className="text-xs font-bold text-slate-900">Figma & Design Tokens</div>
+                  <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">
+                    TOOLING
+                  </div>
+                  <div className="text-xs font-bold text-slate-900">
+                    Figma & Design Tokens
+                  </div>
                 </div>
               </div>
 
               <div className="absolute -top-3 -right-3 hidden sm:flex items-center gap-2.5 rounded-2xl border border-slate-100 bg-white px-3.5 py-2.5 shadow-lg">
                 <div>
-                  <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">ACCESSIBILITY</div>
-                  <div className="text-xs font-bold text-slate-900">WCAG AAA Standards</div>
+                  <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">
+                    ACCESSIBILITY
+                  </div>
+                  <div className="text-xs font-bold text-slate-900">
+                    WCAG AAA Standards
+                  </div>
                 </div>
                 <div className="w-8 h-8 rounded-xl bg-emerald-500/15 flex items-center justify-center text-emerald-500">
                   <Sparkles size={16} />
@@ -931,7 +968,6 @@ const UiUxDesigner = () => {
         <div className="mx-auto w-full max-w-4xl px-4 sm:px-5 md:px-6 text-center">
           <div className="rounded-2xl sm:rounded-3xl border border-[#30AFFF]/30 bg-gradient-to-br from-slate-900 via-slate-900 to-[#0F3B66] p-5 sm:p-8 md:p-12 text-white shadow-xl relative overflow-hidden">
             <div className="absolute top-0 right-0 w-80 h-80 rounded-full bg-[#30AFFF]/15 blur-[100px] pointer-events-none" />
-
             <div className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[10px] uppercase font-bold text-[#30AFFF] mb-3">
               <Sparkles size={12} />
               Fast 2-Minute Application

@@ -1,5 +1,3 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import {
   ArrowRight,
   CheckCircle2,
@@ -9,25 +7,24 @@ import {
   Sparkles,
   Star,
 } from "lucide-react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import {
-  Autoplay,
-  Navigation,
-  Pagination,
-  A11y,
-} from "swiper/modules";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { Link } from "react-router-dom";
+import { A11y, Autoplay, Navigation, Pagination } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 import { getTestimonials } from "../redux/slicer/userTestimonialSlice";
 
 const Testimonials = () => {
   const dispatch = useDispatch();
 
-  const { testimonials = [], loading, error } = useSelector(
-    (state) => state.usertestimonial
-  );
+  const {
+    testimonials = [],
+    loading,
+    error,
+  } = useSelector((state) => state.usertestimonial);
 
   useEffect(() => {
     dispatch(getTestimonials());
@@ -45,9 +42,7 @@ const Testimonials = () => {
         key={index}
         size={14}
         fill={index < safeRating ? "currentColor" : "none"}
-        className={
-          index < safeRating ? "text-amber-400" : "text-slate-200"
-        }
+        className={index < safeRating ? "text-amber-400" : "text-slate-200"}
       />
     ));
   };
@@ -123,13 +118,11 @@ const Testimonials = () => {
   return (
     <section className="overflow-hidden bg-[#e1eff2] py-4">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-
         {/* =================================================
             HEADER
         ================================================= */}
 
         <div className="mx-auto max-w-3xl text-center">
-
           {/* Badge */}
 
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#30AFFF]/20 bg-white px-4 py-2 text-xs font-bold text-[#30AFFF] shadow-sm sm:text-sm">
@@ -146,8 +139,8 @@ const Testimonials = () => {
           {/* Description */}
 
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base sm:leading-7">
-            Hear from professionals around the world who are using CareerSphere
-            to discover better opportunities and take the next step in their
+            Hear from professionals around the world who are using CareerNova to
+            discover better opportunities and take the next step in their
             careers.
           </p>
         </div>
@@ -157,14 +150,8 @@ const Testimonials = () => {
         ================================================= */}
 
         <div className="relative mt-8 pb-12 sm:mt-10">
-
           <Swiper
-            modules={[
-              Autoplay,
-              Navigation,
-              Pagination,
-              A11y,
-            ]}
+            modules={[Autoplay, Navigation, Pagination, A11y]}
             spaceBetween={20}
             slidesPerView={1}
             loop={testimonials.length > 3}
@@ -215,25 +202,18 @@ const Testimonials = () => {
                 testimonial.image?.displayUrl;
 
               return (
-                <SwiperSlide
-                  key={testimonial._id}
-                  className="!h-auto"
-                >
+                <SwiperSlide key={testimonial._id} className="!h-auto">
                   {/* =================================================
                       CARD
                   ================================================= */}
 
                   <article className="group relative flex h-full min-h-[280px] flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[0_4px_20px_rgba(15,23,42,0.04)] transition-all duration-500 hover:-translate-y-1 hover:border-[#30AFFF]/40 hover:shadow-[0_15px_35px_rgba(48,175,255,0.14)] sm:p-6">
-
                     {/* =================================================
                         QUOTE
                     ================================================= */}
 
                     <div className="pointer-events-none absolute -right-4 -top-4 flex h-20 w-20 items-center justify-center rounded-full bg-[#A0E9FF]/30 text-[#30AFFF]/30 transition-all duration-500 group-hover:scale-110 group-hover:bg-[#A0E9FF]/50">
-                      <Quote
-                        size={28}
-                        fill="currentColor"
-                      />
+                      <Quote size={28} fill="currentColor" />
                     </div>
 
                     {/* =================================================
@@ -261,7 +241,6 @@ const Testimonials = () => {
                     ================================================= */}
 
                     <div className="mt-6 flex items-center gap-3 border-t border-slate-100 pt-5">
-
                       {/* IMAGE */}
 
                       <div className="relative shrink-0">
@@ -274,9 +253,7 @@ const Testimonials = () => {
                             onError={(e) => {
                               e.currentTarget.style.display = "none";
 
-                              if (
-                                e.currentTarget.nextElementSibling
-                              ) {
+                              if (e.currentTarget.nextElementSibling) {
                                 e.currentTarget.nextElementSibling.style.display =
                                   "flex";
                               }
@@ -291,9 +268,7 @@ const Testimonials = () => {
                             image ? "hidden" : "flex"
                           } h-11 w-11 items-center justify-center rounded-full bg-[#30AFFF] text-sm font-bold text-white ring-2 ring-[#A0E9FF]/40`}
                         >
-                          {testimonial.name
-                            ?.charAt(0)
-                            ?.toUpperCase() || "U"}
+                          {testimonial.name?.charAt(0)?.toUpperCase() || "U"}
                         </div>
 
                         {/* VERIFIED */}
@@ -327,7 +302,6 @@ const Testimonials = () => {
                     ================================================= */}
 
                     <div className="absolute bottom-0 left-1/2 h-[2px] w-0 -translate-x-1/2 rounded-full bg-[#30AFFF] transition-all duration-500 group-hover:w-1/3" />
-
                   </article>
                 </SwiperSlide>
               );
@@ -339,16 +313,12 @@ const Testimonials = () => {
           ================================================= */}
 
           <div className="absolute bottom-0 left-1/2 z-10 flex -translate-x-1/2 items-center gap-3">
-
             <button
               type="button"
               className="testimonial-prev flex h-9 w-9 items-center justify-center rounded-full border border-[#A0E9FF] bg-white text-[#30AFFF] shadow-sm transition-all duration-300 hover:border-[#30AFFF] hover:bg-[#30AFFF] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
               aria-label="Previous testimonial"
             >
-              <ChevronLeft
-                size={18}
-                strokeWidth={2.5}
-              />
+              <ChevronLeft size={18} strokeWidth={2.5} />
             </button>
 
             <button
@@ -356,12 +326,8 @@ const Testimonials = () => {
               className="testimonial-next flex h-9 w-9 items-center justify-center rounded-full border border-[#A0E9FF] bg-white text-[#30AFFF] shadow-sm transition-all duration-300 hover:border-[#30AFFF] hover:bg-[#30AFFF] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
               aria-label="Next testimonial"
             >
-              <ChevronRight
-                size={18}
-                strokeWidth={2.5}
-              />
+              <ChevronRight size={18} strokeWidth={2.5} />
             </button>
-
           </div>
         </div>
 
@@ -375,8 +341,7 @@ const Testimonials = () => {
               type="button"
               className="group inline-flex items-center gap-2 rounded-full border border-[#30AFFF]/30 bg-white px-5 py-2.5 text-xs font-bold text-[#30AFFF] shadow-sm transition-all duration-300 hover:border-[#30AFFF] hover:bg-[#30AFFF] hover:text-white hover:shadow-lg hover:shadow-[#30AFFF]/20 sm:px-6 sm:py-3 sm:text-sm"
             >
-              Explore CareerSphere
-
+              Explore CareerNova
               <ArrowRight
                 size={16}
                 className="transition-transform duration-300 group-hover:translate-x-1"

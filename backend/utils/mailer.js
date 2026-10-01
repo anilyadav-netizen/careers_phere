@@ -45,7 +45,7 @@ const layout = (title, content) => `
           style="max-width:620px;background:#fff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;">
           <tr>
             <td style="padding:24px 28px;border-bottom:1px solid #e5e7eb;">
-              <div style="font-size:22px;font-weight:700;color:#111827;">CareerSphere</div>
+              <div style="font-size:22px;font-weight:700;color:#111827;">CareerNova</div>
             </td>
           </tr>
           <tr>
@@ -55,7 +55,7 @@ const layout = (title, content) => `
           </tr>
           <tr>
             <td style="padding:18px 28px;background:#f9fafb;border-top:1px solid #e5e7eb;text-align:center;font-size:12px;color:#6b7280;">
-              This is an automated notification from CareerSphere.
+              This is an automated notification from CareerNova.
             </td>
           </tr>
         </table>
@@ -67,7 +67,7 @@ const layout = (title, content) => `
 
 const sendMail = (options) =>
   transporter.sendMail({
-    from: `"CareerSphere" <${process.env.MAIL_USER}>`,
+    from: `"CareerNova" <${process.env.MAIL_USER}>`,
     replyTo: process.env.MAIL_USER,
     ...options,
   });
@@ -82,7 +82,7 @@ const sendWelcomeEmail = async (user) => {
 
     const plainText = `Hello ${user.name},
 
-Your CareerSphere account has been created successfully.
+Your CareerNova account has been created successfully.
 
 Account email: ${user.email}
 
@@ -90,15 +90,15 @@ You can sign in to manage your account:
 ${clientUrl}
 
 Regards,
-CareerSphere`;
+CareerNova`;
 
     const html = layout(
-      "Welcome to CareerSphere",
+      "Welcome to CareerNova",
       `
-      <h2 style="margin:0 0 14px;color:#111827;">Welcome to CareerSphere</h2>
+      <h2 style="margin:0 0 14px;color:#111827;">Welcome to CareerNova</h2>
       <p style="font-size:15px;line-height:1.6;">Hello ${escapeHtml(user.name)},</p>
       <p style="font-size:15px;line-height:1.6;">
-        Your CareerSphere account has been created successfully.
+        Your CareerNova account has been created successfully.
       </p>
       <div style="margin:20px 0;padding:16px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;">
         <p style="margin:0 0 7px;font-size:14px;">Name: <strong>${escapeHtml(user.name)}</strong></p>
@@ -106,13 +106,13 @@ CareerSphere`;
       </div>
       <a href="${escapeHtml(clientUrl)}"
         style="display:inline-block;padding:11px 18px;background:#111827;color:#fff;text-decoration:none;border-radius:7px;font-size:14px;">
-        Open CareerSphere
+        Open CareerNova
       </a>`,
     );
 
     const info = await sendMail({
       to: user.email,
-      subject: "Welcome to CareerSphere",
+      subject: "Welcome to CareerNova",
       text: plainText,
       html,
     });
@@ -167,7 +167,7 @@ View your account:
 ${clientUrl}
 
 Regards,
-CareerSphere`;
+CareerNova`;
 
     const html = layout(
       "Application received",
@@ -227,7 +227,7 @@ const sendSubscriptionConfirmation = async ({ user, subscription }) => {
 
     const plainText = `Hello ${user.name},
 
-Your CareerSphere subscription has been activated.
+Your CareerNova subscription has been activated.
 
 Plan: ${subscription.planName}
 Valid until: ${endDate}
@@ -236,7 +236,7 @@ You can sign in to view your account:
 ${clientUrl}
 
 Regards,
-CareerSphere`;
+CareerNova`;
 
     const html = layout(
       "Subscription confirmed",
@@ -252,7 +252,7 @@ CareerSphere`;
       </div>
       <a href="${escapeHtml(clientUrl)}"
         style="display:inline-block;padding:11px 18px;background:#111827;color:#fff;text-decoration:none;border-radius:7px;font-size:14px;">
-        Open CareerSphere
+        Open CareerNova
       </a>`,
     );
 
@@ -305,7 +305,7 @@ Your application has been recorded successfully. We will notify you if its statu
 ${clientUrl}
 
 Regards,
-CareerSphere`;
+CareerNova`;
 
     const html = layout(
       "Application received",
@@ -370,7 +370,7 @@ const sendRoleApplicationStatusUpdateEmail = async (
 
     const applicantName = application.fullName || "Candidate";
     const roleName = application.role || "Role";
-    const company = application.companyName || "CareerSphere";
+    const company = application.companyName || "CareerNova";
     const clientUrl = getClientUrl();
 
     const statusMeta = {
@@ -436,7 +436,7 @@ You can view your account here:
 ${clientUrl}
 
 Regards,
-CareerSphere`;
+CareerNova`;
 
     const html = layout(
       currentMeta.title,

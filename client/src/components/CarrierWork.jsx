@@ -1,13 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
 import {
-  UserPlus,
-  Search,
+  ArrowRight,
   Briefcase,
   CheckCircle,
-  ArrowRight,
+  Search,
   Sparkles,
+  UserPlus,
   Zap,
 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 const CarrierWork = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -25,7 +25,7 @@ const CarrierWork = () => {
           observer.disconnect();
         }
       },
-      { threshold: 0.12 }
+      { threshold: 0.12 },
     );
 
     if (sectionRef.current) {
@@ -261,17 +261,14 @@ const CarrierWork = () => {
 
             <h2 className="text-xl font-bold leading-tight tracking-tight text-slate-900 sm:text-2xl md:text-3xl lg:text-4xl">
               Your Journey to{" "}
-              <span className="text-[#159FEF]">
-                Career Success
-              </span>
+              <span className="text-[#159FEF]">Career Success</span>
             </h2>
 
             {/* Description */}
 
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-slate-500 sm:text-base sm:leading-7">
-              From creating your profile to landing your dream job,
-              CareerSphere makes your career journey simple and
-              straightforward.
+              From creating your profile to landing your dream job, CareerNova
+              makes your career journey simple and straightforward.
             </p>
           </div>
 
@@ -300,9 +297,7 @@ const CarrierWork = () => {
                 return (
                   <div
                     key={step.id}
-                    className={`career-step ${
-                      isVisible ? "show" : ""
-                    }`}
+                    className={`career-step ${isVisible ? "show" : ""}`}
                     style={{
                       animationDelay: `${index * 130}ms`,
                     }}
@@ -395,10 +390,7 @@ const CarrierWork = () => {
                         <div
                           className={`flex h-9 w-9 items-center justify-center rounded-full ${color.number} text-white sm:h-11 sm:w-11`}
                         >
-                          <Icon
-                            size={17}
-                            className="sm:h-5 sm:w-5"
-                          />
+                          <Icon size={17} className="sm:h-5 sm:w-5" />
                         </div>
                       </div>
 
@@ -462,7 +454,7 @@ const CarrierWork = () => {
             </a>
 
             <p className="mt-2 text-[9px] text-slate-400 sm:text-[10px]">
-              Join 10,000+ professionals on CareerSphere
+              Join 10,000+ professionals on CareerNova
             </p>
           </div>
         </div>

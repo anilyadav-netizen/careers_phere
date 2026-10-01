@@ -1,42 +1,51 @@
 // src/admin/pages/Subscriptions.jsx
-import React, { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import {
-  Plus,
-  Pencil,
-  Trash2,
-  X,
   AlertCircle,
   AlertTriangle,
-  RefreshCw,
-  CreditCard,
-  Calendar,
   Check,
-  IndianRupee,
-  Search,
   Clock,
+  CreditCard,
+  IndianRupee,
+  Pencil,
+  Plus,
+  RefreshCw,
+  Search,
+  Trash2,
+  X,
 } from "lucide-react";
-import StateCard from "../components/StateCard";
+import { useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
-  getAllSubscriptionsAdmin,
-  deleteSubscription,
-  toggleSubscriptionStatus,
   clearSubscriptionMessages,
+  deleteSubscription,
+  getAllSubscriptionsAdmin,
+  toggleSubscriptionStatus,
 } from "../../redux/slicer/adminsubscriptionSlice";
+import StateCard from "../components/StateCard";
 
 const Subscriptions = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   // Redux state
-  const subscriptions = useSelector((state) => state.subscription?.adminSubscriptions || []);
+  const subscriptions = useSelector(
+    (state) => state.subscription?.adminSubscriptions || [],
+  );
   const loading = useSelector((state) => state.subscription?.loading || false);
   const error = useSelector((state) => state.subscription?.error || null);
-  const deleteLoading = useSelector((state) => state.subscription?.deleteLoading || false);
-  const toggleLoading = useSelector((state) => state.subscription?.toggleLoading || false);
-  const successMessage = useSelector((state) => state.subscription?.successMessage || null);
-  const deleteError = useSelector((state) => state.subscription?.deleteError || null);
+  const deleteLoading = useSelector(
+    (state) => state.subscription?.deleteLoading || false,
+  );
+  const toggleLoading = useSelector(
+    (state) => state.subscription?.toggleLoading || false,
+  );
+  const successMessage = useSelector(
+    (state) => state.subscription?.successMessage || null,
+  );
+  const deleteError = useSelector(
+    (state) => state.subscription?.deleteError || null,
+  );
 
   const [searchTerm, setSearchTerm] = useState("");
   const [billingFilter, setBillingFilter] = useState("all");
@@ -71,7 +80,7 @@ const Subscriptions = () => {
     const totalSubscriptions = subscriptions.length;
     const activePlans = subscriptions.filter((sub) => sub.isActive).length;
     const popularPlans = subscriptions.filter((sub) => sub.isPopular).length;
-    
+
     // Calculate average price from active plans
     const activeSubs = subscriptions.filter((sub) => sub.isActive);
     const averagePrice =
@@ -117,7 +126,6 @@ const Subscriptions = () => {
 
     return result;
   }, [subscriptions, searchTerm, billingFilter]);
-  
 
   // Handle edit subscription
   const handleEditSubscription = (subscriptionId) => {
@@ -213,9 +221,9 @@ const Subscriptions = () => {
   // Error state
   if (error && subscriptions.length === 0) {
     return (
-      <SubscriptionsErrorState 
-        error={error} 
-        onRetry={() => dispatch(getAllSubscriptionsAdmin())} 
+      <SubscriptionsErrorState
+        error={error}
+        onRetry={() => dispatch(getAllSubscriptionsAdmin())}
       />
     );
   }
@@ -232,7 +240,7 @@ const Subscriptions = () => {
             Manage Subscriptions
           </h1>
           <p className="text-sm text-slate-500 mt-1">
-            Create and manage subscription plans for CareerSphere users.
+            Create and manage subscription plans for CareerNova users.
           </p>
         </div>
         <button
@@ -406,24 +414,28 @@ const Subscriptions = () => {
 
                       <td className="px-4 py-4 min-w-[90px]">
                         <p className="text-sm font-medium text-slate-700">
-                          {Number(subscription.purchaseCount || 0).toLocaleString("en-IN")}
+                          {Number(
+                            subscription.purchaseCount || 0,
+                          ).toLocaleString("en-IN")}
                         </p>
                       </td>
 
                       {/* Features */}
                       <td className="px-4 py-4">
                         <div className="flex flex-wrap gap-1">
-                          {subscription.features?.slice(0, 3).map((feature, index) => (
-                            <span
-                              key={index}
-                              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 whitespace-nowrap"
-                            >
-                              <Check className="w-3 h-3 text-green-600 flex-shrink-0" />
-                              {feature.length > 20
-                                ? feature.substring(0, 20) + "..."
-                                : feature}
-                            </span>
-                          ))}
+                          {subscription.features
+                            ?.slice(0, 3)
+                            .map((feature, index) => (
+                              <span
+                                key={index}
+                                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 whitespace-nowrap"
+                              >
+                                <Check className="w-3 h-3 text-green-600 flex-shrink-0" />
+                                {feature.length > 20
+                                  ? feature.substring(0, 20) + "..."
+                                  : feature}
+                              </span>
+                            ))}
                           {subscription.features?.length > 3 && (
                             <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 whitespace-nowrap">
                               +{subscription.features.length - 3} more
@@ -435,14 +447,16 @@ const Subscriptions = () => {
                       {/* Countries */}
                       <td className="px-4 py-4 min-w-[120px]">
                         <div className="flex flex-wrap gap-1">
-                          {subscription.countries?.slice(0, 2).map((country, index) => (
-                            <span
-                              key={index}
-                              className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 whitespace-nowrap"
-                            >
-                              {country}
-                            </span>
-                          ))}
+                          {subscription.countries
+                            ?.slice(0, 2)
+                            .map((country, index) => (
+                              <span
+                                key={index}
+                                className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 whitespace-nowrap"
+                              >
+                                {country}
+                              </span>
+                            ))}
                           {subscription.countries?.length > 2 && (
                             <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 whitespace-nowrap">
                               +{subscription.countries.length - 2}
@@ -468,7 +482,9 @@ const Subscriptions = () => {
                                 ? "text-green-400 hover:text-red-600 hover:bg-red-50"
                                 : "text-red-400 hover:text-green-600 hover:bg-green-50"
                             }`}
-                            title={subscription.isActive ? "Deactivate" : "Activate"}
+                            title={
+                              subscription.isActive ? "Deactivate" : "Activate"
+                            }
                           >
                             {subscription.isActive ? (
                               <Check className="w-4 h-4" />
@@ -477,14 +493,20 @@ const Subscriptions = () => {
                             )}
                           </button>
                           <button
-                            onClick={() => handleEditSubscription(subscription._id || subscription.id)}
+                            onClick={() =>
+                              handleEditSubscription(
+                                subscription._id || subscription.id,
+                              )
+                            }
                             className="p-2 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors flex-shrink-0"
                             title="Edit subscription"
                           >
                             <Pencil className="w-4 h-4" />
                           </button>
                           <button
-                            onClick={() => handleDeleteSubscription(subscription)}
+                            onClick={() =>
+                              handleDeleteSubscription(subscription)
+                            }
                             className="p-2 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors flex-shrink-0"
                             title="Delete subscription"
                           >
@@ -501,7 +523,10 @@ const Subscriptions = () => {
             {/* Mobile/Tablet Cards */}
             <div className="lg:hidden divide-y divide-slate-100">
               {filteredSubscriptions.map((subscription) => (
-                <div key={subscription._id || subscription.id} className="p-4 space-y-3">
+                <div
+                  key={subscription._id || subscription.id}
+                  className="p-4 space-y-3"
+                >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-slate-800">
@@ -524,7 +549,10 @@ const Subscriptions = () => {
                         )}
                       </p>
                       <p className="text-xs text-slate-500 mt-1">
-                        {Number(subscription.purchaseCount || 0).toLocaleString("en-IN")} purchase{subscription.purchaseCount === 1 ? "" : "s"}
+                        {Number(subscription.purchaseCount || 0).toLocaleString(
+                          "en-IN",
+                        )}{" "}
+                        purchase{subscription.purchaseCount === 1 ? "" : "s"}
                       </p>
                     </div>
                     <div className="flex gap-1 flex-shrink-0">
@@ -543,7 +571,11 @@ const Subscriptions = () => {
                         )}
                       </button>
                       <button
-                        onClick={() => handleEditSubscription(subscription._id || subscription.id)}
+                        onClick={() =>
+                          handleEditSubscription(
+                            subscription._id || subscription.id,
+                          )
+                        }
                         className="p-2 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
                       >
                         <Pencil className="w-4 h-4" />
@@ -558,15 +590,19 @@ const Subscriptions = () => {
                   </div>
 
                   <div className="flex flex-wrap gap-1">
-                    {subscription.features?.slice(0, 3).map((feature, index) => (
-                      <span
-                        key={index}
-                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700"
-                      >
-                        <Check className="w-3 h-3 text-green-600" />
-                        {feature.length > 20 ? feature.substring(0, 20) + "..." : feature}
-                      </span>
-                    ))}
+                    {subscription.features
+                      ?.slice(0, 3)
+                      .map((feature, index) => (
+                        <span
+                          key={index}
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700"
+                        >
+                          <Check className="w-3 h-3 text-green-600" />
+                          {feature.length > 20
+                            ? feature.substring(0, 20) + "..."
+                            : feature}
+                        </span>
+                      ))}
                     {subscription.features?.length > 3 && (
                       <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
                         +{subscription.features.length - 3} more
@@ -574,23 +610,26 @@ const Subscriptions = () => {
                     )}
                   </div>
 
-                  {subscription.countries && subscription.countries.length > 0 && (
-                    <div className="flex flex-wrap gap-1">
-                      {subscription.countries.slice(0, 3).map((country, index) => (
-                        <span
-                          key={index}
-                          className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700"
-                        >
-                          {country}
-                        </span>
-                      ))}
-                      {subscription.countries.length > 3 && (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700">
-                          +{subscription.countries.length - 3}
-                        </span>
-                      )}
-                    </div>
-                  )}
+                  {subscription.countries &&
+                    subscription.countries.length > 0 && (
+                      <div className="flex flex-wrap gap-1">
+                        {subscription.countries
+                          .slice(0, 3)
+                          .map((country, index) => (
+                            <span
+                              key={index}
+                              className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700"
+                            >
+                              {country}
+                            </span>
+                          ))}
+                        {subscription.countries.length > 3 && (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700">
+                            +{subscription.countries.length - 3}
+                          </span>
+                        )}
+                      </div>
+                    )}
                 </div>
               ))}
             </div>
@@ -628,7 +667,12 @@ const Subscriptions = () => {
 };
 
 // Delete Subscription Modal
-const DeleteSubscriptionModal = ({ subscription, onClose, onConfirm, isDeleting }) => {
+const DeleteSubscriptionModal = ({
+  subscription,
+  onClose,
+  onConfirm,
+  isDeleting,
+}) => {
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-md">
@@ -656,13 +700,16 @@ const DeleteSubscriptionModal = ({ subscription, onClose, onConfirm, isDeleting 
 
           <div className="mt-4 p-4 bg-slate-50 rounded-xl">
             <p className="text-sm text-slate-700">
-              <span className="font-medium">Plan:</span> {subscription?.planName}
+              <span className="font-medium">Plan:</span>{" "}
+              {subscription?.planName}
             </p>
             <p className="text-sm text-slate-700">
-              <span className="font-medium">Price:</span> ₹{subscription?.price?.toLocaleString("en-IN")}
+              <span className="font-medium">Price:</span> ₹
+              {subscription?.price?.toLocaleString("en-IN")}
             </p>
             <p className="text-sm text-slate-700">
-              <span className="font-medium">Features:</span> {subscription?.features?.length || 0} features
+              <span className="font-medium">Features:</span>{" "}
+              {subscription?.features?.length || 0} features
             </p>
           </div>
 

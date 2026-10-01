@@ -1,11 +1,11 @@
-import React, { useState } from "react";
 import {
   ChevronDown,
   HelpCircle,
-  Search,
   MessageCircleQuestion,
+  Search,
   Sparkles,
 } from "lucide-react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const FAQ = () => {
@@ -15,9 +15,9 @@ const FAQ = () => {
 
   const faqs = [
     {
-      question: "What is CareerSphere?",
+      question: "What is CareerNova?",
       answer:
-        "CareerSphere is a job search platform that helps job seekers discover relevant opportunities, connect with companies, and take the next step in their career.",
+        "CareerNova is a job search platform that helps job seekers discover relevant opportunities, connect with companies, and take the next step in their career.",
     },
     {
       question: "How can I search for jobs?",
@@ -27,7 +27,7 @@ const FAQ = () => {
     {
       question: "Do I need to create an account to apply for jobs?",
       answer:
-        "Yes. Creating an account allows you to manage your profile, save jobs, track applications, and access other CareerSphere features.",
+        "Yes. Creating an account allows you to manage your profile, save jobs, track applications, and access other CareerNova features.",
     },
     {
       question: "How do I apply for a job?",
@@ -77,16 +77,13 @@ const FAQ = () => {
             {/* Heading */}
             <h1 className="text-xl font-bold tracking-tight text-slate-900 md:text-3xl lg:text-4xl">
               Got Questions?{" "}
-              <span className="text-[#159FEF]">
-                We've Got Answers.
-              </span>
+              <span className="text-[#159FEF]">We've Got Answers.</span>
             </h1>
 
             {/* Description */}
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base sm:leading-7 lg:text-lg">
-              Find quick answers to the most common questions about
-              CareerSphere, job applications, profiles, subscriptions, and
-              more.
+              Find quick answers to the most common questions about CareerNova,
+              job applications, profiles, subscriptions, and more.
             </p>
           </div>
         </div>
@@ -208,9 +205,7 @@ const FAQ = () => {
 
                           <span
                             className={`min-w-0 break-words text-sm font-bold leading-5 sm:text-base sm:leading-6 ${
-                              isOpen
-                                ? "text-[#159FEF]"
-                                : "text-slate-800"
+                              isOpen ? "text-[#159FEF]" : "text-slate-800"
                             }`}
                           >
                             {faq.question}

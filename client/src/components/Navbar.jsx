@@ -3,18 +3,21 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import {
-  BriefcaseBusiness,
   ChevronDown,
-  CreditCard,
+  Code2,
   FileText,
-  Images,
+  Film,
+  Globe,
   Info,
+  Layers,
   LogIn,
   LogOut,
   Menu,
   Palette,
   Phone,
   Search,
+  Server,
+  Smartphone,
   UserPlus,
   UserRound,
   X,
@@ -26,6 +29,28 @@ import { getProfile, logoutUser } from "../redux/slicer/authSlice";
 
 import FeedbackModal from "./FeedbackModal";
 
+const LOGO_URL = "https://i.ibb.co/R4BKkFCW/careernova.png";
+
+/* =========================================================
+   LOGO (single source — navbar + mobile drawer dono me same)
+========================================================= */
+
+const Logo = ({ onClick, className = "" }) => (
+  <Link
+    to="/"
+    onClick={onClick}
+    aria-label="CareerNova Home"
+    className={`flex min-w-0 shrink-0 items-center ${className}`}
+  >
+    <img
+      src={LOGO_URL}
+      alt="CareerNova"
+      decoding="async"
+      className="h-[4rem] w-auto max-w-[130px] object-contain min-[400px]:max-w-[150px] md:h-10 md:max-w-[190px] lg:h-[4.25rem] lg:max-w-[160px]"
+    />
+  </Link>
+);
+
 const Navbar = () => {
   // =========================================================
   // STATE
@@ -34,6 +59,8 @@ const Navbar = () => {
   const [mobileMenu, setMobileMenu] = useState(false);
   const [userMenu, setUserMenu] = useState(false);
   const [mobileUserMenu, setMobileUserMenu] = useState(false);
+  const [remoteMenu, setRemoteMenu] = useState(false);
+  const [mobileRemoteMenu, setMobileRemoteMenu] = useState(false);
   const [logoutLoading, setLogoutLoading] = useState(false);
 
   // Added from colleague logic
@@ -64,58 +91,66 @@ const Navbar = () => {
   // =========================================================
 
   const userMenuRef = useRef(null);
+  const remoteMenuRef = useRef(null);
 
   // =========================================================
   // NAV ITEMS
   // =========================================================
 
-  const navItems = [
+  const remoteLandingPages = [
     {
-      name: "Find Jobs",
-      path: "/jobs",
-      icon: Search,
+      name: "Frontend Developer",
+      path: "/frontend",
+      description: "React, Next.js & UI Engineering",
+      icon: Code2,
+      badge: "Popular",
+    },
+    {
+      name: "Backend Developer",
+      path: "/backend",
+      description: "Node.js, APIs & Database Systems",
+      icon: Server,
+    },
+    {
+      name: "Full Stack Developer",
+      path: "/fullStack",
+      description: "End-to-End Web & Cloud Systems",
+      icon: Layers,
+    },
+    {
+      name: "Android Developer",
+      path: "/andriod",
+      description: "Kotlin, Compose & Mobile Apps",
+      icon: Smartphone,
+    },
+    {
+      name: "UI/UX Designer",
+      path: "/uiux-designer",
+      description: "Figma Canvas & Design Systems",
+      icon: Palette,
     },
     {
       name: "Video Editor",
       path: "/videoEditor",
-      icon: CreditCard,
-    },
-    {
-      name: "FullStack",
-      path: "/fullStack",
-      icon: Images,
-    },
-    {
-      name: "Andriod",
-      path: "/andriod",
-      icon: Images,
-    },
-    {
-      name: "Frontend",
-      path: "/frontend",
-      icon: Images,
-    },
-    {
-      name: "Backend",
-      path: "/backend",
-      icon: Images,
-    },
-    {
-      name: "UI/UX",
-      path: "/uiux-designer",
-      icon: Palette,
-    },
-    {
-      name: "About Us",
-      path: "/about",
-      icon: Info,
-    },
-    {
-      name: "Contact Us",
-      path: "/contact",
-      icon: Phone,
+      description: "Video Timeline & Motion Design",
+      icon: Film,
     },
   ];
+
+  const isRemoteItemActive = (item) =>
+    location.pathname === item.path ||
+    (item.path === "/uiux-designer" && location.pathname === "/uiux") ||
+    (item.path === "/videoEditor" && location.pathname === "/video-editor");
+
+  const isRemoteActive = () => {
+    return remoteLandingPages.some(
+      (item) =>
+        location.pathname === item.path ||
+        location.pathname.startsWith(item.path) ||
+        (item.path === "/uiux-designer" && location.pathname === "/uiux") ||
+        (item.path === "/videoEditor" && location.pathname === "/video-editor"),
+    );
+  };
 
   // =========================================================
   // GET PROFILE FROM BACKEND
@@ -147,16 +182,24 @@ const Navbar = () => {
     setMobileMenu(false);
     setUserMenu(false);
     setMobileUserMenu(false);
+    setRemoteMenu(false);
+    setMobileRemoteMenu(false);
   }, [location.pathname]);
 
   // =========================================================
-  // CLICK OUTSIDE USER MENU
+  // CLICK OUTSIDE USER & REMOTE MENUS
   // =========================================================
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
         setUserMenu(false);
+      }
+      if (
+        remoteMenuRef.current &&
+        !remoteMenuRef.current.contains(event.target)
+      ) {
+        setRemoteMenu(false);
       }
     };
 
@@ -177,6 +220,8 @@ const Navbar = () => {
         setMobileMenu(false);
         setUserMenu(false);
         setMobileUserMenu(false);
+        setRemoteMenu(false);
+        setMobileRemoteMenu(false);
         setShowLogoutConfirm(false);
       }
     };
@@ -185,6 +230,38 @@ const Navbar = () => {
 
     return () => {
       document.removeEventListener("keydown", handleEscape);
+    };
+  }, []);
+
+  // =========================================================
+  // LOCK BODY SCROLL WHEN MOBILE DRAWER IS OPEN
+  // =========================================================
+
+  useEffect(() => {
+    document.body.style.overflow = mobileMenu ? "hidden" : "";
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileMenu]);
+
+  // =========================================================
+  // CLOSE MOBILE DRAWER WHEN SCREEN BECOMES DESKTOP (rotate / resize)
+  // =========================================================
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setMobileMenu(false);
+        setMobileUserMenu(false);
+        setMobileRemoteMenu(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -257,6 +334,31 @@ const Navbar = () => {
   };
 
   // =========================================================
+  // SHARED CLASSES
+  // =========================================================
+
+  const desktopLinkClass = (active) =>
+    `relative flex items-center gap-1.5 whitespace-nowrap rounded-xl px-2.5 py-2.5 text-[13px] font-medium transition-all duration-200 xl:gap-2 xl:px-3.5 xl:text-sm ${
+      active
+        ? "bg-[#A0E9FF]/35 text-[#30AFFF]"
+        : "text-slate-600 hover:bg-[#A0E9FF]/25 hover:text-[#30AFFF]"
+    }`;
+
+  const mobileLinkClass = (active) =>
+    `flex w-full items-center gap-3.5 rounded-xl px-3.5 py-3 text-sm font-medium transition-all duration-200 sm:gap-4 sm:px-4 sm:py-3.5 ${
+      active
+        ? "bg-[#A0E9FF]/35 text-[#30AFFF]"
+        : "text-slate-700 hover:bg-[#A0E9FF]/25 hover:text-[#30AFFF]"
+    }`;
+
+  const mobileIconClass = (active) =>
+    `flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
+      active
+        ? "bg-white text-[#30AFFF] shadow-xs"
+        : "bg-[#A0E9FF]/25 text-slate-500"
+    }`;
+
+  // =========================================================
   // RENDER
   // =========================================================
 
@@ -284,31 +386,13 @@ const Navbar = () => {
       ====================================================== */}
 
       <nav className="sticky top-0 z-50 w-full border-b border-slate-200/70 bg-white/90 shadow-sm backdrop-blur-xl">
-        <div className="mx-auto w-full max-w-[1440px] px-3 sm:px-5 md:px-6 lg:px-8 xl:px-10">
-          <div className="flex min-h-[64px] items-center justify-between gap-3 sm:min-h-[68px]">
+        <div className="mx-auto w-full max-w-[1440px] px-3 sm:px-5 md:px-6 lg:px-6 xl:px-10">
+          <div className="flex min-h-[60px] items-center justify-between gap-2 sm:min-h-[68px] sm:gap-3">
             {/* =================================================
                 LOGO
             ================================================= */}
 
-            <Link
-              to="/"
-              className="group flex min-w-0 shrink-0 items-center gap-2"
-              aria-label="CareerSphere Home"
-            >
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#30AFFF] shadow-md transition-all duration-300 group-hover:shadow-lg group-hover:bg-[#159FEF] sm:h-10 sm:w-10">
-                <BriefcaseBusiness
-                  size={20}
-                  strokeWidth={2}
-                  className="text-white sm:h-[22px] sm:w-[22px]"
-                />
-              </div>
-
-              <div className="truncate text-lg font-bold tracking-tight sm:text-xl md:text-2xl">
-                <span className="text-slate-800">Career</span>
-
-                <span className="text-[#30AFFF]">Sphere</span>
-              </div>
-            </Link>
+            <Logo />
 
             {/* =================================================
                 DESKTOP NAV
@@ -316,30 +400,136 @@ const Navbar = () => {
 
             <div className="hidden min-w-0 flex-1 justify-center lg:flex">
               <div className="flex items-center gap-0.5 xl:gap-1">
-                {navItems.map((item) => {
-                  const Icon = item.icon;
-                  const active = isActive(item.path);
+                {/* 1. Find Jobs */}
+                <Link
+                  to="/jobs"
+                  className={desktopLinkClass(isActive("/jobs"))}
+                >
+                  <Search size={16} strokeWidth={2} className="shrink-0" />
+                  <span>Find Jobs</span>
+                  {isActive("/jobs") && (
+                    <span className="absolute bottom-0.5 left-1/2 h-0.5 w-5 -translate-x-1/2 rounded-full bg-[#30AFFF]" />
+                  )}
+                </Link>
 
-                  return (
-                    <Link
-                      key={item.name}
-                      to={item.path}
-                      className={`relative flex items-center gap-1.5 whitespace-nowrap rounded-xl px-3 py-2.5 text-[13px] font-medium transition-all duration-200 xl:gap-2 xl:px-3.5 xl:text-sm ${
-                        active
-                          ? "bg-[#A0E9FF]/35 text-[#30AFFF]"
-                          : "text-slate-600 hover:bg-[#A0E9FF]/25 hover:text-[#30AFFF]"
+                {/* 2. Remote Dropdown */}
+                <div
+                  ref={remoteMenuRef}
+                  className="relative"
+                  onMouseEnter={() => setRemoteMenu(true)}
+                  onMouseLeave={() => setRemoteMenu(false)}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setRemoteMenu((prev) => !prev)}
+                    className={desktopLinkClass(isRemoteActive() || remoteMenu)}
+                    aria-expanded={remoteMenu}
+                  >
+                    <Globe size={16} strokeWidth={2} className="shrink-0" />
+                    <span>Remote</span>
+                    <ChevronDown
+                      size={14}
+                      className={`transition-transform duration-200 ${
+                        remoteMenu
+                          ? "rotate-180 text-[#30AFFF]"
+                          : "text-slate-400"
                       }`}
-                    >
-                      <Icon size={16} strokeWidth={2} className="shrink-0" />
+                    />
+                    {isRemoteActive() && (
+                      <span className="absolute bottom-0.5 left-1/2 h-0.5 w-5 -translate-x-1/2 rounded-full bg-[#30AFFF]" />
+                    )}
+                  </button>
 
-                      <span>{item.name}</span>
+                  {/* Remote Dropdown Menu */}
+                  {remoteMenu && (
+                    <div className="absolute left-1/2 top-full z-50 -translate-x-1/2 pt-2 animate-in fade-in slide-in-from-top-2 duration-150">
+                      <div className="w-[300px] overflow-hidden rounded-2xl border border-slate-200/90 bg-white p-2 shadow-2xl shadow-slate-300/50 backdrop-blur-md xl:w-80">
+                        <div className="mb-1 flex items-center justify-between border-b border-slate-100 px-3 py-2">
+                          <div>
+                            <p className="text-xs font-bold text-slate-800">
+                              Remote Roles
+                            </p>
+                            <p className="text-[10px] text-slate-400">
+                              Explore specialized career landing pages
+                            </p>
+                          </div>
+                          <span className="rounded-full bg-[#A0E9FF]/30 px-2 py-0.5 text-[10px] font-semibold text-[#0B6F9F]">
+                            6 Domains
+                          </span>
+                        </div>
 
-                      {active && (
-                        <span className="absolute bottom-0.5 left-1/2 h-0.5 w-5 -translate-x-1/2 rounded-full bg-[#30AFFF]" />
-                      )}
-                    </Link>
-                  );
-                })}
+                        <div className="space-y-1">
+                          {remoteLandingPages.map((item) => {
+                            const Icon = item.icon;
+                            const active = isRemoteItemActive(item);
+
+                            return (
+                              <Link
+                                key={item.name}
+                                to={item.path}
+                                onClick={() => setRemoteMenu(false)}
+                                className={`flex items-start gap-3 rounded-xl p-2.5 transition-all duration-150 ${
+                                  active
+                                    ? "bg-[#A0E9FF]/30 text-[#0B6F9F]"
+                                    : "text-slate-700 hover:bg-slate-50 hover:text-[#30AFFF]"
+                                }`}
+                              >
+                                <div
+                                  className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-colors ${
+                                    active
+                                      ? "bg-[#30AFFF] text-white shadow-xs"
+                                      : "bg-[#A0E9FF]/20 text-[#30AFFF]"
+                                  }`}
+                                >
+                                  <Icon size={16} strokeWidth={2} />
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                  <div className="flex items-center gap-1.5">
+                                    <p className="text-xs font-semibold leading-tight text-slate-800">
+                                      {item.name}
+                                    </p>
+                                    {item.badge && (
+                                      <span className="rounded border border-emerald-200 bg-emerald-50 px-1.5 py-0.5 text-[9px] font-semibold text-emerald-700">
+                                        {item.badge}
+                                      </span>
+                                    )}
+                                  </div>
+                                  <p className="mt-0.5 truncate text-[11px] text-slate-400">
+                                    {item.description}
+                                  </p>
+                                </div>
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* 3. About Us */}
+                <Link
+                  to="/about"
+                  className={desktopLinkClass(isActive("/about"))}
+                >
+                  <Info size={16} strokeWidth={2} className="shrink-0" />
+                  <span>About Us</span>
+                  {isActive("/about") && (
+                    <span className="absolute bottom-0.5 left-1/2 h-0.5 w-5 -translate-x-1/2 rounded-full bg-[#30AFFF]" />
+                  )}
+                </Link>
+
+                {/* 4. Contact Us */}
+                <Link
+                  to="/contact"
+                  className={desktopLinkClass(isActive("/contact"))}
+                >
+                  <Phone size={16} strokeWidth={2} className="shrink-0" />
+                  <span>Contact Us</span>
+                  {isActive("/contact") && (
+                    <span className="absolute bottom-0.5 left-1/2 h-0.5 w-5 -translate-x-1/2 rounded-full bg-[#30AFFF]" />
+                  )}
+                </Link>
               </div>
             </div>
 
@@ -365,7 +555,7 @@ const Navbar = () => {
 
                   <Link
                     to="/login"
-                    className={`flex items-center gap-1.5 whitespace-nowrap rounded-xl px-3 py-2.5 text-[13px] font-medium transition-all duration-200 xl:gap-2 xl:px-4 xl:text-sm ${
+                    className={`flex items-center gap-1.5 whitespace-nowrap rounded-xl px-2.5 py-2.5 text-[13px] font-medium transition-all duration-200 xl:gap-2 xl:px-4 xl:text-sm ${
                       isActive("/login")
                         ? "bg-[#A0E9FF]/35 text-[#30AFFF]"
                         : "text-slate-600 hover:bg-[#A0E9FF]/25 hover:text-[#30AFFF]"
@@ -380,7 +570,7 @@ const Navbar = () => {
 
                   <Link
                     to="/register"
-                    className="flex items-center justify-center gap-1.5 whitespace-nowrap rounded-xl bg-[#30AFFF] px-4 py-2.5 text-[13px] font-semibold text-white shadow-md shadow-[#30AFFF]/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#159FEF] hover:shadow-lg xl:gap-2 xl:px-5 xl:text-sm"
+                    className="flex items-center justify-center gap-1.5 whitespace-nowrap rounded-xl bg-[#30AFFF] px-3.5 py-2.5 text-[13px] font-semibold text-white shadow-md shadow-[#30AFFF]/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#159FEF] hover:shadow-lg xl:gap-2 xl:px-5 xl:text-sm"
                   >
                     <UserPlus size={16} strokeWidth={2} />
 
@@ -455,7 +645,7 @@ const Navbar = () => {
                         onClick={() => setUserMenu(false)}
                         className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-slate-600 transition-all hover:bg-[#A0E9FF]/20 hover:text-[#30AFFF]"
                       >
-                        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#A0E9FF]/30 text-[#30AFFF]">
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#A0E9FF]/30 text-[#30AFFF]">
                           <UserRound size={17} />
                         </span>
 
@@ -475,7 +665,7 @@ const Navbar = () => {
                         onClick={() => setUserMenu(false)}
                         className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-slate-600 transition-all hover:bg-[#A0E9FF]/20 hover:text-[#30AFFF]"
                       >
-                        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#A0E9FF]/30 text-[#30AFFF]">
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#A0E9FF]/30 text-[#30AFFF]">
                           <FileText size={17} />
                         </span>
 
@@ -495,7 +685,7 @@ const Navbar = () => {
                         onClick={() => setUserMenu(false)}
                         className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-slate-600 transition-all hover:bg-[#A0E9FF]/20 hover:text-[#30AFFF]"
                       >
-                        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#A0E9FF]/30 text-[#30AFFF]">
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#A0E9FF]/30 text-[#30AFFF]">
                           <FaBookmark size={17} />
                         </span>
 
@@ -508,28 +698,6 @@ const Navbar = () => {
                         </div>
                       </Link>
 
-                      {/* MY SUBSCRIPTION - ADDED */}
-
-                      {/* <Link
-                        to="/my-subscription"
-                        onClick={() => setUserMenu(false)}
-                        className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-slate-600 transition-all hover:bg-[#A0E9FF]/20 hover:text-[#30AFFF]"
-                      >
-                        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#A0E9FF]/30 text-[#30AFFF]">
-                          <BsCreditCardFill size={17} />
-                        </span>
-
-                        <div>
-                          <p className="font-semibold">
-                            My Subscription
-                          </p>
-
-                          <p className="text-[10px] text-slate-400">
-                            View your subscription details
-                          </p>
-                        </div>
-                      </Link> */}
-
                       <div className="my-1 h-px bg-slate-100" />
 
                       {/* LOGOUT */}
@@ -540,7 +708,7 @@ const Navbar = () => {
                         disabled={logoutLoading}
                         className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-medium text-red-500 transition-all hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
                       >
-                        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-red-50 text-red-500">
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-red-50 text-red-500">
                           <LogOut size={17} />
                         </span>
 
@@ -572,9 +740,9 @@ const Navbar = () => {
               className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-slate-600 transition-all duration-200 hover:bg-[#A0E9FF]/25 hover:text-[#30AFFF] active:scale-95 lg:hidden"
             >
               {mobileMenu ? (
-                <X size={25} strokeWidth={2} />
+                <X size={24} strokeWidth={2} />
               ) : (
-                <Menu size={25} strokeWidth={2} />
+                <Menu size={24} strokeWidth={2} />
               )}
             </button>
           </div>
@@ -590,6 +758,7 @@ const Navbar = () => {
           mobileMenu ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
         onClick={() => setMobileMenu(false)}
+        aria-hidden="true"
       />
 
       {/* =====================================================
@@ -597,85 +766,133 @@ const Navbar = () => {
       ====================================================== */}
 
       <div
-        className={`fixed right-0 top-0 z-[60] flex h-full w-[300px] max-w-[85vw] flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out lg:hidden ${
-          mobileMenu ? "translate-x-0" : "translate-x-full"
+        aria-hidden={!mobileMenu}
+        className={`fixed right-0 top-0 z-[60] flex h-[100dvh] w-[320px] max-w-[88vw] flex-col bg-white shadow-2xl transition-[transform,visibility] duration-300 ease-in-out lg:hidden ${
+          mobileMenu ? "visible translate-x-0" : "invisible translate-x-full"
         }`}
       >
         {/* HEADER */}
 
-        {/* HEADER */}
-
-        <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3.5">
-          {/* LOGO */}
-
-          <Link
-            to="/"
-            onClick={() => setMobileMenu(false)}
-            className="group flex items-center gap-2"
-            aria-label="CareerSphere Home"
-          >
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#30AFFF] shadow-md transition-all duration-300 group-hover:bg-[#159FEF]">
-              <BriefcaseBusiness
-                size={20}
-                strokeWidth={2}
-                className="text-white"
-              />
-            </div>
-
-            <div className="text-lg font-bold tracking-tight">
-              <span className="text-slate-800">Career</span>
-
-              <span className="text-[#30AFFF]">Sphere</span>
-            </div>
-          </Link>
-
-          {/* CLOSE */}
+        <div className="flex shrink-0 items-center justify-between gap-2 border-b border-slate-200 px-4 py-3">
+          <Logo onClick={() => setMobileMenu(false)} />
 
           <button
             type="button"
             onClick={() => setMobileMenu(false)}
             aria-label="Close menu"
-            className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-600 transition-all duration-200 hover:bg-[#A0E9FF]/25 hover:text-[#30AFFF] active:scale-95"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-slate-600 transition-all duration-200 hover:bg-[#A0E9FF]/25 hover:text-[#30AFFF] active:scale-95"
           >
-            <X size={25} strokeWidth={2} />
+            <X size={24} strokeWidth={2} />
           </button>
         </div>
 
         {/* CONTENT */}
 
-        <div className="flex-1 overflow-y-auto p-4">
+        <div className="flex-1 overflow-y-auto overscroll-contain p-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-4">
           {/* NAV ITEMS */}
 
           <div className="space-y-1">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const active = isActive(item.path);
+            {/* Find Jobs */}
+            <Link
+              to="/jobs"
+              onClick={() => setMobileMenu(false)}
+              className={mobileLinkClass(isActive("/jobs"))}
+            >
+              <span className={mobileIconClass(isActive("/jobs"))}>
+                <Search size={18} strokeWidth={2} />
+              </span>
+              <span>Find Jobs</span>
+            </Link>
 
-              return (
-                <Link
-                  key={item.name}
-                  to={item.path}
-                  onClick={() => setMobileMenu(false)}
-                  className={`flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-sm font-medium transition-all duration-200 sm:py-4 ${
-                    active
-                      ? "bg-[#A0E9FF]/35 text-[#30AFFF]"
-                      : "text-slate-700 hover:bg-[#A0E9FF]/25 hover:text-[#30AFFF]"
-                  }`}
-                >
-                  <span
-                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
-                      active
-                        ? "bg-white text-[#30AFFF] shadow-sm"
-                        : "bg-[#A0E9FF]/25 text-slate-500"
-                    }`}
-                  >
-                    <Icon size={18} strokeWidth={2} />
+            {/* Remote Accordion */}
+            <div className="overflow-hidden rounded-xl">
+              <button
+                type="button"
+                onClick={() => setMobileRemoteMenu((prev) => !prev)}
+                aria-expanded={mobileRemoteMenu}
+                className={`flex w-full items-center justify-between rounded-xl px-3.5 py-3 text-sm font-medium transition-all duration-200 sm:px-4 sm:py-3.5 ${
+                  isRemoteActive() || mobileRemoteMenu
+                    ? "bg-[#A0E9FF]/35 text-[#30AFFF]"
+                    : "text-slate-700 hover:bg-[#A0E9FF]/25 hover:text-[#30AFFF]"
+                }`}
+              >
+                <div className="flex items-center gap-3.5 sm:gap-4">
+                  <span className={mobileIconClass(isRemoteActive())}>
+                    <Globe size={18} strokeWidth={2} />
                   </span>
+                  <span>Remote</span>
+                </div>
+                <ChevronDown
+                  size={18}
+                  className={`shrink-0 text-slate-400 transition-transform duration-200 ${
+                    mobileRemoteMenu ? "rotate-180 text-[#30AFFF]" : ""
+                  }`}
+                />
+              </button>
 
-                  <span>{item.name}</span>
-                </Link>
-              );
-            })}
+              {/* Sub-items */}
+              {mobileRemoteMenu && (
+                <div className="ml-5 mt-1 space-y-1 border-l-2 border-[#A0E9FF]/60 py-1 pl-3">
+                  {remoteLandingPages.map((item) => {
+                    const Icon = item.icon;
+                    const active = isRemoteItemActive(item);
+
+                    return (
+                      <Link
+                        key={item.name}
+                        to={item.path}
+                        onClick={() => {
+                          setMobileMenu(false);
+                          setMobileRemoteMenu(false);
+                        }}
+                        className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-medium transition-all ${
+                          active
+                            ? "bg-[#A0E9FF]/30 font-semibold text-[#0B6F9F]"
+                            : "text-slate-600 hover:bg-[#A0E9FF]/15 hover:text-[#30AFFF]"
+                        }`}
+                      >
+                        <span
+                          className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${
+                            active
+                              ? "bg-[#30AFFF] text-white shadow-xs"
+                              : "bg-[#A0E9FF]/20 text-[#30AFFF]"
+                          }`}
+                        >
+                          <Icon size={14} strokeWidth={2} />
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate">{item.name}</p>
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* About Us */}
+            <Link
+              to="/about"
+              onClick={() => setMobileMenu(false)}
+              className={mobileLinkClass(isActive("/about"))}
+            >
+              <span className={mobileIconClass(isActive("/about"))}>
+                <Info size={18} strokeWidth={2} />
+              </span>
+              <span>About Us</span>
+            </Link>
+
+            {/* Contact Us */}
+            <Link
+              to="/contact"
+              onClick={() => setMobileMenu(false)}
+              className={mobileLinkClass(isActive("/contact"))}
+            >
+              <span className={mobileIconClass(isActive("/contact"))}>
+                <Phone size={18} strokeWidth={2} />
+              </span>
+              <span>Contact Us</span>
+            </Link>
           </div>
 
           <div className="my-3 h-px bg-slate-100 sm:my-4" />
@@ -699,11 +916,7 @@ const Navbar = () => {
               <Link
                 to="/login"
                 onClick={() => setMobileMenu(false)}
-                className={`flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-sm font-medium transition-all duration-200 sm:py-4 ${
-                  isActive("/login")
-                    ? "bg-[#A0E9FF]/35 text-[#30AFFF]"
-                    : "text-slate-700 hover:bg-[#A0E9FF]/25 hover:text-[#30AFFF]"
-                }`}
+                className={mobileLinkClass(isActive("/login"))}
               >
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#A0E9FF]/25">
                   <LogIn size={18} strokeWidth={2} />
@@ -717,7 +930,7 @@ const Navbar = () => {
               <Link
                 to="/register"
                 onClick={() => setMobileMenu(false)}
-                className="flex w-full items-center justify-center gap-3 rounded-xl bg-[#30AFFF] px-4 py-3.5 text-sm font-semibold text-white shadow-md shadow-[#30AFFF]/20 transition-all duration-200 hover:bg-[#159FEF] hover:shadow-lg active:scale-[0.99] sm:py-4"
+                className="flex w-full items-center justify-center gap-3 rounded-xl bg-[#30AFFF] px-4 py-3.5 text-sm font-semibold text-white shadow-md shadow-[#30AFFF]/20 transition-all duration-200 hover:bg-[#159FEF] hover:shadow-lg active:scale-[0.99]"
               >
                 <UserPlus size={19} strokeWidth={2} />
 
@@ -733,7 +946,8 @@ const Navbar = () => {
               <button
                 type="button"
                 onClick={() => setMobileUserMenu((prev) => !prev)}
-                className="flex w-full items-center justify-between rounded-xl border border-[#A0E9FF] bg-[#A0E9FF]/15 p-3"
+                aria-expanded={mobileUserMenu}
+                className="flex w-full items-center justify-between gap-2 rounded-xl border border-[#A0E9FF] bg-[#A0E9FF]/15 p-3"
               >
                 <div className="flex min-w-0 items-center gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#30AFFF] text-sm font-bold text-white">
@@ -745,7 +959,7 @@ const Navbar = () => {
                       {getUserName()}
                     </p>
 
-                    <p className="max-w-[200px] truncate text-[11px] text-slate-400">
+                    <p className="truncate text-[11px] text-slate-400">
                       {user?.email}
                     </p>
                   </div>

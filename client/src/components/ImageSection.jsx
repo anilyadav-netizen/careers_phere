@@ -1,5 +1,4 @@
-import React from "react";
-import { ArrowRight, Images, Sparkles } from "lucide-react";
+import { ArrowRight, Images } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const IMAGE_ITEMS = [
@@ -51,7 +50,6 @@ const ImageSection = () => {
   return (
     <section className="bg-white px-4 py-6 sm:px-6 sm:py-6 lg:px-8 lg:py-6">
       <div className="mx-auto w-full max-w-7xl">
-
         {/* SECTION HEADER */}
         <div className="mb-8 flex flex-col items-center gap-5 text-center sm:mb-10">
           <div>
@@ -60,7 +58,7 @@ const ImageSection = () => {
               <div className="h-1 w-8 rounded-full bg-[#30AFFF]" />
 
               <span className="text-xs font-bold uppercase tracking-wider text-[#159FEF] sm:text-sm">
-                CareerSphere Gallery
+                CareerNova Gallery
               </span>
 
               <div className="h-1 w-8 rounded-full bg-[#30AFFF]" />
@@ -68,17 +66,13 @@ const ImageSection = () => {
 
             {/* Heading */}
             <h2 className="text-xl font-bold tracking-tight text-gray-900 md:text-3xl lg:text-4xl">
-              Explore Our{" "}
-              <span className="text-[#30AFFF]">
-                World
-              </span>
+              Explore Our <span className="text-[#30AFFF]">World</span>
             </h2>
 
             {/* Description */}
             <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-gray-500 sm:text-base sm:leading-7">
-              Discover inspiring moments, professional journeys,
-              workplace culture and experiences from the CareerSphere
-              community.
+              Discover inspiring moments, professional journeys, workplace
+              culture and experiences from the CareerNova community.
             </p>
           </div>
         </div>
@@ -91,8 +85,9 @@ const ImageSection = () => {
               type="button"
               // onClick={goToGallery}
               aria-label={`View ${item.title} in gallery`}
-              className={`group relative min-h-[220px] overflow-hidden rounded-2xl bg-gray-200 text-left shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-[#30AFFF]/20 sm:min-h-[240px] lg:min-h-0 lg:rounded-3xl ${item.className || ""
-                }`}
+              className={`group relative min-h-[220px] overflow-hidden rounded-2xl bg-gray-200 text-left shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-[#30AFFF]/20 sm:min-h-[240px] lg:min-h-0 lg:rounded-3xl ${
+                item.className || ""
+              }`}
             >
               {/* Image */}
               <img
@@ -124,7 +119,7 @@ const ImageSection = () => {
                     </h3>
 
                     <p className="mt-1 text-xs text-white/70 sm:text-sm">
-                      CareerSphere
+                      CareerNova
                     </p>
                   </div>
 

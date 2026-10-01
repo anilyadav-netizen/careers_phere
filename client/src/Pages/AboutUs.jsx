@@ -1,9 +1,9 @@
-
-import React from "react";
 import {
   ArrowRight,
   BriefcaseBusiness,
+  Building2,
   CheckCircle2,
+  Globe2,
   GraduationCap,
   HeartHandshake,
   Lightbulb,
@@ -12,10 +12,8 @@ import {
   Sparkles,
   Target,
   TrendingUp,
-  Users,
   UserCheck,
-  Building2,
-  Globe2,
+  Users,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -83,12 +81,10 @@ const AboutUs = () => {
 
   return (
     <div className="overflow-x-hidden bg-slate-50">
-
       {/* =====================================================
           HERO
       ===================================================== */}
       <section className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-[#A0E9FF]/20">
-
         <div
           className="absolute inset-0 opacity-[0.04]"
           style={{
@@ -103,57 +99,73 @@ const AboutUs = () => {
 
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid min-h-[430px] items-center gap-8 py-6 sm:min-h-[480px] sm:py-12 lg:grid-cols-[1fr_0.9fr] lg:gap-12 lg:py-14">
-
             {/* LEFT */}
             <div className="relative z-20 max-w-2xl text-center lg:text-left">
-
               <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#30AFFF]/20 bg-[#A0E9FF]/30 px-3.5 py-1.5 text-xs font-semibold text-[#159FEF] shadow-sm sm:text-sm">
                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#A0E9FF]/60">
                   <Sparkles size={12} />
                 </span>
-                About CareerSphere
+                About CareerNova
               </div>
 
               <h1 className="text-xl font-bold leading-[1.08] tracking-tight text-slate-900 md:text-3xl lg:text-4xl">
                 Empowering People {""}
-                <span className="">
-                  To Build Better Careers
-                </span>
+                <span className="">To Build Better Careers</span>
               </h1>
 
               <p className="mx-auto mt-4 max-w-xl text-xs leading-6 text-slate-600 sm:text-sm sm:leading-7 lg:mx-0 lg:text-base">
-                CareerSphere connects ambitious professionals with meaningful
-                opportunities, trusted companies and the resources they need
-                to move their careers forward.
+                CareerNova connects ambitious professionals with meaningful
+                opportunities, trusted companies and the resources they need to
+                move their careers forward.
               </p>
 
               <div className="mt-6 flex flex-wrap justify-center gap-5 sm:gap-7 lg:justify-start">
                 <div>
-                  <p className="text-xl font-black text-slate-900 sm:text-2xl">50K+</p>
-                  <p className="text-[10px] text-slate-500 sm:text-xs">Professionals</p>
+                  <p className="text-xl font-black text-slate-900 sm:text-2xl">
+                    50K+
+                  </p>
+                  <p className="text-[10px] text-slate-500 sm:text-xs">
+                    Professionals
+                  </p>
                 </div>
 
                 <div className="h-8 w-px bg-slate-300" />
 
                 <div>
-                  <p className="text-xl font-black text-slate-900 sm:text-2xl">10K+</p>
-                  <p className="text-[10px] text-slate-500 sm:text-xs">Opportunities</p>
+                  <p className="text-xl font-black text-slate-900 sm:text-2xl">
+                    10K+
+                  </p>
+                  <p className="text-[10px] text-slate-500 sm:text-xs">
+                    Opportunities
+                  </p>
                 </div>
 
                 <div className="h-8 w-px bg-slate-300" />
 
                 <div>
-                  <p className="text-xl font-black text-slate-900 sm:text-2xl">2K+</p>
-                  <p className="text-[10px] text-slate-500 sm:text-xs">Companies</p>
+                  <p className="text-xl font-black text-slate-900 sm:text-2xl">
+                    2K+
+                  </p>
+                  <p className="text-[10px] text-slate-500 sm:text-xs">
+                    Companies
+                  </p>
                 </div>
               </div>
 
               <div className="mt-5 flex items-center justify-center gap-2.5 lg:justify-start">
                 <div className="flex -space-x-2">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-[#30AFFF] text-[9px] font-bold text-white shadow-sm">A</div>
-                  <div className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-[#159FEF] text-[9px] font-bold text-white shadow-sm">R</div>
-                  <div className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-[#73D8F5] text-[9px] font-bold text-white shadow-sm">S</div>
-                  <div className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-[#159FEF] text-[9px] font-bold text-white shadow-sm">+</div>
+                  <div className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-[#30AFFF] text-[9px] font-bold text-white shadow-sm">
+                    A
+                  </div>
+                  <div className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-[#159FEF] text-[9px] font-bold text-white shadow-sm">
+                    R
+                  </div>
+                  <div className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-[#73D8F5] text-[9px] font-bold text-white shadow-sm">
+                    S
+                  </div>
+                  <div className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-[#159FEF] text-[9px] font-bold text-white shadow-sm">
+                    +
+                  </div>
                 </div>
 
                 <p className="text-[10px] text-slate-500 sm:text-xs">
@@ -164,15 +176,13 @@ const AboutUs = () => {
 
             {/* RIGHT IMAGE */}
             <div className="relative z-10 mx-auto w-full max-w-md lg:max-w-none">
-
               <div className="absolute -inset-4 rounded-[2rem] bg-[#30AFFF]/15 blur-2xl" />
 
               <div className="relative overflow-hidden rounded-[1.5rem] border border-white/80 bg-white/70 p-1.5 shadow-2xl backdrop-blur-sm">
                 <div className="relative h-[250px] overflow-hidden rounded-[1.2rem] sm:h-[300px] lg:h-[340px]">
-
                   <img
                     src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1200&q=90"
-                    alt="CareerSphere professionals collaborating"
+                    alt="CareerNova professionals collaborating"
                     className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
                   />
 
@@ -198,8 +208,12 @@ const AboutUs = () => {
                   </div>
 
                   <div>
-                    <p className="text-xs font-bold text-slate-900">Trusted Platform</p>
-                    <p className="text-[9px] text-slate-400">Built for professionals</p>
+                    <p className="text-xs font-bold text-slate-900">
+                      Trusted Platform
+                    </p>
+                    <p className="text-[9px] text-slate-400">
+                      Built for professionals
+                    </p>
                   </div>
                 </div>
               </div>
@@ -213,11 +227,12 @@ const AboutUs = () => {
 
                   <div>
                     <p className="text-base font-black text-slate-900">95%</p>
-                    <p className="text-[9px] text-slate-400">User Satisfaction</p>
+                    <p className="text-[9px] text-slate-400">
+                      User Satisfaction
+                    </p>
                   </div>
                 </div>
               </div>
-
             </div>
           </div>
         </div>
@@ -228,7 +243,6 @@ const AboutUs = () => {
       ===================================================== */}
       <section className="px-4 py-8 sm:px-6 sm:py-8 lg:px-8 lg:py-8">
         <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-2 lg:grid-cols-2 lg:gap-16">
-
           <div>
             <div className="mb-3 flex items-center gap-2">
               <div className="h-1 w-8 rounded-full bg-[#30AFFF]" />
@@ -239,13 +253,11 @@ const AboutUs = () => {
 
             <h2 className="text-xl font-bold leading-tight text-gray-900 md:text-3xl">
               Building A Better {""}
-              <span className="">
-                Future For Careers
-              </span>
+              <span className="">Future For Careers</span>
             </h2>
 
             <p className="mt-4 text-sm leading-relaxed text-gray-500 sm:text-base">
-              CareerSphere was created with one simple idea: finding the right
+              CareerNova was created with one simple idea: finding the right
               career opportunity should be easier, faster and more meaningful.
             </p>
 
@@ -253,7 +265,7 @@ const AboutUs = () => {
               We bring job seekers, professionals, recruiters and companies
               together on one modern platform. Whether you're starting your
               career, looking for your next opportunity or searching for
-              talented people, CareerSphere helps you move forward.
+              talented people, CareerNova helps you move forward.
             </p>
 
             <div className="mt-6 space-y-3">
@@ -276,13 +288,11 @@ const AboutUs = () => {
 
           <div className="relative">
             <div className="relative hidden overflow-hidden rounded-3xl bg-[#30AFFF] p-6 shadow-2xl sm:block sm:p-8">
-
               <div className="absolute -right-20 -top-20 h-48 w-48 rounded-full bg-white/10 blur-2xl" />
               <div className="absolute -bottom-20 -left-20 h-48 w-48 rounded-full bg-[#A0E9FF]/20 blur-2xl" />
 
               <div className="relative">
                 <div className="rounded-2xl bg-white p-5 shadow-xl sm:p-6">
-
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-xs font-medium text-gray-400">
@@ -316,22 +326,24 @@ const AboutUs = () => {
                   <div className="mt-6 grid grid-cols-2 gap-3">
                     <div className="rounded-xl bg-[#A0E9FF]/30 p-4">
                       <BriefcaseBusiness size={20} className="text-[#159FEF]" />
-                      <p className="mt-3 text-lg font-bold text-gray-900">10K+</p>
+                      <p className="mt-3 text-lg font-bold text-gray-900">
+                        10K+
+                      </p>
                       <p className="text-xs text-gray-500">Opportunities</p>
                     </div>
 
                     <div className="rounded-xl bg-[#A0E9FF]/20 p-4">
                       <Users size={20} className="text-[#159FEF]" />
-                      <p className="mt-3 text-lg font-bold text-gray-900">50K+</p>
+                      <p className="mt-3 text-lg font-bold text-gray-900">
+                        50K+
+                      </p>
                       <p className="text-xs text-gray-500">Professionals</p>
                     </div>
                   </div>
-
                 </div>
               </div>
             </div>
           </div>
-
         </div>
       </section>
 
@@ -341,7 +353,6 @@ const AboutUs = () => {
       <section className="px-4 pb-8 sm:px-6 sm:pb-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-
             {stats.map((stat) => {
               const Icon = stat.icon;
 
@@ -364,7 +375,6 @@ const AboutUs = () => {
                 </div>
               );
             })}
-
           </div>
         </div>
       </section>
@@ -374,7 +384,6 @@ const AboutUs = () => {
       ===================================================== */}
       <section className="bg-white px-4 py-6 sm:px-6 sm:py-6 lg:px-8 lg:py-6">
         <div className="mx-auto max-w-7xl">
-
           <div className="mx-auto max-w-2xl text-center">
             <div className="mb-3 flex items-center justify-center gap-2">
               <div className="h-1 w-8 rounded-full bg-[#30AFFF]" />
@@ -395,7 +404,6 @@ const AboutUs = () => {
           </div>
 
           <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
-
             {/* Mission */}
             <div className="group relative overflow-hidden rounded-3xl bg-[#30AFFF] p-6 text-white shadow-xl sm:p-8">
               <div className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
@@ -409,8 +417,8 @@ const AboutUs = () => {
 
                 <p className="mt-4 text-sm leading-relaxed text-white/80 sm:text-base">
                   Our mission is to simplify the job search and recruitment
-                  experience by creating meaningful connections between
-                  talented people and great organizations.
+                  experience by creating meaningful connections between talented
+                  people and great organizations.
                 </p>
 
                 <div className="mt-6 flex items-center gap-2 text-sm font-semibold text-white">
@@ -432,8 +440,8 @@ const AboutUs = () => {
                 <h3 className="mt-6 text-2xl font-bold">Our Vision</h3>
 
                 <p className="mt-4 text-sm leading-relaxed text-white/80 sm:text-base">
-                  We envision a world where finding the right career
-                  opportunity is simple, transparent and accessible to everyone.
+                  We envision a world where finding the right career opportunity
+                  is simple, transparent and accessible to everyone.
                 </p>
 
                 <div className="mt-6 flex items-center gap-2 text-sm font-semibold text-white">
@@ -442,7 +450,6 @@ const AboutUs = () => {
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </section>
@@ -452,7 +459,6 @@ const AboutUs = () => {
       ===================================================== */}
       <section className="px-4 py-8 sm:px-6 sm:py-8 lg:px-8 lg:py-6">
         <div className="mx-auto max-w-7xl">
-
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <div className="mb-3 flex items-center gap-2">
@@ -468,8 +474,8 @@ const AboutUs = () => {
             </div>
 
             <p className="max-w-xl text-sm leading-relaxed text-gray-500 sm:text-base lg:text-right">
-              Everything we build is guided by values that put people, trust
-              and career growth first.
+              Everything we build is guided by values that put people, trust and
+              career growth first.
             </p>
           </div>
 
@@ -497,7 +503,6 @@ const AboutUs = () => {
               );
             })}
           </div>
-
         </div>
       </section>
 
@@ -506,7 +511,6 @@ const AboutUs = () => {
       ===================================================== */}
       <section className="bg-slate-900 px-4 py-8 sm:px-6 sm:py-8 lg:px-8 lg:py-8">
         <div className="mx-auto max-w-7xl">
-
           <div className="mx-auto max-w-2xl text-center">
             <div className="mb-3 flex items-center justify-center gap-2">
               <div className="h-1 w-8 rounded-full bg-[#30AFFF]" />
@@ -518,13 +522,11 @@ const AboutUs = () => {
 
             <h2 className="text-xl font-black text-white md:text-3xl">
               Everything You Need {""}
-              <span className="">
-                To Grow Your Career
-              </span>
+              <span className="">To Grow Your Career</span>
             </h2>
 
             <p className="mt-4 text-sm leading-relaxed text-gray-400 sm:text-base">
-              CareerSphere brings everything together in one professional
+              CareerNova brings everything together in one professional
               ecosystem.
             </p>
           </div>
@@ -567,7 +569,6 @@ const AboutUs = () => {
               );
             })}
           </div>
-
         </div>
       </section>
 
@@ -576,10 +577,8 @@ const AboutUs = () => {
       ===================================================== */}
       <section className="bg-white px-4 py-8 sm:px-6 sm:py-8 lg:px-8 lg:py-8">
         <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
-
           <div className="relative order-2 lg:order-1">
             <div className="grid grid-cols-2 gap-4">
-
               <div className="rounded-3xl bg-[#A0E9FF]/30 p-5 sm:p-6">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#30AFFF] text-white">
                   <Users size={23} />
@@ -615,7 +614,6 @@ const AboutUs = () => {
                 <h3 className="mt-5 text-2xl font-black text-gray-900">24/7</h3>
                 <p className="mt-1 text-sm text-gray-500">Platform Access</p>
               </div>
-
             </div>
           </div>
 
@@ -629,13 +627,11 @@ const AboutUs = () => {
 
             <h2 className="text-xl font-bold leading-tight text-gray-900 md:text-3xl">
               More Than A Job {""}
-              <span className="">
-                Search Platform
-              </span>
+              <span className="">Search Platform</span>
             </h2>
 
             <p className="mt-5 text-sm leading-relaxed text-gray-500 sm:text-base">
-              CareerSphere is a growing professional community where people
+              CareerNova is a growing professional community where people
               connect, learn, discover opportunities and build relationships
               that can shape their future.
             </p>
@@ -659,7 +655,6 @@ const AboutUs = () => {
               </button>
             </Link>
           </div>
-
         </div>
       </section>
 
@@ -668,12 +663,10 @@ const AboutUs = () => {
       ===================================================== */}
       <section className="px-4 pb-12 sm:px-6 sm:pb-16 lg:px-8 lg:pb-20">
         <div className="relative mx-auto max-w-7xl overflow-hidden rounded-3xl bg-[#30AFFF] px-5 py-10 text-center shadow-xl shadow-[#30AFFF]/15 sm:px-10 sm:py-14 lg:px-16 lg:py-16">
-
           <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/10 blur-2xl" />
           <div className="pointer-events-none absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-[#A0E9FF]/20 blur-3xl" />
 
           <div className="relative mx-auto max-w-3xl">
-
             <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1.5 text-xs font-medium text-white backdrop-blur-md">
               <Sparkles size={14} />
               Your Future Starts Today
@@ -690,7 +683,6 @@ const AboutUs = () => {
             </p>
 
             <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
-
               <Link to="/jobs">
                 <button
                   type="button"
@@ -710,15 +702,12 @@ const AboutUs = () => {
                   <ArrowRight size={17} />
                 </button>
               </Link>
-
             </div>
           </div>
         </div>
       </section>
-
     </div>
   );
 };
 
 export default AboutUs;
-

@@ -14,7 +14,7 @@
 //     <section className="w-full bg-slate-50 px-4 py-6 sm:px-6 sm:py-6 lg:px-8 lg:py-6">
 //       <div className="mx-auto w-full max-w-7xl">
 //         <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-700 px-5 py-4 shadow-xl sm:px-8 sm:py-4 lg:px-12 lg:py-4">
-          
+
 //           {/* Decorative circles */}
 //           <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/10 blur-sm" />
 //           <div className="pointer-events-none absolute -bottom-28 -left-20 h-72 w-72 rounded-full bg-indigo-400/20" />
@@ -28,7 +28,7 @@
 //               {/* Badge */}
 //               <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-bold text-white backdrop-blur-sm sm:text-sm">
 //                 <Crown size={16} />
-//                 CareerSphere Premium
+//                 CareerNova Premium
 //               </div>
 
 //               <h2 className="text-3xl font-black leading-tight text-white sm:text-4xl lg:text-5xl">

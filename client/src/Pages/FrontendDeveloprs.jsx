@@ -11,7 +11,6 @@ import {
   Code2,
   DollarSign,
   Globe2,
-  Laptop2,
   Layers3,
   Mail,
   Monitor,
@@ -22,7 +21,6 @@ import {
   Zap,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import {
   FaCss3Alt,
   FaGithub,
@@ -30,13 +28,14 @@ import {
   FaLinkedinIn,
   FaReact,
 } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
 import RoleApplyModal from "../components/RoleApplyModal";
 import { fetchPublicOpportunities } from "../redux/slicer/roleOpportunitySlice";
 
 const FrontendDeveloprs = () => {
   const dispatch = useDispatch();
   const { publicList: opportunities = [], publicLoading } = useSelector(
-    (state) => state.roleOpportunities || {}
+    (state) => state.roleOpportunities || {},
   );
 
   const [openFaq, setOpenFaq] = useState(-1);
@@ -448,9 +447,10 @@ const FrontendDeveloprs = () => {
               </h1>
 
               <p className="mt-3.5 max-w-2xl text-sm sm:text-base text-slate-500 leading-relaxed">
-                We're hiring Frontend Developers who care about pixel-perfect craft,
-                reusable component design systems, lightning-fast Core Web Vitals, and
-                responsive experiences that delight users across all screens.
+                We're hiring Frontend Developers who care about pixel-perfect
+                craft, reusable component design systems, lightning-fast Core
+                Web Vitals, and responsive experiences that delight users across
+                all screens.
               </p>
 
               <div className="flex flex-row gap-2.5 mt-6">
@@ -542,14 +542,19 @@ const FrontendDeveloprs = () => {
                 <div className="p-4 sm:p-5 space-y-4">
                   {/* Code Editor Snippet */}
                   <div className="rounded-xl bg-slate-950/90 border border-slate-800/80 p-3.5 font-mono text-xs text-slate-300 overflow-x-auto shadow-inner">
-                    <div className="text-slate-500 text-[10px] pb-1">// Frontend React Component</div>
+                    <div className="text-slate-500 text-[10px] pb-1">
+                      // Frontend React Component
+                    </div>
                     <div>
                       <span className="text-rose-400">export function</span>{" "}
-                      <span className="text-amber-300">FrontendHero</span>() &#123;
+                      <span className="text-amber-300">FrontendHero</span>()
+                      &#123;
                     </div>
                     <div className="pl-4">
-                      <span className="text-rose-400">const</span> [speed, setSpeed] ={" "}
-                      <span className="text-[#30AFFF]">useState</span>(<span className="text-emerald-400">'60fps'</span>);
+                      <span className="text-rose-400">const</span> [speed,
+                      setSpeed] ={" "}
+                      <span className="text-[#30AFFF]">useState</span>(
+                      <span className="text-emerald-400">'60fps'</span>);
                     </div>
                     <div className="pl-4">
                       <span className="text-rose-400">return</span> (
@@ -557,11 +562,15 @@ const FrontendDeveloprs = () => {
                     <div className="pl-8 text-sky-300">
                       &lt;<span className="text-indigo-400">div</span>{" "}
                       <span className="text-slate-400">className</span>=
-                      <span className="text-emerald-400">"grid gap-4 bg-white/95 rounded-2xl p-4 shadow-xl"</span>&gt;
+                      <span className="text-emerald-400">
+                        "grid gap-4 bg-white/95 rounded-2xl p-4 shadow-xl"
+                      </span>
+                      &gt;
                     </div>
                     <div className="pl-12 text-slate-400">
                       &lt;<span className="text-amber-300">WebNavigation</span>{" "}
-                      <span className="text-slate-400">responsive</span>=&#123;<span className="text-purple-400">true</span>&#125; /&gt;
+                      <span className="text-slate-400">responsive</span>=&#123;
+                      <span className="text-purple-400">true</span>&#125; /&gt;
                     </div>
                     <div className="pl-8 text-sky-300">
                       &lt;/<span className="text-indigo-400">div</span>&gt;
@@ -577,8 +586,12 @@ const FrontendDeveloprs = () => {
                           UI
                         </div>
                         <div>
-                          <div className="text-xs font-bold text-slate-900 leading-tight">CareerSphere Web</div>
-                          <div className="text-[10px] text-slate-400">frontend.careersphere.dev</div>
+                          <div className="text-xs font-bold text-slate-900 leading-tight">
+                            CareerNova Web
+                          </div>
+                          <div className="text-[10px] text-slate-400">
+                            frontend.CareerNova.dev
+                          </div>
                         </div>
                       </div>
                       <div className="flex items-center gap-1.5">
@@ -590,14 +603,26 @@ const FrontendDeveloprs = () => {
 
                     <div className="mt-3 grid grid-cols-2 gap-2">
                       <div className="rounded-xl border border-slate-100 bg-[#F7FCFF] p-2.5">
-                        <div className="text-[10px] uppercase font-bold text-slate-400">Render Speed</div>
-                        <div className="text-base font-black text-slate-900 mt-0.5">0.4s FCP</div>
-                        <div className="text-[10px] text-emerald-600 font-semibold">Fastest tier</div>
+                        <div className="text-[10px] uppercase font-bold text-slate-400">
+                          Render Speed
+                        </div>
+                        <div className="text-base font-black text-slate-900 mt-0.5">
+                          0.4s FCP
+                        </div>
+                        <div className="text-[10px] text-emerald-600 font-semibold">
+                          Fastest tier
+                        </div>
                       </div>
                       <div className="rounded-xl border border-slate-100 bg-[#F7FCFF] p-2.5">
-                        <div className="text-[10px] uppercase font-bold text-slate-400">Components</div>
-                        <div className="text-base font-black text-[#30AFFF] mt-0.5">50+ Modular</div>
-                        <div className="text-[10px] text-slate-500 font-semibold">Tailwind + CSS</div>
+                        <div className="text-[10px] uppercase font-bold text-slate-400">
+                          Components
+                        </div>
+                        <div className="text-base font-black text-[#30AFFF] mt-0.5">
+                          50+ Modular
+                        </div>
+                        <div className="text-[10px] text-slate-500 font-semibold">
+                          Tailwind + CSS
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -631,7 +656,9 @@ const FrontendDeveloprs = () => {
                 className="absolute -top-3 -right-3 hidden sm:flex items-center gap-2.5 rounded-2xl border border-slate-100 bg-white px-3.5 py-2.5 shadow-lg"
               >
                 <div>
-                  <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">INTERFACE</div>
+                  <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">
+                    INTERFACE
+                  </div>
                   <div className="text-xs font-bold text-slate-900">
                     Tailwind & TypeScript
                   </div>
@@ -646,7 +673,10 @@ const FrontendDeveloprs = () => {
       </section>
 
       {/* ROLE */}
-      <section id="role" className="relative overflow-hidden border-y border-slate-100 bg-slate-50/60">
+      <section
+        id="role"
+        className="relative overflow-hidden border-y border-slate-100 bg-slate-50/60"
+      >
         <div className="max-w-[90rem] mx-auto px-5 sm:px-6 lg:px-8 py-10 lg:py-14">
           <div data-aos="fade-up" className="text-center">
             <div className="inline-flex items-center rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/5 px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-bold text-[#159FEF] mb-3 shadow-sm">
@@ -740,13 +770,165 @@ const FrontendDeveloprs = () => {
           </div>
 
           <div className="relative grid sm:grid-cols-2 xl:grid-cols-4 gap-3 mt-8">
-            {opportunities.length > 0 ? (
-              opportunities.map((opp, index) => {
-                const displaySalary = opp.salary || "Competitive";
+            {opportunities.length > 0
+              ? opportunities.map((opp, index) => {
+                  const displaySalary = opp.salary || "Competitive";
 
-                return (
+                  return (
+                    <motion.div
+                      key={opp._id || index}
+                      custom={index}
+                      variants={cardReveal}
+                      initial="hidden"
+                      whileInView="visible"
+                      viewport={{ once: true, amount: 0.1 }}
+                      whileHover={{ y: -5 }}
+                      className="group rounded-2xl border border-slate-100 bg-white shadow-sm hover:border-[#30AFFF]/30 hover:shadow-[0_15px_45px_rgba(15,23,42,0.10)] transition-all p-4 flex flex-col"
+                    >
+                      {/* Company Header */}
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-11 h-11 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-center shadow-sm overflow-hidden shrink-0">
+                            {opp.companyLogo ? (
+                              <img
+                                src={opp.companyLogo}
+                                alt={opp.companyName}
+                                className="w-full h-full object-contain p-1"
+                                onError={(e) => {
+                                  e.target.style.display = "none";
+                                }}
+                              />
+                            ) : (
+                              <Building2 size={20} className="text-[#30AFFF]" />
+                            )}
+                          </div>
+
+                          <div className="min-w-0">
+                            <h3
+                              className="text-sm font-bold text-slate-800 truncate"
+                              title={opp.companyName}
+                            >
+                              {opp.companyName}
+                            </h3>
+                            <p className="text-[10px] text-slate-400 mt-0.5 truncate">
+                              {opp.roleTitle ||
+                                opp.roleCategory ||
+                                "Frontend Developer"}
+                            </p>
+                          </div>
+                        </div>
+
+                        {opp.salaryCurrency && (
+                          <span className="text-[9px] font-bold tracking-wider rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/5 text-[#159FEF] px-2 py-0.5 shrink-0">
+                            {opp.salaryCurrency}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Countries with Flags */}
+                      <div className="mt-4">
+                        <div className="flex items-center gap-1 text-[9px] uppercase tracking-[0.16em] text-slate-400 font-bold mb-1.5">
+                          <Globe2 size={11} className="text-[#30AFFF]" />
+                          <span>Hiring Locations</span>
+                        </div>
+
+                        <div className="flex flex-wrap gap-1">
+                          {opp.countries && opp.countries.length > 0 ? (
+                            opp.countries.map((c, cIdx) => (
+                              <span
+                                key={cIdx}
+                                className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] text-slate-700 font-medium"
+                              >
+                                {c.flag &&
+                                  (c.flag.startsWith("http") ? (
+                                    <img
+                                      src={c.flag}
+                                      alt={c.countryName || "flag"}
+                                      className="w-3.5 h-2.5 object-cover rounded-2xs"
+                                      onError={(e) => {
+                                        e.target.style.display = "none";
+                                      }}
+                                    />
+                                  ) : (
+                                    <span>{c.flag}</span>
+                                  ))}
+                                <span>{c.countryName || "Target Market"}</span>
+                              </span>
+                            ))
+                          ) : (
+                            <span className="text-[10px] text-slate-500 font-medium">
+                              Worldwide / Remote
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Salary */}
+                      <div className="mt-4">
+                        <div className="flex items-center gap-1.5 text-[9px] uppercase tracking-[0.16em] text-slate-400 font-bold">
+                          <DollarSign size={11} />
+                          Indicative Payout
+                        </div>
+
+                        <div className="text-base font-black tracking-tight text-slate-900 mt-1">
+                          {displaySalary}
+                        </div>
+
+                        <div className="text-[9px] text-slate-400 mt-0.5">
+                          {opp.salary
+                            ? "Typical annual range · employer specific"
+                            : "Disclosed upon matching"}
+                        </div>
+                      </div>
+
+                      {/* Required Skills */}
+                      {opp.skills && opp.skills.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-3">
+                          {opp.skills.slice(0, 4).map((skill, sIdx) => (
+                            <span
+                              key={sIdx}
+                              className="rounded-md border border-[#30AFFF]/20 bg-[#30AFFF]/[0.05] px-1.5 py-0.5 text-[9px] font-semibold text-[#159FEF]"
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                          {opp.skills.length > 4 && (
+                            <span className="rounded-md bg-slate-50 border border-slate-200 px-1 py-0.5 text-[8px] text-slate-500 font-bold">
+                              +{opp.skills.length - 4}
+                            </span>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Work Modes */}
+                      <div className="flex flex-wrap gap-1 mt-3">
+                        {(opp.workModes || ["Remote", "Hybrid"]).map((mode) => (
+                          <span
+                            key={mode}
+                            className="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[9px] text-slate-600"
+                          >
+                            {mode}
+                          </span>
+                        ))}
+                      </div>
+
+                      {/* APPLY BUTTON — RIGHT ALIGNED */}
+                      <div className="flex justify-end mt-4 pt-3 border-t border-slate-100 mt-auto">
+                        <button
+                          type="button"
+                          onClick={() => handleMarketApply(opp)}
+                          className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-3.5 py-2 text-[10px] font-bold text-white shadow-sm hover:bg-[#159FEF] transition cursor-pointer"
+                        >
+                          Apply
+                          <ArrowRight size={13} />
+                        </button>
+                      </div>
+                    </motion.div>
+                  );
+                })
+              : globalMarkets.map((market, index) => (
                   <motion.div
-                    key={opp._id || index}
+                    key={market.country}
                     custom={index}
                     variants={cardReveal}
                     initial="hidden"
@@ -755,245 +937,92 @@ const FrontendDeveloprs = () => {
                     whileHover={{ y: -5 }}
                     className="group rounded-2xl border border-slate-100 bg-white shadow-sm hover:border-[#30AFFF]/30 hover:shadow-[0_15px_45px_rgba(15,23,42,0.10)] transition-all p-4 flex flex-col"
                   >
-                    {/* Company Header */}
                     <div className="flex items-start justify-between gap-3">
-                      <div className="flex items-center gap-3 min-w-0">
-                        <div className="w-11 h-11 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-center shadow-sm overflow-hidden shrink-0">
-                          {opp.companyLogo ? (
-                            <img
-                              src={opp.companyLogo}
-                              alt={opp.companyName}
-                              className="w-full h-full object-contain p-1"
-                              onError={(e) => {
-                                e.target.style.display = "none";
-                              }}
-                            />
-                          ) : (
-                            <Building2 size={20} className="text-[#30AFFF]" />
-                          )}
+                      <div className="flex items-center gap-3">
+                        <div className="w-11 h-11 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-center shadow-sm overflow-hidden">
+                          <img
+                            src={market.flag}
+                            alt={`${market.country} flag`}
+                            className="w-8 h-6 object-cover rounded-sm border border-slate-100"
+                          />
                         </div>
 
-                        <div className="min-w-0">
-                          <h3
-                            className="text-sm font-bold text-slate-800 truncate"
-                            title={opp.companyName}
-                          >
-                            {opp.companyName}
+                        <div>
+                          <h3 className="text-sm font-bold text-slate-800">
+                            {market.country}
                           </h3>
-                          <p className="text-[10px] text-slate-400 mt-0.5 truncate">
-                            {opp.roleTitle || opp.roleCategory || "Frontend Developer"}
+                          <p className="text-[10px] text-slate-400 mt-0.5">
+                            {market.region}
                           </p>
                         </div>
                       </div>
 
-                      {opp.salaryCurrency && (
-                        <span className="text-[9px] font-bold tracking-wider rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/5 text-[#159FEF] px-2 py-0.5 shrink-0">
-                          {opp.salaryCurrency}
-                        </span>
-                      )}
+                      <span className="text-[9px] font-bold tracking-wider rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/5 text-[#159FEF] px-2 py-1">
+                        {market.currency}
+                      </span>
                     </div>
 
-                    {/* Countries with Flags */}
-                    <div className="mt-4">
-                      <div className="flex items-center gap-1 text-[9px] uppercase tracking-[0.16em] text-slate-400 font-bold mb-1.5">
-                        <Globe2 size={11} className="text-[#30AFFF]" />
-                        <span>Hiring Locations</span>
-                      </div>
-
-                      <div className="flex flex-wrap gap-1">
-                        {opp.countries && opp.countries.length > 0 ? (
-                          opp.countries.map((c, cIdx) => (
-                            <span
-                              key={cIdx}
-                              className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] text-slate-700 font-medium"
-                            >
-                              {c.flag && (
-                                c.flag.startsWith("http") ? (
-                                  <img
-                                    src={c.flag}
-                                    alt={c.countryName || "flag"}
-                                    className="w-3.5 h-2.5 object-cover rounded-2xs"
-                                    onError={(e) => {
-                                      e.target.style.display = "none";
-                                    }}
-                                  />
-                                ) : (
-                                  <span>{c.flag}</span>
-                                )
-                              )}
-                              <span>{c.countryName || "Target Market"}</span>
-                            </span>
-                          ))
-                        ) : (
-                          <span className="text-[10px] text-slate-500 font-medium">
-                            Worldwide / Remote
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Salary */}
-                    <div className="mt-4">
+                    <div className="mt-5">
                       <div className="flex items-center gap-1.5 text-[9px] uppercase tracking-[0.16em] text-slate-400 font-bold">
                         <DollarSign size={11} />
-                        Indicative Payout
+                        Indicative payout
                       </div>
 
-                      <div className="text-base font-black tracking-tight text-slate-900 mt-1">
-                        {displaySalary}
+                      <div className="text-lg font-black tracking-tight text-slate-900 mt-1">
+                        {market.payout}
                       </div>
 
                       <div className="text-[9px] text-slate-400 mt-0.5">
-                        {opp.salary
-                          ? "Typical annual range · employer specific"
-                          : "Disclosed upon matching"}
+                        Typical annual range · role dependent
                       </div>
                     </div>
 
-                    {/* Required Skills */}
-                    {opp.skills && opp.skills.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mt-3">
-                        {opp.skills.slice(0, 4).map((skill, sIdx) => (
-                          <span
-                            key={sIdx}
-                            className="rounded-md border border-[#30AFFF]/20 bg-[#30AFFF]/[0.05] px-1.5 py-0.5 text-[9px] font-semibold text-[#159FEF]"
-                          >
-                            {skill}
-                          </span>
-                        ))}
-                        {opp.skills.length > 4 && (
-                          <span className="rounded-md bg-slate-50 border border-slate-200 px-1 py-0.5 text-[8px] text-slate-500 font-bold">
-                            +{opp.skills.length - 4}
-                          </span>
-                        )}
-                      </div>
-                    )}
-
-                    {/* Work Modes */}
-                    <div className="flex flex-wrap gap-1 mt-3">
-                      {(opp.workModes || ["Remote", "Hybrid"]).map((mode) => (
+                    <div className="flex flex-wrap gap-1.5 mt-4">
+                      {market.modes.map((mode) => (
                         <span
                           key={mode}
-                          className="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[9px] text-slate-600"
+                          className="rounded-full border border-slate-200 bg-slate-50 px-2 py-1 text-[9px] text-slate-600"
                         >
                           {mode}
                         </span>
                       ))}
                     </div>
 
+                    <div className="mt-4 pt-4 border-t border-slate-100 space-y-2.5">
+                      <div className="flex items-start gap-2">
+                        <BriefcaseBusiness
+                          size={13}
+                          className="text-[#30AFFF] mt-0.5 shrink-0"
+                        />
+                        <span className="text-[10px] leading-4 text-slate-500">
+                          {market.focus}
+                        </span>
+                      </div>
+
+                      <div className="flex items-start gap-2">
+                        <Plane
+                          size={13}
+                          className="text-[#30AFFF] mt-0.5 shrink-0"
+                        />
+                        <span className="text-[10px] leading-4 text-slate-500">
+                          {market.relocation}
+                        </span>
+                      </div>
+                    </div>
+
                     {/* APPLY BUTTON — RIGHT ALIGNED */}
-                    <div className="flex justify-end mt-4 pt-3 border-t border-slate-100 mt-auto">
+                    <div className="flex justify-end mt-5 pt-4 border-t border-slate-100 mt-auto">
                       <button
                         type="button"
-                        onClick={() => handleMarketApply(opp)}
-                        className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-3.5 py-2 text-[10px] font-bold text-white shadow-sm hover:bg-[#159FEF] transition cursor-pointer"
+                        onClick={() => handleMarketApply(market)}
+                        className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-3 py-2 text-[10px] font-bold text-white shadow-sm hover:bg-[#159FEF] transition"
                       >
                         Apply
                         <ArrowRight size={13} />
                       </button>
                     </div>
                   </motion.div>
-                );
-              })
-            ) : (
-              globalMarkets.map((market, index) => (
-                <motion.div
-                  key={market.country}
-                  custom={index}
-                  variants={cardReveal}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true, amount: 0.1 }}
-                  whileHover={{ y: -5 }}
-                  className="group rounded-2xl border border-slate-100 bg-white shadow-sm hover:border-[#30AFFF]/30 hover:shadow-[0_15px_45px_rgba(15,23,42,0.10)] transition-all p-4 flex flex-col"
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-11 h-11 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-center shadow-sm overflow-hidden">
-                        <img
-                          src={market.flag}
-                          alt={`${market.country} flag`}
-                          className="w-8 h-6 object-cover rounded-sm border border-slate-100"
-                        />
-                      </div>
-
-                      <div>
-                        <h3 className="text-sm font-bold text-slate-800">
-                          {market.country}
-                        </h3>
-                        <p className="text-[10px] text-slate-400 mt-0.5">
-                          {market.region}
-                        </p>
-                      </div>
-                    </div>
-
-                    <span className="text-[9px] font-bold tracking-wider rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/5 text-[#159FEF] px-2 py-1">
-                      {market.currency}
-                    </span>
-                  </div>
-
-                  <div className="mt-5">
-                    <div className="flex items-center gap-1.5 text-[9px] uppercase tracking-[0.16em] text-slate-400 font-bold">
-                      <DollarSign size={11} />
-                      Indicative payout
-                    </div>
-
-                    <div className="text-lg font-black tracking-tight text-slate-900 mt-1">
-                      {market.payout}
-                    </div>
-
-                    <div className="text-[9px] text-slate-400 mt-0.5">
-                      Typical annual range · role dependent
-                    </div>
-                  </div>
-
-                  <div className="flex flex-wrap gap-1.5 mt-4">
-                    {market.modes.map((mode) => (
-                      <span
-                        key={mode}
-                        className="rounded-full border border-slate-200 bg-slate-50 px-2 py-1 text-[9px] text-slate-600"
-                      >
-                        {mode}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="mt-4 pt-4 border-t border-slate-100 space-y-2.5">
-                    <div className="flex items-start gap-2">
-                      <BriefcaseBusiness
-                        size={13}
-                        className="text-[#30AFFF] mt-0.5 shrink-0"
-                      />
-                      <span className="text-[10px] leading-4 text-slate-500">
-                        {market.focus}
-                      </span>
-                    </div>
-
-                    <div className="flex items-start gap-2">
-                      <Plane
-                        size={13}
-                        className="text-[#30AFFF] mt-0.5 shrink-0"
-                      />
-                      <span className="text-[10px] leading-4 text-slate-500">
-                        {market.relocation}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* APPLY BUTTON — RIGHT ALIGNED */}
-                  <div className="flex justify-end mt-5 pt-4 border-t border-slate-100 mt-auto">
-                    <button
-                      type="button"
-                      onClick={() => handleMarketApply(market)}
-                      className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-3 py-2 text-[10px] font-bold text-white shadow-sm hover:bg-[#159FEF] transition"
-                    >
-                      Apply
-                      <ArrowRight size={13} />
-                    </button>
-                  </div>
-                </motion.div>
-              ))
-            )}
+                ))}
           </div>
 
           <div className="relative mt-6 grid md:grid-cols-[1fr_auto] gap-4 items-center rounded-2xl border border-[#30AFFF]/20 bg-[#30AFFF]/[0.04] p-4 shadow-sm">
@@ -1167,7 +1196,10 @@ const FrontendDeveloprs = () => {
       </section>
 
       {/* REQUIREMENTS */}
-      <section id="requirements" className="relative overflow-hidden bg-slate-50/60">
+      <section
+        id="requirements"
+        className="relative overflow-hidden bg-slate-50/60"
+      >
         <div className="max-w-[90rem] mx-auto px-5 sm:px-6 lg:px-8 py-10 lg:py-14">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
             <motion.div
@@ -1402,10 +1434,16 @@ const FrontendDeveloprs = () => {
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="relative overflow-hidden border-y border-slate-100 bg-white">
+      <section
+        id="faq"
+        className="relative overflow-hidden border-y border-slate-100 bg-white"
+      >
         <div className="max-w-[90rem] mx-auto px-5 sm:px-6 lg:px-8 py-10 lg:py-14">
           <div className="grid lg:grid-cols-[0.7fr_1.3fr] gap-6 lg:gap-12">
-            <div data-aos="fade-right" className="text-center lg:text-left min-w-0">
+            <div
+              data-aos="fade-right"
+              className="text-center lg:text-left min-w-0"
+            >
               <div className="inline-flex items-center rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/5 px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-bold text-[#159FEF] mb-3 shadow-sm">
                 FAQ
               </div>
@@ -1420,7 +1458,10 @@ const FrontendDeveloprs = () => {
               </p>
             </div>
 
-            <div data-aos="fade-left" className="border-t border-slate-100 min-w-0">
+            <div
+              data-aos="fade-left"
+              className="border-t border-slate-100 min-w-0"
+            >
               {faqs.map((item, index) => {
                 const isOpen = openFaq === index;
                 return (
@@ -1628,7 +1669,8 @@ const FrontendDeveloprs = () => {
                 <p className="text-sm text-slate-500 mt-3 leading-relaxed">
                   Click the button below to open the official application popup.
                   Provide your contact details, work preferences, compensation,
-                  tech skills, and upload your resume directly to our review pipeline.
+                  tech skills, and upload your resume directly to our review
+                  pipeline.
                 </p>
                 <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
                   <button
@@ -1641,7 +1683,8 @@ const FrontendDeveloprs = () => {
                   </button>
                 </div>
                 <p className="text-[11px] text-slate-400 mt-4">
-                  ⚡ Takes less than 2 minutes · PDF / DOC / DOCX resume supported
+                  ⚡ Takes less than 2 minutes · PDF / DOC / DOCX resume
+                  supported
                 </p>
               </div>
             </motion.div>

@@ -1,23 +1,18 @@
-
-import React, { useState } from "react";
 import {
-  Mail,
-  Phone,
-  MapPin,
-  Clock3,
-  Send,
-  BriefcaseBusiness,
-  Users,
   ArrowRight,
+  BriefcaseBusiness,
   CheckCircle2,
+  Clock3,
   Globe2,
+  Mail,
+  MapPin,
+  Phone,
+  Send,
+  Users,
 } from "lucide-react";
+import { useState } from "react";
 
-import {
-  FaLinkedinIn,
-  FaInstagram,
-  FaTwitter,
-} from "react-icons/fa";
+import { FaInstagram, FaLinkedinIn, FaTwitter } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const ContactUs = () => {
@@ -58,12 +53,10 @@ const ContactUs = () => {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-slate-50">
-
       {/* =====================================================
           HERO
       ===================================================== */}
       <section className="relative overflow-hidden">
-
         {/* Abroad Background Image */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -90,7 +83,6 @@ const ContactUs = () => {
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex min-h-[330px] items-center justify-center py-14 text-center sm:min-h-[380px] sm:py-16 lg:min-h-[410px]">
             <div className="max-w-4xl">
-
               {/* Badge */}
               <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold text-white shadow-lg backdrop-blur-md sm:text-sm">
                 <Globe2 size={16} />
@@ -100,22 +92,18 @@ const ContactUs = () => {
               {/* Heading */}
               <h1 className="text-xl font-black leading-tight tracking-tight text-white sm:text-5xl md:text-3xl lg:text-4xl">
                 Build Your Career {""}
-
-                <span className="">
-                  Beyond Borders
-                </span>
+                <span className="">Beyond Borders</span>
               </h1>
 
               {/* Description */}
               <p className="mx-auto mt-5 max-w-2xl text-sm leading-relaxed text-slate-200 sm:text-base lg:text-lg">
-                Looking for opportunities abroad or planning your next
-                career move? CareerSphere helps you discover jobs,
-                build your profile and move closer to your global career goals.
+                Looking for opportunities abroad or planning your next career
+                move? CareerNova helps you discover jobs, build your profile and
+                move closer to your global career goals.
               </p>
 
               {/* Trust Points */}
               <div className="mt-7 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
-
                 <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-medium text-white backdrop-blur-md">
                   <CheckCircle2 size={15} className="text-[#A0E9FF]" />
                   Global Opportunities
@@ -130,7 +118,6 @@ const ContactUs = () => {
                   <CheckCircle2 size={15} className="text-[#A0E9FF]" />
                   Career Growth
                 </div>
-
               </div>
             </div>
           </div>
@@ -142,7 +129,6 @@ const ContactUs = () => {
       ===================================================== */}
       <section className="relative -mt-8 px-4 pb-10 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-
           {/* Email */}
           <div className="group rounded-2xl border border-gray-100 bg-white p-5 shadow-lg shadow-gray-200/40 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-6">
             <div className="flex items-start justify-between">
@@ -156,12 +142,10 @@ const ContactUs = () => {
               />
             </div>
 
-            <h3 className="mt-5 text-base font-bold text-gray-900">
-              Email Us
-            </h3>
+            <h3 className="mt-5 text-base font-bold text-gray-900">Email Us</h3>
 
             <p className="mt-1 break-all text-sm text-gray-500">
-              support@careersphere.com
+              support@CareerNova.com
             </p>
           </div>
 
@@ -178,13 +162,9 @@ const ContactUs = () => {
               />
             </div>
 
-            <h3 className="mt-5 text-base font-bold text-gray-900">
-              Call Us
-            </h3>
+            <h3 className="mt-5 text-base font-bold text-gray-900">Call Us</h3>
 
-            <p className="mt-1 text-sm text-gray-500">
-              +91 98765 43210
-            </p>
+            <p className="mt-1 text-sm text-gray-500">+91 98765 43210</p>
           </div>
 
           {/* Location */}
@@ -200,13 +180,9 @@ const ContactUs = () => {
               />
             </div>
 
-            <h3 className="mt-5 text-base font-bold text-gray-900">
-              Visit Us
-            </h3>
+            <h3 className="mt-5 text-base font-bold text-gray-900">Visit Us</h3>
 
-            <p className="mt-1 text-sm text-gray-500">
-              New Delhi, India
-            </p>
+            <p className="mt-1 text-sm text-gray-500">New Delhi, India</p>
           </div>
 
           {/* Working Hours */}
@@ -226,11 +202,8 @@ const ContactUs = () => {
               Working Hours
             </h3>
 
-            <p className="mt-1 text-sm text-gray-500">
-              Mon - Sat, 9AM - 6PM
-            </p>
+            <p className="mt-1 text-sm text-gray-500">Mon - Sat, 9AM - 6PM</p>
           </div>
-
         </div>
       </section>
 
@@ -239,10 +212,8 @@ const ContactUs = () => {
       ===================================================== */}
       <section className="px-4 py-6 sm:px-6 sm:py-6 lg:px-8 lg:py-6">
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16">
-
           {/* LEFT CONTENT */}
           <div>
-
             <div className="mb-3 flex items-center gap-2">
               <div className="h-1 w-8 rounded-full bg-[#30AFFF]" />
 
@@ -253,21 +224,17 @@ const ContactUs = () => {
 
             <h2 className="text-xl font-bold leading-tight text-gray-900 md:text-3xl lg:text-4xl">
               Let's Start a {""}
-
-              <span className="">
-                Conversation
-              </span>
+              <span className="">Conversation</span>
             </h2>
 
             <p className="mt-5 max-w-xl text-sm leading-relaxed text-gray-500 sm:text-base">
-              Whether you're looking for your dream job, searching
-              for talented professionals, or simply have a question,
-              we'd love to hear from you.
+              Whether you're looking for your dream job, searching for talented
+              professionals, or simply have a question, we'd love to hear from
+              you.
             </p>
 
             {/* Job Seekers */}
             <div className="mt-8 space-y-4">
-
               <div className="flex gap-4 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:p-5">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#A0E9FF]/40 text-[#159FEF]">
                   <BriefcaseBusiness size={21} />
@@ -279,8 +246,8 @@ const ContactUs = () => {
                   </h3>
 
                   <p className="mt-1 text-xs leading-relaxed text-gray-500 sm:text-sm">
-                    Find opportunities that match your skills,
-                    experience and career goals.
+                    Find opportunities that match your skills, experience and
+                    career goals.
                   </p>
                 </div>
               </div>
@@ -297,22 +264,20 @@ const ContactUs = () => {
                   </h3>
 
                   <p className="mt-1 text-xs leading-relaxed text-gray-500 sm:text-sm">
-                    Connect with skilled professionals and
-                    build your perfect team.
+                    Connect with skilled professionals and build your perfect
+                    team.
                   </p>
                 </div>
               </div>
-
             </div>
 
             {/* Social Links */}
             <div className="mt-8">
               <p className="text-sm font-semibold text-gray-700">
-                Follow CareerSphere
+                Follow CareerNova
               </p>
 
               <div className="mt-3 flex gap-3">
-
                 {/* LinkedIn */}
                 <a
                   href="#"
@@ -339,15 +304,12 @@ const ContactUs = () => {
                 >
                   <FaTwitter size={16} />
                 </a>
-
               </div>
             </div>
-
           </div>
 
           {/* CONTACT FORM */}
           <div className="rounded-3xl border border-gray-100 bg-white p-5 shadow-xl shadow-gray-200/40 sm:p-7 lg:p-8">
-
             {/* Header */}
             <div className="mb-6">
               <h3 className="text-xl font-bold text-gray-900 sm:text-2xl">
@@ -373,7 +335,7 @@ const ContactUs = () => {
                   </p>
 
                   <p className="mt-1 text-xs text-green-700">
-                    Thank you for contacting CareerSphere.
+                    Thank you for contacting CareerNova.
                   </p>
                 </div>
               </div>
@@ -381,10 +343,8 @@ const ContactUs = () => {
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-5">
-
               {/* Name + Email */}
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-
                 {/* Name */}
                 <div>
                   <label
@@ -426,7 +386,6 @@ const ContactUs = () => {
                     className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 outline-none transition-all placeholder:text-gray-400 focus:border-[#30AFFF] focus:bg-white focus:ring-4 focus:ring-[#30AFFF]/10"
                   />
                 </div>
-
               </div>
 
               {/* Subject */}
@@ -477,16 +436,13 @@ const ContactUs = () => {
                 className="group flex w-full items-center justify-center gap-2 rounded-xl bg-[#30AFFF] px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#30AFFF]/20 transition-all duration-300 hover:bg-[#159FEF] hover:shadow-xl hover:shadow-[#30AFFF]/30"
               >
                 Send Message
-
                 <Send
                   size={17}
                   className="transition-transform duration-300 group-hover:translate-x-1"
                 />
               </button>
-
             </form>
           </div>
-
         </div>
       </section>
 
@@ -495,15 +451,14 @@ const ContactUs = () => {
       ===================================================== */}
       <section className="px-4 pb-12 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl rounded-3xl bg-[#30AFFF] px-5 py-10 text-center shadow-xl shadow-[#30AFFF]/15 sm:px-10 sm:py-12">
-
           <div className="mx-auto max-w-2xl">
             <h2 className="text-2xl font-bold text-white sm:text-3xl">
               Your Career Journey Starts Here
             </h2>
 
             <p className="mt-3 text-sm text-white/85 sm:text-base">
-              Connect with CareerSphere and take the next step
-              toward your professional future.
+              Connect with CareerNova and take the next step toward your
+              professional future.
             </p>
 
             <Link to="/jobs">
@@ -516,13 +471,10 @@ const ContactUs = () => {
               </button>
             </Link>
           </div>
-
         </div>
       </section>
-
     </div>
   );
 };
 
 export default ContactUs;
-

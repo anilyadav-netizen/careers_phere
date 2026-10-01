@@ -1,7 +1,6 @@
 import {
   BriefcaseBusiness,
   ChevronRight,
-  Code2,
   CreditCard,
   FileText,
   Globe2,
@@ -87,8 +86,8 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
   ];
 
   const handleLogout = () => {
-    localStorage.removeItem("careerSphereAdmin");
-    localStorage.removeItem("careerSphereAdminToken");
+    localStorage.removeItem("CareerNovaAdmin");
+    localStorage.removeItem("CareerNovaAdminToken");
 
     navigate("/admin/login");
   };
@@ -167,7 +166,7 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
 
             <div className="min-w-0 text-left">
               <h1 className="truncate text-lg font-black tracking-tight text-slate-900">
-                CareerSphere
+                CareerNova
               </h1>
 
               <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-blue-600">

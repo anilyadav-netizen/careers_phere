@@ -1,22 +1,22 @@
-import React, { useState, useRef, useEffect } from "react";
 import {
-  Search,
-  MapPin,
-  ChevronDown,
-  Building2,
-  Wifi,
-  Landmark,
-  Rocket,
-  Users,
-  Code,
+  ArrowRight,
   Award,
-  GraduationCap,
   Briefcase,
+  Building2,
+  ChevronDown,
+  Code,
+  Globe2,
+  GraduationCap,
+  Landmark,
+  MapPin,
+  Rocket,
+  Search,
   ShoppingCart,
   Truck,
-  Globe2,
-  ArrowRight,
+  Users,
+  Wifi,
 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const FlagSection = () => {
@@ -43,13 +43,14 @@ const FlagSection = () => {
     { name: "Canada", flag: "https://flagcdn.com/w320/ca.png" },
     { name: "Australia", flag: "https://flagcdn.com/w320/au.png" },
     { name: "Germany", flag: "https://flagcdn.com/w320/de.png" },
-    { name: "France", flag: "https://flagcdn.com/w320/fr.png" },
-    { name: "Japan", flag: "https://flagcdn.com/w320/jp.png" },
+    // { name: "Japan", flag: "https://flagcdn.com/w320/jp.png" },
     { name: "India", flag: "https://flagcdn.com/w320/in.png" },
     { name: "Netherlands", flag: "https://flagcdn.com/w320/nl.png" },
     { name: "Switzerland", flag: "https://flagcdn.com/w320/ch.png" },
     { name: "New Zealand", flag: "https://flagcdn.com/w320/nz.png" },
+    { name: "Malaysia", flag: "https://flagcdn.com/w320/my.png" },
     { name: "Singapore", flag: "https://flagcdn.com/w320/sg.png" },
+    { name: "Indonesia", flag: "https://flagcdn.com/w320/id.png" },
     { name: "Ireland", flag: "https://flagcdn.com/w320/ie.png" },
     { name: "Sweden", flag: "https://flagcdn.com/w320/se.png" },
     { name: "Norway", flag: "https://flagcdn.com/w320/no.png" },
@@ -59,9 +60,19 @@ const FlagSection = () => {
     { name: "Spain", flag: "https://flagcdn.com/w320/es.png" },
     { name: "UAE", flag: "https://flagcdn.com/w320/ae.png" },
     { name: "South Korea", flag: "https://flagcdn.com/w320/kr.png" },
+    { name: "France", flag: "https://flagcdn.com/w320/fr.png" },
     { name: "Belgium", flag: "https://flagcdn.com/w320/be.png" },
     { name: "Austria", flag: "https://flagcdn.com/w320/at.png" },
     { name: "Portugal", flag: "https://flagcdn.com/w320/pt.png" },
+
+    // Added countries
+    { name: "Bulgaria", flag: "https://flagcdn.com/w320/bg.png" },
+    { name: "Albania", flag: "https://flagcdn.com/w320/al.png" },
+    { name: "Malta", flag: "https://flagcdn.com/w320/mt.png" },
+    { name: "Slovakia", flag: "https://flagcdn.com/w320/sk.png" },
+    { name: "Siberia", flag: "https://flagcdn.com/w320/ru.png" },
+    { name: "Sri Lanka", flag: "https://flagcdn.com/w320/lk.png" },
+    { name: "Hong Kong", flag: "https://flagcdn.com/w320/hk.png" },
   ];
 
   // Build pages of 4 and triple them for seamless infinite loop
@@ -120,10 +131,7 @@ const FlagSection = () => {
         setExperienceOpen(false);
       }
 
-      if (
-        countryRef.current &&
-        !countryRef.current.contains(event.target)
-      ) {
+      if (countryRef.current && !countryRef.current.contains(event.target)) {
         setCountryOpen(false);
       }
     };
@@ -191,7 +199,8 @@ const FlagSection = () => {
 
   // Current active dot maps to which of the real pages is showing
   const activeDot =
-    ((mobileCountryIndex - totalPages) % totalPages + totalPages) % totalPages;
+    (((mobileCountryIndex - totalPages) % totalPages) + totalPages) %
+    totalPages;
 
   const goToPage = (dotIndex) => {
     setIsTransitioning(true);
@@ -287,7 +296,7 @@ const FlagSection = () => {
                   >
                     {experience
                       ? experienceOptions.find(
-                          (item) => item.value === experience
+                          (item) => item.value === experience,
                         )?.label
                       : "Experience"}
                   </span>
@@ -458,7 +467,7 @@ const FlagSection = () => {
                 >
                   {experience
                     ? experienceOptions.find(
-                        (item) => item.value === experience
+                        (item) => item.value === experience,
                       )?.label
                     : "Select experience"}
                 </span>
