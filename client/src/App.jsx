@@ -49,16 +49,16 @@ import Settings from "./admin/pages/Settings";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import AdminLogin from "./admin/pages/AdminLogin";
+import AdminProfile from "./admin/pages/AdminProfile";
 import AdminDashboard from "./admin/pages/Dashboard";
 import TestimonialManagement from "./admin/pages/TestimonialManagement";
-import { getProfile } from "./redux/slicer/authSlice";
-import AdminProfile from "./admin/pages/AdminProfile";
-import FullStackDeveloper from "./Pages/FullStackDeveloper";
 import AndriodDevelopers from "./Pages/AndriodDevelopers";
-import FrontendDeveloprs from "./Pages/FrontendDeveloprs";
 import BackendDeveloper from "./Pages/BackendDeveloper";
+import FrontendDeveloprs from "./Pages/FrontendDeveloprs";
+import FullStackDeveloper from "./Pages/FullStackDeveloper";
+import UiUxDesigner from "./Pages/UiUxDesigner";
 import VideoEditor from "./Pages/VideoEditor";
-import UiUxDesigner from "./pages/UiUxDesigner";
+import { getProfile } from "./redux/slicer/authSlice";
 // import MySubscription from "./Pages/MySubscription";
 
 function App() {
