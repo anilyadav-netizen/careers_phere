@@ -31,7 +31,7 @@ const Users = () => {
   const dispatch = useDispatch();
 
   // Redux state
-  const users = useSelector((state) => state.adminuser?.users || []);
+  const users = useSelector((state) => state.adminUser?.users || []);
   const loading = useSelector(
     (state) => state.adminUser?.fetchLoading || false,
   );
