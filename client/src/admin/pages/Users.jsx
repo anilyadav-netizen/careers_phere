@@ -24,14 +24,14 @@ import {
   getAllUsersAdmin,
   toggleUserActive,
   updateUserAdmin,
-} from "../../redux/slicer/adminUserSlice";
+} from "../../redux/slicer/adminuserSlice";
 import StateCard from "../components/StateCard";
 
 const Users = () => {
   const dispatch = useDispatch();
 
   // Redux state
-  const users = useSelector((state) => state.adminUser?.users || []);
+  const users = useSelector((state) => state.adminuser?.users || []);
   const loading = useSelector(
     (state) => state.adminUser?.fetchLoading || false,
   );
