@@ -17,7 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import StatCard from "../components/StateCard";
 
 import { getAllSubscriptionsAdmin } from "../../redux/slicer/adminsubscriptionSlice";
-import { getAllUsersAdmin } from "../../redux/slicer/adminUserSlice";
+import { getAllUsersAdmin } from "../../redux/slicer/adminuserSlice";
 import { getAllApplicationsAdmin } from "../../redux/slicer/jobApplicationSlice";
 import { getAllJobsAdmin } from "../../redux/slicer/jobSlice";
 
@@ -33,7 +33,7 @@ const AdminDashboard = () => {
     total: totalUsers,
     count: userCount,
     fetchLoading: usersLoading,
-  } = useSelector((state) => state.adminUser);
+  } = useSelector((state) => state.adminuser);
 
   const {
     adminJobs,
