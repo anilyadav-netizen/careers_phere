@@ -33,7 +33,7 @@ const AdminDashboard = () => {
     total: totalUsers,
     count: userCount,
     fetchLoading: usersLoading,
-  } = useSelector((state) => state.adminuser);
+  } = useSelector((state) => state.adminUser);
 
   const {
     adminJobs,
