@@ -89,330 +89,6 @@ const parseWorkModes = (modesRaw) => {
 };
 
 // ============================================================
-// DEFAULT SEED OPPORTUNITIES FOR LANDING PAGES
-// ============================================================
-const DEFAULT_OPPORTUNITIES_SEED = {
-  "Backend Developer": [
-    {
-      companyName: "Amazon AWS",
-      companyLogo:
-        "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=120&auto=format&fit=crop&q=80",
-      roleCategory: "Backend Developer",
-      roleTitle: "Senior Backend Systems Engineer",
-      countries: [
-        { countryName: "United States", flag: "https://flagcdn.com/w80/us.png" },
-        { countryName: "Germany", flag: "https://flagcdn.com/w80/de.png" },
-      ],
-      salary: "$75,000 – $150,000",
-      salaryCurrency: "USD",
-      skills: ["Node.js", "Microservices", "PostgreSQL", "Docker", "AWS"],
-      workModes: ["Remote", "Hybrid"],
-      isActive: true,
-      featured: true,
-    },
-    {
-      companyName: "Stripe Infrastructure",
-      companyLogo:
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=120&auto=format&fit=crop&q=80",
-      roleCategory: "Backend Developer",
-      roleTitle: "Backend API Engineer",
-      countries: [
-        { countryName: "United Kingdom", flag: "https://flagcdn.com/w80/gb.png" },
-        { countryName: "Canada", flag: "https://flagcdn.com/w80/ca.png" },
-      ],
-      salary: "$65,000 – $130,000",
-      salaryCurrency: "USD",
-      skills: ["Node.js", "Redis", "Distributed Systems", "MongoDB"],
-      workModes: ["Remote"],
-      isActive: true,
-      featured: true,
-    },
-    {
-      companyName: "Datadog Global",
-      companyLogo:
-        "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=120&auto=format&fit=crop&q=80",
-      roleCategory: "Backend Developer",
-      roleTitle: "Cloud Backend Engineer",
-      countries: [
-        { countryName: "Australia", flag: "https://flagcdn.com/w80/au.png" },
-        { countryName: "United States", flag: "https://flagcdn.com/w80/us.png" },
-      ],
-      salary: "$70,000 – $140,000",
-      salaryCurrency: "USD",
-      skills: ["Express.js", "PostgreSQL", "Kafka", "Docker", "CI/CD"],
-      workModes: ["Remote", "Hybrid"],
-      isActive: true,
-      featured: false,
-    },
-    {
-      companyName: "Shopify Backend",
-      companyLogo:
-        "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=120&auto=format&fit=crop&q=80",
-      roleCategory: "Backend Developer",
-      roleTitle: "High-Throughput Systems Engineer",
-      countries: [
-        { countryName: "Canada", flag: "https://flagcdn.com/w80/ca.png" },
-        { countryName: "United Kingdom", flag: "https://flagcdn.com/w80/gb.png" },
-      ],
-      salary: "$68,000 – $135,000",
-      salaryCurrency: "USD",
-      skills: ["Node.js", "TypeScript", "REST APIs", "PostgreSQL"],
-      workModes: ["Remote"],
-      isActive: true,
-      featured: false,
-    },
-  ],
-  "Full Stack Developer": [
-    {
-      companyName: "Meta Platforms",
-      companyLogo:
-        "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=120&auto=format&fit=crop&q=80",
-      roleCategory: "Full Stack Developer",
-      roleTitle: "Full Stack Product Engineer",
-      countries: [
-        { countryName: "United States", flag: "https://flagcdn.com/w80/us.png" },
-        { countryName: "Canada", flag: "https://flagcdn.com/w80/ca.png" },
-      ],
-      salary: "$80,000 – $160,000",
-      salaryCurrency: "USD",
-      skills: ["React", "Node.js", "TypeScript", "GraphQL", "Next.js"],
-      workModes: ["Remote", "Hybrid"],
-      isActive: true,
-      featured: true,
-    },
-    {
-      companyName: "Shopify Core",
-      companyLogo:
-        "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=120&auto=format&fit=crop&q=80",
-      roleCategory: "Full Stack Developer",
-      roleTitle: "Full Stack Web Developer",
-      countries: [
-        { countryName: "United Kingdom", flag: "https://flagcdn.com/w80/gb.png" },
-        { countryName: "Germany", flag: "https://flagcdn.com/w80/de.png" },
-      ],
-      salary: "$70,000 – $135,000",
-      salaryCurrency: "USD",
-      skills: ["Next.js", "Node.js", "PostgreSQL", "Tailwind CSS"],
-      workModes: ["Remote"],
-      isActive: true,
-      featured: true,
-    },
-    {
-      companyName: "Vercel Labs",
-      companyLogo:
-        "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=120&auto=format&fit=crop&q=80",
-      roleCategory: "Full Stack Developer",
-      roleTitle: "Full Stack Application Architect",
-      countries: [
-        { countryName: "Australia", flag: "https://flagcdn.com/w80/au.png" },
-        { countryName: "United States", flag: "https://flagcdn.com/w80/us.png" },
-      ],
-      salary: "$75,000 – $145,000",
-      salaryCurrency: "USD",
-      skills: ["React", "TypeScript", "Node.js", "Serverless", "Tailwind CSS"],
-      workModes: ["Remote", "Hybrid"],
-      isActive: true,
-      featured: false,
-    },
-    {
-      companyName: "Canva Studio",
-      companyLogo:
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=120&auto=format&fit=crop&q=80",
-      roleCategory: "Full Stack Developer",
-      roleTitle: "Full Stack UI/Backend Developer",
-      countries: [
-        { countryName: "Australia", flag: "https://flagcdn.com/w80/au.png" },
-        { countryName: "Canada", flag: "https://flagcdn.com/w80/ca.png" },
-      ],
-      salary: "$65,000 – $125,000",
-      salaryCurrency: "USD",
-      skills: ["React", "Express.js", "MongoDB", "Redux", "REST APIs"],
-      workModes: ["Remote"],
-      isActive: true,
-      featured: false,
-    },
-  ],
-  "Android Developer": [
-    {
-      companyName: "Google Mobile Systems",
-      companyLogo:
-        "https://images.unsplash.com/photo-1573804633927-bfcbcd909acd?w=120&auto=format&fit=crop&q=80",
-      roleCategory: "Android Developer",
-      roleTitle: "Senior Android Engineer",
-      countries: [
-        { countryName: "United States", flag: "https://flagcdn.com/w80/us.png" },
-        { countryName: "United Kingdom", flag: "https://flagcdn.com/w80/gb.png" },
-      ],
-      salary: "$75,000 – $155,000",
-      salaryCurrency: "USD",
-      skills: ["Kotlin", "Jetpack Compose", "Coroutines", "Clean Architecture", "MVVM"],
-      workModes: ["Remote", "Hybrid"],
-      isActive: true,
-      featured: true,
-    },
-    {
-      companyName: "Spotify Mobile",
-      companyLogo:
-        "https://images.unsplash.com/photo-1614680376593-902f749f7ffc?w=120&auto=format&fit=crop&q=80",
-      roleCategory: "Android Developer",
-      roleTitle: "Android Audio App Developer",
-      countries: [
-        { countryName: "Germany", flag: "https://flagcdn.com/w80/de.png" },
-        { countryName: "Canada", flag: "https://flagcdn.com/w80/ca.png" },
-      ],
-      salary: "$65,000 – $130,000",
-      salaryCurrency: "USD",
-      skills: ["Kotlin", "Android SDK", "Flow", "Dagger Hilt", "Unit Testing"],
-      workModes: ["Remote"],
-      isActive: true,
-      featured: true,
-    },
-    {
-      companyName: "ByteDance Apps",
-      companyLogo:
-        "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=120&auto=format&fit=crop&q=80",
-      roleCategory: "Android Developer",
-      roleTitle: "Mobile Video Architect",
-      countries: [
-        { countryName: "Singapore", flag: "https://flagcdn.com/w80/sg.png" },
-        { countryName: "Australia", flag: "https://flagcdn.com/w80/au.png" },
-      ],
-      salary: "$70,000 – $140,000",
-      salaryCurrency: "USD",
-      skills: ["Kotlin", "NDK", "Performance Optimization", "Jetpack Compose"],
-      workModes: ["Remote", "Hybrid"],
-      isActive: true,
-      featured: false,
-    },
-  ],
-  "Frontend Developer": [
-    {
-      companyName: "Vercel Inc.",
-      companyLogo:
-        "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=120&auto=format&fit=crop&q=80",
-      roleCategory: "Frontend Developer",
-      roleTitle: "Senior Frontend Engineer",
-      countries: [
-        { countryName: "United States", flag: "https://flagcdn.com/w80/us.png" },
-        { countryName: "United Kingdom", flag: "https://flagcdn.com/w80/gb.png" },
-      ],
-      salary: "$65,000 – $140,000",
-      salaryCurrency: "USD",
-      skills: ["React", "Next.js", "TypeScript", "Tailwind CSS"],
-      workModes: ["Remote", "Hybrid"],
-      isActive: true,
-      featured: true,
-    },
-    {
-      companyName: "Airbnb",
-      companyLogo:
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=120&auto=format&fit=crop&q=80",
-      roleCategory: "Frontend Developer",
-      roleTitle: "Frontend UI/UX Engineer",
-      countries: [
-        { countryName: "Canada", flag: "https://flagcdn.com/w80/ca.png" },
-        { countryName: "Australia", flag: "https://flagcdn.com/w80/au.png" },
-      ],
-      salary: "$60,000 – $130,000",
-      salaryCurrency: "USD",
-      skills: ["React", "JavaScript", "CSS/SCSS", "Framer Motion"],
-      workModes: ["Remote"],
-      isActive: true,
-      featured: true,
-    },
-  ],
-  "Video Editor": [
-    {
-      companyName: "Red Bull Media",
-      companyLogo:
-        "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=120&auto=format&fit=crop&q=80",
-      roleCategory: "Video Editor",
-      roleTitle: "Action & Sports Video Editor",
-      countries: [
-        { countryName: "Austria", flag: "https://flagcdn.com/w80/at.png" },
-        { countryName: "United States", flag: "https://flagcdn.com/w80/us.png" },
-      ],
-      salary: "$45,000 – $95,000",
-      salaryCurrency: "USD",
-      skills: ["Premiere Pro", "After Effects", "Color Grading", "Sound Design"],
-      workModes: ["Remote", "Hybrid"],
-      isActive: true,
-      featured: true,
-    },
-    {
-      companyName: "MrBeast Studios",
-      companyLogo:
-        "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=120&auto=format&fit=crop&q=80",
-      roleCategory: "Video Editor",
-      roleTitle: "High-Retention YouTube Editor",
-      countries: [
-        { countryName: "United States", flag: "https://flagcdn.com/w80/us.png" },
-        { countryName: "Canada", flag: "https://flagcdn.com/w80/ca.png" },
-      ],
-      salary: "$55,000 – $120,000",
-      salaryCurrency: "USD",
-      skills: ["Premiere Pro", "Motion Graphics", "Fast Pacing", "Storyboarding"],
-      workModes: ["Remote"],
-      isActive: true,
-      featured: true,
-    },
-  ],
-  "UI/UX Designer": [
-    {
-      companyName: "Figma Studio",
-      companyLogo:
-        "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=120&auto=format&fit=crop&q=80",
-      roleCategory: "UI/UX Designer",
-      roleTitle: "Senior Product & Design Systems Designer",
-      countries: [
-        { countryName: "United States", flag: "https://flagcdn.com/w80/us.png" },
-        { countryName: "United Kingdom", flag: "https://flagcdn.com/w80/gb.png" },
-      ],
-      salary: "$65,000 – $135,000",
-      salaryCurrency: "USD",
-      skills: ["Figma", "Design Systems", "Prototyping", "User Research", "Wireframing"],
-      workModes: ["Remote", "Hybrid"],
-      isActive: true,
-      featured: true,
-    },
-    {
-      companyName: "Airbnb Experience",
-      companyLogo:
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=120&auto=format&fit=crop&q=80",
-      roleCategory: "UI/UX Designer",
-      roleTitle: "Lead UI/UX Mobile Designer",
-      countries: [
-        { countryName: "Canada", flag: "https://flagcdn.com/w80/ca.png" },
-        { countryName: "Germany", flag: "https://flagcdn.com/w80/de.png" },
-      ],
-      salary: "$60,000 – $125,000",
-      salaryCurrency: "USD",
-      skills: ["Figma", "Mobile UI", "Micro-Interactions", "Framer", "Usability Testing"],
-      workModes: ["Remote"],
-      isActive: true,
-      featured: true,
-    },
-    {
-      companyName: "Canva Design Lab",
-      companyLogo:
-        "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=120&auto=format&fit=crop&q=80",
-      roleCategory: "UI/UX Designer",
-      roleTitle: "Interaction & Visual Product Designer",
-      countries: [
-        { countryName: "Australia", flag: "https://flagcdn.com/w80/au.png" },
-        { countryName: "United States", flag: "https://flagcdn.com/w80/us.png" },
-      ],
-      salary: "$65,000 – $130,000",
-      salaryCurrency: "USD",
-      skills: ["Figma", "Visual Hierarchy", "Design Tokens", "User Flows"],
-      workModes: ["Remote", "Hybrid"],
-      isActive: true,
-      featured: false,
-    },
-  ],
-};
-
-// ============================================================
 // PUBLIC: GET OPPORTUNITIES BY ROLE
 // GET /api/role-opportunities
 // ============================================================
@@ -420,43 +96,26 @@ exports.getPublicOpportunities = async (req, res) => {
   try {
     const { roleCategory, country, search } = req.query;
 
-    const query = { isActive: true };
+    const jobQuery = {
+      status: "active",
+      domain: { $nin: ["None", "none", "NONE", "", null] },
+    };
 
     if (roleCategory && roleCategory !== "all") {
-      query.roleCategory = new RegExp(`^${roleCategory.trim()}$`, "i");
+      const cleanRole = roleCategory.trim().replace(/\s+Developer$/i, "");
+      jobQuery.domain = new RegExp(`^${cleanRole}`, "i");
     }
 
     if (country) {
-      query["countries.countryName"] = new RegExp(country.trim(), "i");
-    }
-
-    if (search) {
-      const searchRegex = new RegExp(search.trim(), "i");
-      query.$or = [
-        { companyName: searchRegex },
-        { roleTitle: searchRegex },
-        { skills: searchRegex },
-        { "countries.countryName": searchRegex },
-      ];
-    }
-
-    let opportunities = await RoleOpportunity.find(query).sort({
-      featured: -1,
-      createdAt: -1,
-    }).lean();
-
-    // Also query Job model for jobs posted with this domain/roleCategory
-    const jobQuery = { status: "active" };
-    if (roleCategory && roleCategory !== "all") {
-      jobQuery.domain = new RegExp(roleCategory.trim().replace(" Developer", ""), "i");
-    }
-    if (country) {
+      const countryRegex = new RegExp(country.trim(), "i");
       jobQuery.$or = [
-        { country: new RegExp(country.trim(), "i") },
-        { location: new RegExp(country.trim(), "i") },
-        { "countries.countryName": new RegExp(country.trim(), "i") },
+        { country: countryRegex },
+        { location: countryRegex },
+        { "countries.countryName": countryRegex },
+        { "countries.name": countryRegex },
       ];
     }
+
     if (search) {
       const searchRegex = new RegExp(search.trim(), "i");
       jobQuery.$or = [
@@ -467,20 +126,22 @@ exports.getPublicOpportunities = async (req, res) => {
       ];
     }
 
-    const matchingJobs = await Job.find(jobQuery).sort({ isFeatured: -1, createdAt: -1 }).lean();
+    const matchingJobs = await Job.find(jobQuery)
+      .sort({ isFeatured: -1, createdAt: -1 })
+      .lean();
 
-    // Map Job objects to match the opportunity shape expected by landing pages
-    const mappedJobsAsOpportunities = matchingJobs.map((j) => ({
+    const opportunities = matchingJobs.map((j) => ({
       _id: j._id,
       companyName: j.company,
       companyLogo: j.companyLogo?.displayUrl || j.companyLogo?.url || "",
       roleCategory: j.domain || roleCategory || "Frontend Developer",
       roleTitle: j.title,
-      countries: j.countries && j.countries.length > 0
-        ? j.countries
-        : j.country
-        ? [{ countryName: j.country, flag: "" }]
-        : [{ countryName: j.location || "Remote", flag: "" }],
+      countries:
+        j.countries && j.countries.length > 0
+          ? j.countries
+          : j.country
+            ? [{ countryName: j.country, flag: "" }]
+            : [{ countryName: j.location || "Remote", flag: "" }],
       salary: j.salary,
       salaryCurrency: j.salaryCurrency || "USD",
       skills: j.skills || [],
@@ -492,27 +153,6 @@ exports.getPublicOpportunities = async (req, res) => {
       jobType: j.jobType,
       createdAt: j.createdAt,
     }));
-
-    // Prepend newly created domain jobs to opportunities
-    opportunities = [...mappedJobsAsOpportunities, ...opportunities];
-
-    // Auto-seed default opportunities if none found for roleCategory query
-    if (opportunities.length === 0 && !search && !country && roleCategory && roleCategory !== "all") {
-      // Find matching key in DEFAULT_OPPORTUNITIES_SEED
-      const matchedKey = Object.keys(DEFAULT_OPPORTUNITIES_SEED).find(
-        (k) => k.toLowerCase() === roleCategory.trim().toLowerCase()
-      );
-
-      if (matchedKey && DEFAULT_OPPORTUNITIES_SEED[matchedKey]) {
-        try {
-          const seeds = DEFAULT_OPPORTUNITIES_SEED[matchedKey];
-          opportunities = await RoleOpportunity.insertMany(seeds);
-        } catch (seedErr) {
-          console.error("Auto-seed opportunities error:", seedErr.message);
-          opportunities = DEFAULT_OPPORTUNITIES_SEED[matchedKey];
-        }
-      }
-    }
 
     return res.status(200).json({
       success: true,
@@ -539,6 +179,39 @@ exports.getOpportunityById = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "Invalid opportunity ID",
+      });
+    }
+
+    const job = await Job.findById(id).lean();
+    if (job) {
+      return res.status(200).json({
+        success: true,
+        data: {
+          _id: job._id,
+          companyName: job.company,
+          companyLogo:
+            job.companyLogo?.displayUrl || job.companyLogo?.url || "",
+          roleCategory: job.domain || "Frontend Developer",
+          roleTitle: job.title,
+          countries:
+            job.countries && job.countries.length > 0
+              ? job.countries
+              : job.country
+                ? [{ countryName: job.country, flag: "" }]
+                : [{ countryName: job.location || "Remote", flag: "" }],
+          salary: job.salary,
+          salaryCurrency: job.salaryCurrency || "USD",
+          skills: job.skills || [],
+          workModes: [job.jobType || "Remote"],
+          description: job.description || "",
+          responsibilities: job.responsibilities || [],
+          requirements: job.requirements || [],
+          isActive: job.status === "active",
+          featured: Boolean(job.isFeatured),
+          isJobRecord: true,
+          jobType: job.jobType,
+          createdAt: job.createdAt,
+        },
       });
     }
 
@@ -594,7 +267,8 @@ exports.createOpportunity = async (req, res) => {
     if (!roleCategory || !String(roleCategory).trim()) {
       return res.status(400).json({
         success: false,
-        message: "Role category is required (e.g. Frontend Developer, Video Editor, etc.)",
+        message:
+          "Role category is required (e.g. Frontend Developer, Video Editor, etc.)",
       });
     }
 
@@ -604,7 +278,8 @@ exports.createOpportunity = async (req, res) => {
     if (countries && parsedCountriesList.length === 0) {
       return res.status(400).json({
         success: false,
-        message: "At least one country name or country flag is required when specifying countries",
+        message:
+          "At least one country name or country flag is required when specifying countries",
       });
     }
 
@@ -616,7 +291,7 @@ exports.createOpportunity = async (req, res) => {
         const uploadResult = await uploadToImgBB(
           req.file.buffer,
           req.file.originalname,
-          { name: `company-${Date.now()}` }
+          { name: `company-${Date.now()}` },
         );
         logoUrl =
           uploadResult.data?.displayUrl ||
@@ -624,7 +299,10 @@ exports.createOpportunity = async (req, res) => {
           uploadResult.data ||
           "";
       } catch (uploadErr) {
-        console.warn("ImgBB upload error, falling back to base64 data URI:", uploadErr.message);
+        console.warn(
+          "ImgBB upload error, falling back to base64 data URI:",
+          uploadErr.message,
+        );
         // Fallback to data URI so logo still displays properly
         const mime = req.file.mimetype || "image/png";
         logoUrl = `data:${mime};base64,${req.file.buffer.toString("base64")}`;
@@ -643,7 +321,10 @@ exports.createOpportunity = async (req, res) => {
       workModes: parseWorkModes(workModes),
       description: description ? String(description).trim() : "",
       featured: featured === "true" || featured === true,
-      isActive: isActive === undefined ? true : isActive === "true" || isActive === true,
+      isActive:
+        isActive === undefined
+          ? true
+          : isActive === "true" || isActive === true,
       createdBy: req.user?._id || null,
     });
 
@@ -769,14 +450,16 @@ exports.updateOpportunity = async (req, res) => {
 
     if (companyName) opportunity.companyName = String(companyName).trim();
     if (roleCategory) opportunity.roleCategory = String(roleCategory).trim();
-    if (roleTitle !== undefined) opportunity.roleTitle = String(roleTitle).trim();
+    if (roleTitle !== undefined)
+      opportunity.roleTitle = String(roleTitle).trim();
 
     if (countries !== undefined) {
       opportunity.countries = parseCountries(countries);
     }
 
     if (salary !== undefined) opportunity.salary = String(salary).trim();
-    if (salaryCurrency !== undefined) opportunity.salaryCurrency = String(salaryCurrency).trim();
+    if (salaryCurrency !== undefined)
+      opportunity.salaryCurrency = String(salaryCurrency).trim();
 
     if (skills !== undefined) {
       opportunity.skills = parseSkills(skills);
@@ -786,9 +469,12 @@ exports.updateOpportunity = async (req, res) => {
       opportunity.workModes = parseWorkModes(workModes);
     }
 
-    if (description !== undefined) opportunity.description = String(description).trim();
-    if (featured !== undefined) opportunity.featured = featured === "true" || featured === true;
-    if (isActive !== undefined) opportunity.isActive = isActive === "true" || isActive === true;
+    if (description !== undefined)
+      opportunity.description = String(description).trim();
+    if (featured !== undefined)
+      opportunity.featured = featured === "true" || featured === true;
+    if (isActive !== undefined)
+      opportunity.isActive = isActive === "true" || isActive === true;
 
     // Logo update if new file uploaded or direct URL provided
     if (req.file) {
@@ -796,7 +482,7 @@ exports.updateOpportunity = async (req, res) => {
         const uploadResult = await uploadToImgBB(
           req.file.buffer,
           req.file.originalname,
-          { name: `company-${Date.now()}` }
+          { name: `company-${Date.now()}` },
         );
         opportunity.companyLogo =
           uploadResult.data?.displayUrl ||
@@ -804,7 +490,10 @@ exports.updateOpportunity = async (req, res) => {
           uploadResult.data ||
           opportunity.companyLogo;
       } catch (uploadErr) {
-        console.warn("ImgBB upload error on update, using base64:", uploadErr.message);
+        console.warn(
+          "ImgBB upload error on update, using base64:",
+          uploadErr.message,
+        );
         const mime = req.file.mimetype || "image/png";
         opportunity.companyLogo = `data:${mime};base64,${req.file.buffer.toString("base64")}`;
       }

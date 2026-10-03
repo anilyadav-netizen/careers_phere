@@ -30,6 +30,7 @@ import {
   toggleJobStatus,
   updateJob,
 } from "../../redux/slicer/jobSlice";
+import { getPublicJobTypes } from "../../redux/slicer/jobTypeSlice";
 import StateCard from "../components/StateCard";
 import { useJobCategories } from "../context/JobCategoryContext";
 
@@ -52,6 +53,13 @@ const Jobs = () => {
   );
 
   const { categories, activeCategories } = useJobCategories();
+  const jobTypes = useSelector((state) => state.jobTypes?.jobTypes || []);
+
+  useEffect(() => {
+    if (jobTypes.length === 0) {
+      dispatch(getPublicJobTypes());
+    }
+  }, [dispatch, jobTypes.length]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
@@ -684,6 +692,7 @@ const Jobs = () => {
           }}
           onSave={handleSaveJob}
           existingJobs={jobs}
+          jobTypes={jobTypes}
         />
       )}
 
@@ -717,6 +726,7 @@ const Jobs = () => {
 };
 
 const DOMAIN_OPTIONS = [
+  "None",
   "Frontend",
   "Backend",
   "Full Stack",
@@ -725,7 +735,7 @@ const DOMAIN_OPTIONS = [
   "Video Editor",
 ];
 
-const JOB_TYPE_OPTIONS = [
+const DEFAULT_JOB_TYPE_OPTIONS = [
   "Remote",
   "MNC",
   "Banking & Finance",
@@ -740,7 +750,16 @@ const JOB_TYPE_OPTIONS = [
 ];
 
 // Job Modal Component (Edit only)
-const JobModal = ({ mode, job, categories, onClose, onSave, existingJobs }) => {
+const JobModal = ({ mode, job, categories, onClose, onSave, existingJobs, jobTypes }) => {
+  const activeJobTypeOptions = useMemo(() => {
+    if (jobTypes && jobTypes.length > 0) {
+      return jobTypes
+        .filter((jt) => jt.isActive !== false)
+        .map((jt) => jt.name);
+    }
+    return DEFAULT_JOB_TYPE_OPTIONS;
+  }, [jobTypes]);
+
   const initialCategoryId =
     (typeof job?.categoryId === "object" && job?.categoryId !== null
       ? job.categoryId._id || job.categoryId.id
@@ -755,7 +774,7 @@ const JobModal = ({ mode, job, categories, onClose, onSave, existingJobs }) => {
     company: job?.company || "",
     categoryId: String(initialCategoryId || ""),
     location: job?.location || "",
-    domain: job?.domain || "Frontend",
+    domain: job?.domain !== undefined && job?.domain !== "" ? job.domain : "None",
     jobType: job?.jobType || "Remote",
     experience: job?.experience || "0-3 Yrs",
     salary: job?.salary || "",
@@ -1134,6 +1153,11 @@ const JobModal = ({ mode, job, categories, onClose, onSave, existingJobs }) => {
                     </option>
                   ))}
                 </select>
+                <p className="text-[11px] text-slate-500 mt-1">
+                  {formData.domain === "None"
+                    ? "Job will appear on Find Jobs only (not on any role landing page)."
+                    : "Job automatically appears on this Domain landing page & Global Opportunities."}
+                </p>
               </div>
 
               <div>
@@ -1147,7 +1171,7 @@ const JobModal = ({ mode, job, categories, onClose, onSave, existingJobs }) => {
                   }
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none text-sm"
                 >
-                  {JOB_TYPE_OPTIONS.map((type) => (
+                  {activeJobTypeOptions.map((type) => (
                     <option key={type} value={type}>
                       {type}
                     </option>

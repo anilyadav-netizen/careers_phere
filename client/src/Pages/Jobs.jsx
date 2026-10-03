@@ -22,6 +22,7 @@ import {
 
 import { getAllJobsUser } from "../redux/slicer/jobSlice";
 import { getCategories } from "../redux/slicer/categorySlice";
+import { getPublicJobTypes } from "../redux/slicer/jobTypeSlice";
 import { getFlagByCountryName } from "../constants/countries";
 
 import {
@@ -33,6 +34,14 @@ const Jobs = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+
+  const rawJobTypes = useSelector((state) => state.jobTypes?.jobTypes || []);
+
+  useEffect(() => {
+    if (rawJobTypes.length === 0) {
+      dispatch(getPublicJobTypes());
+    }
+  }, [dispatch, rawJobTypes.length]);
 
   // ============================================================
   // URL FILTERS
@@ -518,22 +527,30 @@ const Jobs = () => {
   // ============================================================
 
   const filters = useMemo(() => {
+    const dynamicJobTypes =
+      rawJobTypes && rawJobTypes.length > 0
+        ? rawJobTypes
+            .filter((jt) => jt.isActive !== false)
+            .map((jt) => [jt.name, jt.name])
+        : [
+            ["Remote", "Remote"],
+            ["MNC", "MNC"],
+            ["Banking & Finance", "Banking & Finance"],
+            ["Startup", "Startup"],
+            ["HR", "HR"],
+            ["Engineering", "Engineering"],
+            ["Fortune 500", "Fortune 500"],
+            ["Internship", "Internship"],
+            ["Project Management", "Project Management"],
+            ["Sales", "Sales"],
+            ["Supply Chain", "Supply Chain"],
+          ];
+
     return {
-      jobType: [
-        ["Remote", "Remote"],
-        ["MNC", "MNC"],
-        ["Banking & Finance", "Banking & Finance"],
-        ["Startup", "Startup"],
-        ["HR", "HR"],
-        ["Engineering", "Engineering"],
-        ["Fortune 500", "Fortune 500"],
-        ["Internship", "Internship"],
-        ["Project Management", "Project Management"],
-        ["Sales", "Sales"],
-        ["Supply Chain", "Supply Chain"],
-      ],
+      jobType: dynamicJobTypes,
 
       domain: [
+        ["None", "None"],
         ["Frontend", "Frontend"],
         ["Backend", "Backend"],
         ["Full Stack", "Full Stack"],

@@ -1,6 +1,7 @@
 import React, { useReducer, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import RoleApplyModal from "../components/RoleApplyModal";
+import RoleOpportunitiesEmptyState from "../components/RoleOpportunitiesEmptyState";
 import { fetchPublicOpportunities } from "../redux/slicer/roleOpportunitySlice";
 import {
   ArrowDownRight,
@@ -809,73 +810,7 @@ const BackendDeveloper = () => {
                 );
               })
             ) : (
-              globalCountries.map((country) => {
-                const details = countryDetails[country.code];
-                return (
-                  <div
-                    key={country.code}
-                    className="group rounded-2xl border border-slate-100 bg-white p-4 shadow-sm hover:-translate-y-1 hover:border-[#30AFFF]/30 hover:shadow-[0_15px_45px_rgba(15,23,42,0.10)] transition-all flex flex-col"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-11 h-11 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center overflow-hidden">
-                          <img
-                            src={country.flag}
-                            alt={`${country.name} flag`}
-                            className="w-8 h-6 object-cover rounded-sm border border-slate-200"
-                          />
-                        </div>
-
-                        <div>
-                          <h3 className="text-sm font-black text-slate-800">
-                            {country.name}
-                          </h3>
-                          <p className="text-[10px] text-slate-400 mt-0.5">
-                            {details.roles}
-                          </p>
-                        </div>
-                      </div>
-
-                      <span className="w-2 h-2 rounded-full mt-2 bg-[#30AFFF]" />
-                    </div>
-
-                    <div className="border-t border-slate-100 mt-4 pt-3">
-                      <p className="text-[9px] uppercase tracking-[0.15em] text-slate-400 font-black">
-                        Typical payout
-                      </p>
-                      <p className="text-lg font-black tracking-tight mt-1 text-slate-900">
-                        {details.salary}
-                      </p>
-                      <p className="text-[9px] text-slate-400 mt-0.5">
-                        USD equivalent / year
-                      </p>
-                    </div>
-
-                    <div className="flex flex-wrap gap-1.5 mt-3">
-                      {details.modes.map((mode) => (
-                        <span
-                          key={mode}
-                          className="rounded-full bg-slate-50 border border-slate-200 px-2 py-1 text-[9px] font-bold text-slate-600"
-                        >
-                          {mode}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* APPLY BUTTON — RIGHT ALIGNED */}
-                    <div className="mt-4 pt-3 border-t border-slate-100 flex justify-end mt-auto">
-                      <button
-                        type="button"
-                        onClick={() => handleCountryApply(country)}
-                        className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-3 py-2 text-[10px] font-bold text-white shadow-sm hover:bg-[#159FEF] transition cursor-pointer"
-                      >
-                        Apply
-                        <ArrowRight size={13} />
-                      </button>
-                    </div>
-                  </div>
-                );
-              })
+              <RoleOpportunitiesEmptyState roleTitle="Backend Developer" />
             )}
           </div>
 

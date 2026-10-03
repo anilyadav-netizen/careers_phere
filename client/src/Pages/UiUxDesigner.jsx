@@ -22,6 +22,7 @@ import { useEffect, useReducer, useState } from "react";
 import { SiFigma, SiFramer, SiMiro, SiNotion, SiSketch } from "react-icons/si";
 import { useDispatch, useSelector } from "react-redux";
 import RoleApplyModal from "../components/RoleApplyModal";
+import RoleOpportunitiesEmptyState from "../components/RoleOpportunitiesEmptyState";
 import { fetchPublicOpportunities } from "../redux/slicer/roleOpportunitySlice";
 
 /* ---------------- REDUCER ---------------- */
@@ -753,67 +754,9 @@ const UiUxDesigner = () => {
                     </div>
                   );
                 })
-              : defaultGlobalMarkets.map((market, idx) => (
-                  <div
-                    key={idx}
-                    data-aos="fade-up"
-                    data-aos-delay={idx * 40}
-                    className="rounded-2xl border border-slate-200/80 bg-white p-[1.125rem] shadow-xs hover:border-[#30AFFF]/40 hover:shadow-md transition-all flex flex-col justify-between"
-                  >
-                    <div>
-                      <div className="flex items-center gap-3">
-                        <img
-                          src={market.flag}
-                          alt={market.country}
-                          className="w-7 h-5 rounded object-cover shadow-2xs border border-slate-200"
-                        />
-                        <div className="min-w-0">
-                          <h4 className="text-sm font-bold text-slate-900 truncate">
-                            {market.country}
-                          </h4>
-                          <span className="text-[10px] text-slate-400 block truncate">
-                            {market.region}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="mt-3 pt-3 border-t border-slate-100">
-                        <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-                          Indicative Payout
-                        </div>
-                        <div className="text-sm sm:text-base font-black text-slate-900 mt-0.5 break-words">
-                          {market.payout}
-                        </div>
-                      </div>
-
-                      <div className="mt-2 text-[11px] text-[#0B6F9F] font-semibold">
-                        {market.roles}
-                      </div>
-
-                      <div className="flex flex-wrap gap-1 mt-2.5">
-                        {market.modes.map((m) => (
-                          <span
-                            key={m}
-                            className="text-[9px] font-medium bg-slate-50 border border-slate-200 text-slate-600 px-2 py-0.5 rounded-full"
-                          >
-                            {m}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="flex justify-end mt-4 pt-3 border-t border-slate-100">
-                      <button
-                        type="button"
-                        onClick={() => handleMarketApply(market)}
-                        className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-3.5 py-2 text-[10px] font-bold text-white hover:bg-[#159FEF] transition cursor-pointer shadow-xs"
-                      >
-                        Apply
-                        <ArrowRight size={13} className="shrink-0" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
+              : (
+                <RoleOpportunitiesEmptyState roleTitle="UI/UX Designer" />
+              )}
           </div>
         </div>
       </section>

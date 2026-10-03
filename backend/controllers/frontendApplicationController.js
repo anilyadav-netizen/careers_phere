@@ -84,38 +84,50 @@ exports.submitApplication = async (req, res) => {
       }
     }
 
+    // Clean helper to prevent duplicate comma-separated values (e.g., from repeated FormData keys)
+    const cleanSingleField = (val, defaultVal = "") => {
+      if (val === undefined || val === null) return defaultVal;
+      if (Array.isArray(val)) {
+        const unique = [...new Set(val.map((v) => String(v).trim()).filter(Boolean))];
+        return unique.join(", ") || defaultVal;
+      }
+      const str = String(val).trim();
+      const parts = str.split(",").map((s) => s.trim()).filter(Boolean);
+      if (parts.length > 1 && new Set(parts.map((p) => p.toLowerCase())).size === 1) {
+        return parts[0];
+      }
+      return str || defaultVal;
+    };
+
     const application = await FrontendApplication.create({
-      role: (role && String(role).trim()) ? String(role).trim() : "Frontend Developer",
-      fullName: fullName.trim(),
-      email: email.trim().toLowerCase(),
-      phone: phone.trim(),
-      experience: (experience && String(experience).trim()) ? String(experience).trim() : "Not specified",
-      currentCountry: (currentCountry && String(currentCountry).trim()) ? String(currentCountry).trim() : "",
-      currentLocation: currentLocation ? String(currentLocation).trim() : "",
-      preferredRegion: (preferredRegion && String(preferredRegion).trim()) ? String(preferredRegion).trim() : "Global",
-      preferredJobMarket: (preferredJobMarket && String(preferredJobMarket).trim())
-        ? String(preferredJobMarket).trim()
-        : (countryFlexibility && String(countryFlexibility).trim())
-        ? String(countryFlexibility).trim()
-        : "Worldwide / Open",
-      preferredWorkMode: (preferredWorkMode && String(preferredWorkMode).trim())
-        ? String(preferredWorkMode).trim()
-        : "Remote / Hybrid",
-      relocationPreference: relocationPreference ? String(relocationPreference).trim() : "",
-      workAuthorization: workAuthorization ? String(workAuthorization).trim() : "",
+      role: cleanSingleField(role, "Frontend Developer"),
+      fullName: cleanSingleField(fullName),
+      email: cleanSingleField(email).toLowerCase(),
+      phone: cleanSingleField(phone),
+      experience: cleanSingleField(experience, "Not specified"),
+      currentCountry: cleanSingleField(currentCountry),
+      currentLocation: cleanSingleField(currentLocation),
+      preferredRegion: cleanSingleField(preferredRegion, "Global"),
+      preferredJobMarket: cleanSingleField(
+        preferredJobMarket || countryFlexibility,
+        "Worldwide / Open"
+      ),
+      preferredWorkMode: cleanSingleField(preferredWorkMode, "Remote / Hybrid"),
+      relocationPreference: cleanSingleField(relocationPreference),
+      workAuthorization: cleanSingleField(workAuthorization),
       expectedSalary: parsedSalary,
-      salaryCurrency: (salaryCurrency && String(salaryCurrency).trim()) ? String(salaryCurrency).trim() : "USD",
-      noticePeriod: (noticePeriod && String(noticePeriod).trim()) ? String(noticePeriod).trim() : "Immediate / Flexible",
-      preferredTimezone: preferredTimezone ? String(preferredTimezone).trim() : "",
-      countryFlexibility: countryFlexibility ? String(countryFlexibility).trim() : "",
-      portfolio: portfolio ? String(portfolio).trim() : "",
-      linkedin: linkedin ? String(linkedin).trim() : "",
-      frontendSkills: frontendSkills ? String(frontendSkills).trim() : "",
-      aboutYou: aboutYou.trim(),
-      companyName: companyName ? String(companyName).trim() : "",
-      companyLogo: companyLogo ? String(companyLogo).trim() : "",
+      salaryCurrency: cleanSingleField(salaryCurrency, "USD"),
+      noticePeriod: cleanSingleField(noticePeriod, "Immediate / Flexible"),
+      preferredTimezone: cleanSingleField(preferredTimezone),
+      countryFlexibility: cleanSingleField(countryFlexibility),
+      portfolio: cleanSingleField(portfolio),
+      linkedin: cleanSingleField(linkedin),
+      frontendSkills: cleanSingleField(frontendSkills),
+      aboutYou: (aboutYou && String(aboutYou).trim()) || "",
+      companyName: cleanSingleField(companyName),
+      companyLogo: cleanSingleField(companyLogo),
       opportunityId: isValidObjectId(opportunityId) ? opportunityId : null,
-      opportunityRole: opportunityRole ? String(opportunityRole).trim() : "",
+      opportunityRole: cleanSingleField(opportunityRole),
       resume: {
         filename: req.file.originalname,
         mimetype: req.file.mimetype,

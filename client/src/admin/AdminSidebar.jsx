@@ -5,6 +5,7 @@ import {
   FileText,
   Globe2,
   Images,
+  Layers,
   LayoutDashboard,
   LogOut,
   Settings,
@@ -34,6 +35,11 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
       name: "Categories",
       path: "/admin/jobcategories",
       icon: ShieldCheck,
+    },
+    {
+      name: "Job Types",
+      path: "/admin/job-types",
+      icon: Layers,
     },
     {
       name: "Jobs",

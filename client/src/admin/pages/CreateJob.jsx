@@ -1,5 +1,5 @@
 // src/admin/pages/CreateJob.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
@@ -17,9 +17,11 @@ import {
 } from "lucide-react";
 import { getAdminCategories } from "../../redux/slicer/categorySlice";
 import { createJob } from "../../redux/slicer/jobSlice";
+import { getPublicJobTypes } from "../../redux/slicer/jobTypeSlice";
 import { CountrySelectManager } from "../components/CountrySelectManager";
 
 const DOMAIN_OPTIONS = [
+  "None",
   "Frontend",
   "Backend",
   "Full Stack",
@@ -28,7 +30,7 @@ const DOMAIN_OPTIONS = [
   "Video Editor",
 ];
 
-const JOB_TYPE_OPTIONS = [
+const DEFAULT_JOB_TYPE_OPTIONS = [
   "Remote",
   "MNC",
   "Banking & Finance",
@@ -59,12 +61,23 @@ const CreateJob = () => {
   );
   const createError = useSelector((state) => state.jobs?.createError || null);
 
+  const jobTypes = useSelector((state) => state.jobTypes?.jobTypes || []);
+
+  const activeJobTypeOptions = useMemo(() => {
+    if (jobTypes && jobTypes.length > 0) {
+      return jobTypes
+        .filter((jt) => jt.isActive !== false)
+        .map((jt) => jt.name);
+    }
+    return DEFAULT_JOB_TYPE_OPTIONS;
+  }, [jobTypes]);
+
   const [formData, setFormData] = useState({
     title: "",
     company: "",
     categoryId: "",
     location: "",
-    domain: "Frontend",
+    domain: "None",
     jobType: "Remote",
     experience: "0-3 Yrs",
     salary: "",
@@ -88,6 +101,12 @@ const CreateJob = () => {
       dispatch(getAdminCategories());
     }
   }, [dispatch, categories.length, categoriesLoading]);
+
+  useEffect(() => {
+    if (jobTypes.length === 0) {
+      dispatch(getPublicJobTypes());
+    }
+  }, [dispatch, jobTypes.length]);
 
   useEffect(() => {
     if (createError) {
@@ -389,7 +408,9 @@ const CreateJob = () => {
                 ))}
               </select>
               <p className="text-[11px] text-slate-500 mt-1">
-                Job automatically appears on this Domain landing page & Global Opportunities.
+                {formData.domain === "None"
+                  ? "Job will appear on Find Jobs only (not on any role landing page)."
+                  : "Job automatically appears on this Domain landing page & Global Opportunities."}
               </p>
             </div>
 
@@ -404,7 +425,7 @@ const CreateJob = () => {
                 }
                 className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none text-sm bg-white"
               >
-                {JOB_TYPE_OPTIONS.map((type) => (
+                {activeJobTypeOptions.map((type) => (
                   <option key={type} value={type}>
                     {type}
                   </option>

@@ -27,6 +27,7 @@ import UserLayout from "./components/UserLayout";
 import AdminLayout from "./admin/components/AdminLayout";
 import CreateJob from "./admin/pages/CreateJob";
 import Jobcategories from "./admin/pages/Jobcategories";
+import JobTypes from "./admin/pages/JobTypes";
 import AdminJobs from "./admin/pages/Jobs";
 import Users from "./admin/pages/Users";
 
@@ -155,6 +156,10 @@ function App() {
                 {/* JOB CATEGORIES */}
 
                 <Route path="jobcategories" element={<Jobcategories />} />
+
+                {/* JOB TYPES */}
+
+                <Route path="job-types" element={<JobTypes />} />
 
                 {/* JOBS */}
 

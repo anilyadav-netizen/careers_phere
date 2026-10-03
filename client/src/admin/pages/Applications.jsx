@@ -30,6 +30,15 @@ import {
   updateApplicationStatus,
 } from "../../redux/slicer/jobApplicationSlice";
 
+const cleanField = (val, fallback = "") => {
+  if (!val || typeof val !== "string") return val || fallback;
+  const parts = val.split(",").map((s) => s.trim()).filter(Boolean);
+  if (parts.length > 1 && new Set(parts.map((p) => p.toLowerCase())).size === 1) {
+    return parts[0];
+  }
+  return [...new Set(parts)].join(", ") || fallback;
+};
+
 const Applications = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -727,13 +736,16 @@ const Applications = () => {
                             application.applicationData?.email,
                           );
 
-                        const jobTitle =
+                        const jobTitle = cleanField(
                           application.job?.title ||
-                          application.applicationData?.role ||
-                          "Unknown Job";
+                          application.applicationData?.role,
+                          "Unknown Job"
+                        );
 
-                        const company =
-                          application.job?.company || "CareerNova";
+                        const company = cleanField(
+                          application.job?.company,
+                          "CareerNova"
+                        );
 
                         const location =
                           application.job?.location ||
@@ -963,12 +975,16 @@ const Applications = () => {
                       application.applicationData?.email,
                     );
 
-                  const jobTitle =
+                  const jobTitle = cleanField(
                     application.job?.title ||
-                    application.applicationData?.role ||
-                    "Unknown Job";
+                    application.applicationData?.role,
+                    "Unknown Job"
+                  );
 
-                  const company = application.job?.company || "CareerNova";
+                  const company = cleanField(
+                    application.job?.company,
+                    "CareerNova"
+                  );
 
                   const location =
                     application.job?.location ||
@@ -1272,11 +1288,11 @@ const DeleteApplicationModal = ({
             <p className="text-xs text-slate-400 mb-1">Job</p>
 
             <p className="text-sm font-medium text-slate-700 break-words">
-              {application.job?.title || "Unknown Job"}
+              {cleanField(application.job?.title, "Unknown Job")}
             </p>
 
             <p className="text-xs text-slate-500 mt-1">
-              {application.job?.company || "Unknown Company"}
+              {cleanField(application.job?.company, "Unknown Company")}
             </p>
 
             <p className="text-xs text-slate-400 mt-2">Application ID</p>

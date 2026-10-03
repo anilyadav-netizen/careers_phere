@@ -101,28 +101,63 @@ const ApplicationDetails = () => {
     application?.phoneNumber ||
     "Not provided";
 
-  const candidateLocation =
+  const cleanField = (val, fallback = "") => {
+    if (!val || typeof val !== "string") return val || fallback;
+    const parts = val.split(",").map((s) => s.trim()).filter(Boolean);
+    if (parts.length > 1 && new Set(parts.map((p) => p.toLowerCase())).size === 1) {
+      return parts[0];
+    }
+    return [...new Set(parts)].join(", ") || fallback;
+  };
+
+  const candidateLocation = cleanField(
     application?.applicationData?.location ||
     application?.job?.location ||
-    application?.currentLocation ||
-    "Not provided";
+    application?.currentLocation,
+    "Not provided"
+  );
 
-  const candidateExperience =
+  const candidateExperience = cleanField(
     application?.applicationData?.experience ||
     application?.experienceType ||
-    application?.totalExperience ||
-    "Not specified";
+    application?.totalExperience,
+    "Not specified"
+  );
 
-  const candidateSkills =
-    application?.applicationData?.skills ||
-    application?.professionalDetails ||
-    "Not provided";
+  const candidateSkillsList = useMemo(() => {
+    const raw =
+      application?.skills ||
+      application?.applicationData?.skills ||
+      application?.frontendSkills ||
+      application?.professionalDetails;
+
+    if (Array.isArray(raw)) {
+      return raw.map((s) => String(s).trim()).filter(Boolean);
+    }
+    if (typeof raw === "string" && raw.trim() && raw !== "Not provided") {
+      try {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          return parsed.map((s) => String(s).trim()).filter(Boolean);
+        }
+      } catch (e) {}
+      return raw.split(",").map((s) => s.trim()).filter(Boolean);
+    }
+    return [];
+  }, [application]);
+
+  const candidateAdditionalInfo =
+    application?.additionalInformation ||
+    application?.applicationData?.additionalInfo ||
+    application?.applicationData?.additionalInformation ||
+    application?.aboutYou ||
+    "";
 
   const candidateCoverLetter =
+    application?.coverLetter ||
     application?.applicationData?.coverLetter ||
     application?.applicationData?.about ||
-    application?.coverLetter ||
-    "Not provided";
+    "";
 
   const candidateLinkedIn =
     application?.applicationData?.linkedin ||
@@ -143,12 +178,21 @@ const ApplicationDetails = () => {
       ? rawResume
       : rawResume?.filename || rawResume?.url || (application?._id ? "resume.pdf" : null);
 
-  const jobTitle =
+  const jobTitle = cleanField(
     application?.job?.title ||
-    application?.applicationData?.role ||
-    "Role Application";
+    application?.opportunityRole ||
+    application?.role ||
+    application?.categoryName ||
+    application?.applicationData?.role,
+    "Role Application"
+  );
 
-  const companyName = application?.job?.company || "CareerNova";
+  const companyName = cleanField(
+    application?.job?.company ||
+    application?.companyName ||
+    application?.applicationData?.company,
+    "CareerNova"
+  );
 
   const isGuest =
     !application?.applicant &&
@@ -475,23 +519,61 @@ const ApplicationDetails = () => {
               Skills / Tech Stack
             </h3>
             <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-100">
-              <p className="text-sm text-slate-800 leading-relaxed">
-                {candidateSkills}
-              </p>
+              {candidateSkillsList.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {candidateSkillsList.map((skill, index) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200/80 shadow-2xs"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-slate-500 italic">Not provided</p>
+              )}
             </div>
           </div>
 
-          {/* Cover Letter / About */}
-          <div>
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
-              Cover Letter / Introduction
-            </h3>
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-100 max-h-60 overflow-y-auto">
-              <p className="text-sm text-slate-700 whitespace-pre-wrap leading-relaxed">
-                {candidateCoverLetter}
-              </p>
+          {/* Additional Information / Candidate Note */}
+          {candidateAdditionalInfo && (
+            <div>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
+                Additional Information / Candidate Note
+              </h3>
+              <div className="p-4 bg-slate-50 rounded-xl border border-slate-100 max-h-60 overflow-y-auto">
+                <p className="text-sm text-slate-700 whitespace-pre-wrap leading-relaxed">
+                  {candidateAdditionalInfo}
+                </p>
+              </div>
             </div>
-          </div>
+          )}
+
+          {/* Cover Letter */}
+          {candidateCoverLetter && (
+            <div>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
+                Cover Letter / Introduction
+              </h3>
+              <div className="p-4 bg-slate-50 rounded-xl border border-slate-100 max-h-60 overflow-y-auto">
+                <p className="text-sm text-slate-700 whitespace-pre-wrap leading-relaxed">
+                  {candidateCoverLetter}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {!candidateAdditionalInfo && !candidateCoverLetter && (
+            <div>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
+                Cover Letter / Candidate Note
+              </h3>
+              <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                <p className="text-sm text-slate-500 italic">Not provided</p>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Sidebar: Resume & Online Links */}

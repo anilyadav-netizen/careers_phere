@@ -5,21 +5,35 @@ import {
   Building2,
   ChevronDown,
   Code,
+  Compass,
+  Cpu,
+  Globe,
   Globe2,
   GraduationCap,
+  HeartHandshake,
   Landmark,
+  Layers,
   MapPin,
+  Monitor,
   Rocket,
   Search,
+  Settings,
+  Shield,
   ShoppingCart,
+  Smartphone,
+  Sparkles,
+  Star,
+  Target,
   Truck,
   Users,
   Wifi,
+  Zap,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getFlagByCountryName } from "../constants/countries";
+import { getPublicJobTypes } from "../redux/slicer/jobTypeSlice";
 
 const BASE_COUNTRIES = [
   { name: "United States", flag: "https://flagcdn.com/w320/us.png" },
@@ -56,9 +70,59 @@ const BASE_COUNTRIES = [
   { name: "Hong Kong", flag: "https://flagcdn.com/w320/hk.png" },
 ];
 
+const ICON_MAP = {
+  Wifi,
+  Building2,
+  Landmark,
+  Rocket,
+  Users,
+  Code,
+  Award,
+  GraduationCap,
+  Briefcase,
+  ShoppingCart,
+  Truck,
+  Globe,
+  Globe2,
+  Monitor,
+  Smartphone,
+  Cpu,
+  Target,
+  Zap,
+  Shield,
+  Sparkles,
+  HeartHandshake,
+  Layers,
+  Compass,
+  Star,
+  Settings,
+};
+
+const DEFAULT_CATEGORIES = [
+  { icon: Wifi, label: "Remote", value: "Remote" },
+  { icon: Building2, label: "MNC", value: "MNC" },
+  { icon: Landmark, label: "Banking & ...", value: "Banking & Finance" },
+  { icon: Rocket, label: "Startup", value: "Startup" },
+  { icon: Users, label: "HR", value: "HR" },
+  { icon: Code, label: "Engineering", value: "Engineering" },
+  { icon: Award, label: "Fortune 500", value: "Fortune 500" },
+  { icon: GraduationCap, label: "Internship", value: "Internship" },
+  { icon: Briefcase, label: "Project Mg...", value: "Project Management" },
+  { icon: ShoppingCart, label: "Sales", value: "Sales" },
+  { icon: Truck, label: "Supply Ch...", value: "Supply Chain" },
+];
+
 const FlagSection = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { jobs = [] } = useSelector((state) => state.jobs || {});
+  const rawJobTypes = useSelector((state) => state.jobTypes?.jobTypes || []);
+
+  useEffect(() => {
+    if (rawJobTypes.length === 0) {
+      dispatch(getPublicJobTypes());
+    }
+  }, [dispatch, rawJobTypes.length]);
 
   const [keyword, setKeyword] = useState("");
   const [experience, setExperience] = useState("");
@@ -139,19 +203,18 @@ const FlagSection = () => {
     { label: "5 years", value: "5" },
   ];
 
-  const categories = [
-    { icon: Wifi, label: "Remote", value: "Remote" },
-    { icon: Building2, label: "MNC", value: "MNC" },
-    { icon: Landmark, label: "Banking & ...", value: "Banking & Finance" },
-    { icon: Rocket, label: "Startup", value: "Startup" },
-    { icon: Users, label: "HR", value: "HR" },
-    { icon: Code, label: "Engineering", value: "Engineering" },
-    { icon: Award, label: "Fortune 500", value: "Fortune 500" },
-    { icon: GraduationCap, label: "Internship", value: "Internship" },
-    { icon: Briefcase, label: "Project Mg...", value: "Project Management" },
-    { icon: ShoppingCart, label: "Sales", value: "Sales" },
-    { icon: Truck, label: "Supply Ch...", value: "Supply Chain" },
-  ];
+  const categories = useMemo(() => {
+    if (rawJobTypes && rawJobTypes.length > 0) {
+      return rawJobTypes
+        .filter((jt) => jt.isActive !== false)
+        .map((jt) => ({
+          icon: ICON_MAP[jt.icon] || Briefcase,
+          label: jt.label || jt.name,
+          value: jt.name,
+        }));
+    }
+    return DEFAULT_CATEGORIES;
+  }, [rawJobTypes]);
 
   /* ================= OUTSIDE CLICK ================= */
 

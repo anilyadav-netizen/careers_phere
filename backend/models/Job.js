@@ -35,22 +35,7 @@ const JobSchema = new mongoose.Schema(
     },
     jobType: {
       type: String,
-      enum: [
-        "Remote",
-        "MNC",
-        "Banking & Finance",
-        "Startup",
-        "HR",
-        "Engineering",
-        "Fortune 500",
-        "Internship",
-        "Project Management",
-        "Sales",
-        "Supply Chain",
-        "Full Time",
-        "Part Time",
-        "Contract",
-      ],
+      trim: true,
       default: "Remote",
     },
     domain: {

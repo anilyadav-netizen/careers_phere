@@ -2463,6 +2463,15 @@ exports.getAllApplicationsAdmin =
           .lean();
       }
 
+      const dedupeString = (val, fallback = "") => {
+        if (!val || typeof val !== "string") return val || fallback;
+        const parts = val.split(",").map((s) => s.trim()).filter(Boolean);
+        if (parts.length > 1 && new Set(parts.map((p) => p.toLowerCase())).size === 1) {
+          return parts[0];
+        }
+        return [...new Set(parts)].join(", ") || fallback;
+      };
+
       // Format FrontendApplication into unified application schema
       const mappedRoleApplications = roleApplications.map((roleApp) => ({
         _id: roleApp._id,
@@ -2474,8 +2483,8 @@ exports.getAllApplicationsAdmin =
         applicant: null,
         job: {
           _id: roleApp.opportunityId || roleApp._id,
-          title: roleApp.opportunityRole || roleApp.role || "Role Application",
-          company: roleApp.companyName || "CareerNova Partner",
+          title: dedupeString(roleApp.opportunityRole || roleApp.role, "Role Application"),
+          company: dedupeString(roleApp.companyName, "CareerNova Partner"),
           location: roleApp.currentLocation || "Remote",
           country: roleApp.currentCountry || "Global",
           domain: roleApp.role || "Frontend Developer",
@@ -2562,6 +2571,15 @@ exports.getApplicationByIdAdmin =
             "title company location country categoryName domain jobType"
           );
 
+      const dedupeString = (val, fallback = "") => {
+        if (!val || typeof val !== "string") return val || fallback;
+        const parts = val.split(",").map((s) => s.trim()).filter(Boolean);
+        if (parts.length > 1 && new Set(parts.map((p) => p.toLowerCase())).size === 1) {
+          return parts[0];
+        }
+        return [...new Set(parts)].join(", ") || fallback;
+      };
+
       if (!application) {
         // Fallback: Check FrontendApplication (role application)
         const roleApp = await FrontendApplication.findById(req.params.id);
@@ -2597,8 +2615,8 @@ exports.getApplicationByIdAdmin =
               : [],
             resume: roleApp.resume?.filename || "",
             job: {
-              title: roleApp.opportunityRole || roleApp.role || "Role Opportunity",
-              company: roleApp.companyName || "CareerNova Partner",
+              title: dedupeString(roleApp.opportunityRole || roleApp.role, "Role Opportunity"),
+              company: dedupeString(roleApp.companyName, "CareerNova Partner"),
               location: roleApp.currentLocation || "Remote",
               country: roleApp.currentCountry || "Global",
               domain: roleApp.role,
@@ -2612,6 +2630,11 @@ exports.getApplicationByIdAdmin =
 
       const data =
         application.toObject();
+
+      if (data.job) {
+        if (data.job.title) data.job.title = dedupeString(data.job.title, data.job.title);
+        if (data.job.company) data.job.company = dedupeString(data.job.company, data.job.company);
+      }
 
       const submitted =
         data.applicationData || {};
@@ -2650,6 +2673,9 @@ exports.getApplicationByIdAdmin =
       data.noticePeriod =
         submitted.noticePeriod ||
         "";
+
+      data.skills =
+        submitted.skills || [];
 
       data.professionalDetails =
         submitted.additionalInfo ||

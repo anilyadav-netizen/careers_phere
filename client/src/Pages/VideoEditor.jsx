@@ -24,6 +24,7 @@ import { useEffect, useState } from "react";
 import { FaInstagram, FaLinkedinIn, FaVimeoV, FaYoutube } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import RoleApplyModal from "../components/RoleApplyModal";
+import RoleOpportunitiesEmptyState from "../components/RoleOpportunitiesEmptyState";
 import { fetchPublicOpportunities } from "../redux/slicer/roleOpportunitySlice";
 
 const VideoEditor = () => {
@@ -902,69 +903,9 @@ const VideoEditor = () => {
                     </div>
                   );
                 })
-              : globalMarkets.map((market, idx) => (
-                  <div
-                    key={idx}
-                    data-aos="fade-up"
-                    data-aos-delay={idx * 40}
-                    className="rounded-2xl border border-slate-100 bg-[#F7FCFF] p-4 hover:border-[#30AFFF]/60 hover:bg-white transition shadow-xs flex flex-col"
-                  >
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={market.flag}
-                        alt={market.country}
-                        className="w-7 h-5 rounded object-cover shadow-xs"
-                      />
-
-                      <div className="min-w-0">
-                        <h4 className="text-sm font-bold text-slate-900">
-                          {market.country}
-                        </h4>
-
-                        <span className="text-[10px] text-slate-400">
-                          {market.region}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="mt-3 pt-3 border-t border-slate-100">
-                      <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">
-                        Expected Payout
-                      </div>
-
-                      <div className="text-sm font-black text-slate-900">
-                        {market.payout}
-                      </div>
-                    </div>
-
-                    <div className="mt-2 text-[11px] text-[#0B6F9F] font-semibold">
-                      {market.focus}
-                    </div>
-
-                    <div className="flex flex-wrap gap-1 mt-2">
-                      {market.modes.map((m) => (
-                        <span
-                          key={m}
-                          className="text-[9px] font-bold bg-white text-slate-600 px-2 py-0.5 rounded border border-slate-100"
-                        >
-                          {m}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* APPLY BUTTON */}
-                    <div className="flex justify-end mt-4 pt-3 border-t border-slate-100 mt-auto">
-                      <button
-                        type="button"
-                        onClick={() => goToApplicationForm(null)}
-                        className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-3 py-2 text-[10px] font-bold text-white hover:bg-[#30AFFF] transition cursor-pointer"
-                      >
-                        Apply
-                        <ArrowRight size={13} className="shrink-0" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
+              : (
+                <RoleOpportunitiesEmptyState roleTitle="Video Editor" />
+              )}
           </div>
         </div>
       </section>

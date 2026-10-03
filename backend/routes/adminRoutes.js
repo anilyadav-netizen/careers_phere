@@ -12,6 +12,15 @@ const {
 } = require("../controllers/categoryController");
 
 const {
+  createJobType,
+  getAllJobTypesAdmin,
+  getJobTypeByIdAdmin,
+  updateJobType,
+  deleteJobType,
+  toggleJobTypeStatus,
+} = require("../controllers/jobTypeController");
+
+const {
   createJob,
   getAllJobsAdmin,
   getJobByIdAdmin,
@@ -89,6 +98,15 @@ router.get("/categories/:id", getCategoryByIdAdmin);
 router.put("/categories/:id", uploadImage, handleUploadError, updateCategory);
 router.delete("/categories/:id", deleteCategory);
 router.patch("/categories/:id/toggle", toggleCategoryStatus);
+
+// ============ JOB TYPE MANAGEMENT ============
+
+router.post("/job-types", createJobType);
+router.get("/job-types", getAllJobTypesAdmin);
+router.get("/job-types/:id", getJobTypeByIdAdmin);
+router.put("/job-types/:id", updateJobType);
+router.delete("/job-types/:id", deleteJobType);
+router.patch("/job-types/:id/toggle", toggleJobTypeStatus);
 
 // ============ JOB MANAGEMENT ============
 

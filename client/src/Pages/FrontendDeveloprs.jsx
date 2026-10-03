@@ -30,6 +30,7 @@ import {
 } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import RoleApplyModal from "../components/RoleApplyModal";
+import RoleOpportunitiesEmptyState from "../components/RoleOpportunitiesEmptyState";
 import { fetchPublicOpportunities } from "../redux/slicer/roleOpportunitySlice";
 
 const FrontendDeveloprs = () => {
@@ -926,103 +927,9 @@ const FrontendDeveloprs = () => {
                     </motion.div>
                   );
                 })
-              : globalMarkets.map((market, index) => (
-                  <motion.div
-                    key={market.country}
-                    custom={index}
-                    variants={cardReveal}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, amount: 0.1 }}
-                    whileHover={{ y: -5 }}
-                    className="group rounded-2xl border border-slate-100 bg-white shadow-sm hover:border-[#30AFFF]/30 hover:shadow-[0_15px_45px_rgba(15,23,42,0.10)] transition-all p-4 flex flex-col"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-11 h-11 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-center shadow-sm overflow-hidden">
-                          <img
-                            src={market.flag}
-                            alt={`${market.country} flag`}
-                            className="w-8 h-6 object-cover rounded-sm border border-slate-100"
-                          />
-                        </div>
-
-                        <div>
-                          <h3 className="text-sm font-bold text-slate-800">
-                            {market.country}
-                          </h3>
-                          <p className="text-[10px] text-slate-400 mt-0.5">
-                            {market.region}
-                          </p>
-                        </div>
-                      </div>
-
-                      <span className="text-[9px] font-bold tracking-wider rounded-full border border-[#30AFFF]/30 bg-[#30AFFF]/5 text-[#159FEF] px-2 py-1">
-                        {market.currency}
-                      </span>
-                    </div>
-
-                    <div className="mt-5">
-                      <div className="flex items-center gap-1.5 text-[9px] uppercase tracking-[0.16em] text-slate-400 font-bold">
-                        <DollarSign size={11} />
-                        Indicative payout
-                      </div>
-
-                      <div className="text-lg font-black tracking-tight text-slate-900 mt-1">
-                        {market.payout}
-                      </div>
-
-                      <div className="text-[9px] text-slate-400 mt-0.5">
-                        Typical annual range · role dependent
-                      </div>
-                    </div>
-
-                    <div className="flex flex-wrap gap-1.5 mt-4">
-                      {market.modes.map((mode) => (
-                        <span
-                          key={mode}
-                          className="rounded-full border border-slate-200 bg-slate-50 px-2 py-1 text-[9px] text-slate-600"
-                        >
-                          {mode}
-                        </span>
-                      ))}
-                    </div>
-
-                    <div className="mt-4 pt-4 border-t border-slate-100 space-y-2.5">
-                      <div className="flex items-start gap-2">
-                        <BriefcaseBusiness
-                          size={13}
-                          className="text-[#30AFFF] mt-0.5 shrink-0"
-                        />
-                        <span className="text-[10px] leading-4 text-slate-500">
-                          {market.focus}
-                        </span>
-                      </div>
-
-                      <div className="flex items-start gap-2">
-                        <Plane
-                          size={13}
-                          className="text-[#30AFFF] mt-0.5 shrink-0"
-                        />
-                        <span className="text-[10px] leading-4 text-slate-500">
-                          {market.relocation}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* APPLY BUTTON — RIGHT ALIGNED */}
-                    <div className="flex justify-end mt-5 pt-4 border-t border-slate-100 mt-auto">
-                      <button
-                        type="button"
-                        onClick={() => handleMarketApply(market)}
-                        className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-3 py-2 text-[10px] font-bold text-white shadow-sm hover:bg-[#159FEF] transition"
-                      >
-                        Apply
-                        <ArrowRight size={13} />
-                      </button>
-                    </div>
-                  </motion.div>
-                ))}
+              : (
+                <RoleOpportunitiesEmptyState roleTitle="Frontend Developer" />
+              )}
           </div>
 
           <div className="relative mt-6 grid md:grid-cols-[1fr_auto] gap-4 items-center rounded-2xl border border-[#30AFFF]/20 bg-[#30AFFF]/[0.04] p-4 shadow-sm">

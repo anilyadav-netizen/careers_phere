@@ -25,6 +25,7 @@ import { useEffect, useReducer, useState } from "react";
 import { FaAndroid, FaGithub, FaLinkedinIn } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import RoleApplyModal from "../components/RoleApplyModal";
+import RoleOpportunitiesEmptyState from "../components/RoleOpportunitiesEmptyState";
 import { fetchPublicOpportunities } from "../redux/slicer/roleOpportunitySlice";
 
 /* ---------------- REDUCER ---------------- */
@@ -759,137 +760,9 @@ const AndroidDeveloper = () => {
                     </motion.div>
                   );
                 })
-              : globalOpportunities.map((item, index) => {
-                  const Icon = item.icon;
-                  return (
-                    <motion.div
-                      key={item.country}
-                      data-aos="fade-up"
-                      data-aos-delay={index * 70}
-                      whileHover={{ y: -5 }}
-                      className="group rounded-2xl border border-slate-100 bg-white p-5 shadow-sm hover:border-[#30AFFF]/30 hover:shadow-[0_15px_45px_rgba(15,23,42,0.10)] transition-all flex flex-col"
-                    >
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 overflow-hidden">
-                            <img
-                              src={item.flag}
-                              alt={`${item.country} flag`}
-                              className="w-8 h-6 object-cover rounded-sm border border-slate-200 shadow-sm"
-                            />
-                          </div>
-
-                          <div>
-                            <h3 className="font-bold text-slate-800">
-                              {item.country}
-                            </h3>
-                            <p className="text-xs text-slate-400 mt-0.5">
-                              {item.region}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="w-9 h-9 rounded-lg bg-[#30AFFF]/10 text-[#30AFFF] flex items-center justify-center">
-                          <Icon size={18} />
-                        </div>
-                      </div>
-
-                      <div className="mt-5 rounded-2xl border border-[#30AFFF]/20 bg-[#30AFFF]/[0.04] p-4">
-                        <div className="flex items-center justify-between gap-3">
-                          <div className="flex items-center gap-2">
-                            <BadgeDollarSign
-                              size={17}
-                              className="text-[#30AFFF]"
-                            />
-                            <span className="text-xs font-medium text-slate-500">
-                              Indicative payout
-                            </span>
-                          </div>
-
-                          <span className="text-[11px] text-slate-400">
-                            {item.currency}
-                          </span>
-                        </div>
-
-                        <p className="text-xl font-black text-slate-900 mt-1">
-                          {item.payout}
-                        </p>
-                      </div>
-
-                      <div className="mt-4 space-y-3">
-                        <div className="flex items-start gap-3">
-                          <MapPin
-                            size={16}
-                            className="text-[#30AFFF] mt-0.5 shrink-0"
-                          />
-                          <div>
-                            <p className="text-[11px] uppercase tracking-wide text-slate-400">
-                              Available in
-                            </p>
-                            <p className="text-sm text-slate-600 mt-0.5">
-                              {item.location}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="flex items-start gap-3">
-                          <Laptop2
-                            size={16}
-                            className="text-[#30AFFF] mt-0.5 shrink-0"
-                          />
-                          <div>
-                            <p className="text-[11px] uppercase tracking-wide text-slate-400">
-                              Work mode
-                            </p>
-                            <p className="text-sm text-slate-600 mt-0.5">
-                              {item.mode}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-3">
-                          <div className="rounded-lg bg-slate-50 p-3">
-                            <div className="flex items-center gap-1.5">
-                              <Plane size={14} className="text-[#30AFFF]" />
-                              <span className="text-[10px] uppercase tracking-wide text-slate-400">
-                                Relocation
-                              </span>
-                            </div>
-                            <p className="text-xs text-slate-600 mt-1 leading-5">
-                              {item.relocation}
-                            </p>
-                          </div>
-
-                          <div className="rounded-lg bg-slate-50 p-3">
-                            <div className="flex items-center gap-1.5">
-                              <ShieldCheck
-                                size={14}
-                                className="text-[#30AFFF]"
-                              />
-                              <span className="text-[10px] uppercase tracking-wide text-slate-400">
-                                Sponsorship
-                              </span>
-                            </div>
-                            <p className="text-xs text-slate-600 mt-1 leading-5">
-                              {item.sponsorship}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* APPLY BUTTON — RIGHT ALIGNED */}
-                      <div className="flex justify-end mt-5 pt-4 border-t border-slate-100 mt-auto">
-                        <button
-                          onClick={() => handleOpportunitySelect(item)}
-                          className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[#159FEF] transition"
-                        >
-                          Apply
-                          <ArrowRight size={13} />
-                        </button>
-                      </div>
-                    </motion.div>
-                  );
-                })}
+              : (
+                <RoleOpportunitiesEmptyState roleTitle="Android Developer" />
+              )}
           </div>
 
           <div

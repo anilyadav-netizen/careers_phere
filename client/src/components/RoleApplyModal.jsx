@@ -161,25 +161,20 @@ const RoleApplyModal = ({
 
     data.append("role", role);
 
-    if (opportunity) {
-      if (opportunity.companyName)
-        data.append("companyName", opportunity.companyName);
-      if (opportunity.companyLogo)
-        data.append("companyLogo", opportunity.companyLogo);
-      if (opportunity._id) data.append("opportunityId", opportunity._id);
-      if (opportunity.roleTitle)
-        data.append("opportunityRole", opportunity.roleTitle);
-    } else if (initialData?.companyName) {
-      data.append("companyName", initialData.companyName);
-      if (initialData.companyLogo)
-        data.append("companyLogo", initialData.companyLogo);
-      if (initialData.opportunityId)
-        data.append("opportunityId", initialData.opportunityId);
-      if (initialData.opportunityRole)
-        data.append("opportunityRole", initialData.opportunityRole);
-    }
+    const compName = opportunity?.companyName || initialData?.companyName || formData.companyName || "";
+    const compLogo = opportunity?.companyLogo || initialData?.companyLogo || formData.companyLogo || "";
+    const oppId = opportunity?._id || initialData?.opportunityId || formData.opportunityId || "";
+    const oppRole = opportunity?.roleTitle || initialData?.opportunityRole || formData.opportunityRole || "";
+
+    if (compName) data.append("companyName", compName);
+    if (compLogo) data.append("companyLogo", compLogo);
+    if (oppId) data.append("opportunityId", oppId);
+    if (oppRole) data.append("opportunityRole", oppRole);
 
     Object.keys(formData).forEach((key) => {
+      if (["role", "companyName", "companyLogo", "opportunityId", "opportunityRole"].includes(key)) {
+        return;
+      }
       data.append(key, formData[key]);
     });
 

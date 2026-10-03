@@ -11,12 +11,14 @@ import userSubscriptionReducer from "../redux/slicer/userSubscriptionSlice";
 import testimonialsReducer from "../redux/slicer/userTestimonialSlice";
 import frontendApplicationReducer from "../redux/slicer/frontendApplicationSlice";
 import roleOpportunityReducer from "../redux/slicer/roleOpportunitySlice";
+import jobTypeReducer from "../redux/slicer/jobTypeSlice";
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     categories: categoryReducer,
     jobs: jobsReducer,
+    jobTypes: jobTypeReducer,
     gallery: galleryReducer,
     subscription: subscriptionReducer,
     testimonials: testimonialReducer,

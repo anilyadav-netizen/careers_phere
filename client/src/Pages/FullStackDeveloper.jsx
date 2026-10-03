@@ -1,6 +1,7 @@
 import React, { useEffect, useReducer, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import RoleApplyModal from "../components/RoleApplyModal";
+import RoleOpportunitiesEmptyState from "../components/RoleOpportunitiesEmptyState";
 import { fetchPublicOpportunities } from "../redux/slicer/roleOpportunitySlice";
 import {
   ArrowRight,
@@ -831,75 +832,7 @@ const FullStackDeveloper = () => {
                 );
               })
             ) : (
-              opportunityCountries.map((country) => (
-                <motion.div
-                  key={country.name}
-                  variants={cardVariants}
-                  className="group rounded-2xl border border-slate-100 bg-white p-4 shadow-sm hover:border-[#30AFFF]/30 hover:shadow-[0_15px_45px_rgba(15,23,42,0.10)] transition-all flex flex-col"
-                  whileHover={{ y: -5 }}
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center overflow-hidden">
-                        <img
-                          src={country.flag}
-                          alt={`${country.name} flag`}
-                          className="w-7 h-5 object-cover rounded-sm"
-                        />
-                      </div>
-
-                      <div>
-                        <h3 className="text-sm font-bold text-slate-800">
-                          {country.name}
-                        </h3>
-
-                        <p className="text-[11px] text-slate-400 mt-0.5">
-                          Full Stack roles
-                        </p>
-                      </div>
-                    </div>
-
-                    <span className="w-2 h-2 rounded-full mt-2 bg-[#30AFFF]" />
-                  </div>
-
-                  <div className="border-t border-slate-100 mt-4 pt-3">
-                    <p className="text-[10px] uppercase tracking-[0.15em] text-slate-400 font-bold">
-                      Typical range
-                    </p>
-
-                    <p className="text-lg font-black text-slate-900 mt-0.5">
-                      {country.salary}
-                    </p>
-
-                    <p className="text-[10px] text-slate-400 mt-0.5">
-                      USD equivalent / year
-                    </p>
-                  </div>
-
-                  <div className="flex flex-wrap gap-1.5 mt-3">
-                    {country.modes.map((mode) => (
-                      <span
-                        key={mode}
-                        className="rounded-full bg-slate-50 border border-slate-200 px-2 py-1 text-[10px] text-slate-600"
-                      >
-                        {mode}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* APPLY BUTTON - GLOBAL OPPORTUNITY */}
-                  <div className="flex justify-end mt-3 pt-3 border-t border-slate-100 mt-auto">
-                    <button
-                      type="button"
-                      onClick={() => openGlobalApplication(null)}
-                      className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-3 py-2 text-[10px] font-bold text-white shadow-sm hover:bg-[#159FEF] transition"
-                    >
-                      Apply
-                      <ArrowRight size={13} />
-                    </button>
-                  </div>
-                </motion.div>
-              ))
+              <RoleOpportunitiesEmptyState roleTitle="Full Stack Developer" />
             )}
           </motion.div>
 
