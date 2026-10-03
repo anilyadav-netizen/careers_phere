@@ -12,6 +12,7 @@ import testimonialsReducer from "../redux/slicer/userTestimonialSlice";
 import frontendApplicationReducer from "../redux/slicer/frontendApplicationSlice";
 import roleOpportunityReducer from "../redux/slicer/roleOpportunitySlice";
 import jobTypeReducer from "../redux/slicer/jobTypeSlice";
+import videoReducer from "../redux/slicer/videoSlice";
 
 export const store = configureStore({
   reducer: {
@@ -28,5 +29,6 @@ export const store = configureStore({
     application: applicationReducer,
     frontendApplications: frontendApplicationReducer,
     roleOpportunities: roleOpportunityReducer,
+    video: videoReducer,
   },
 });

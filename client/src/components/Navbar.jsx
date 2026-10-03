@@ -44,6 +44,7 @@ const Logo = ({ onClick, className = "" }) => (
   >
     <img
       src={LOGO_URL}
+      loading="lazy"
       alt="CareerNova"
       decoding="async"
       className="h-[4rem] w-auto max-w-[130px] object-contain min-[400px]:max-w-[150px] md:h-10 md:max-w-[190px] lg:h-[4.25rem] lg:max-w-[160px]"
