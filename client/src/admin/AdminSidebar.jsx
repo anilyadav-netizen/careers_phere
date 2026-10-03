@@ -46,16 +46,6 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
       icon: FileText,
     },
     {
-      name: "Role Applications",
-      path: "/admin/frontend-applications",
-      icon: BriefcaseBusiness,
-    },
-    {
-      name: "Role Opportunities",
-      path: "/admin/role-opportunities",
-      icon: Globe2,
-    },
-    {
       name: "Testimonial",
       path: "/admin/reviews",
       icon: FileText,

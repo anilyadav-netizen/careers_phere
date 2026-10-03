@@ -37,6 +37,7 @@ import {
   Users,
   X,
 } from "lucide-react";
+import { getFlagByCountryName } from "../constants/countries";
 
 const JobDetail = () => {
   const navigate = useNavigate();
@@ -123,15 +124,21 @@ const JobDetail = () => {
       type: backendJob.jobType || "Full Time",
       posted: backendJob.daysAgo || "Recently",
       applicants: backendJob.applicantCount ?? 0,
-      logo:
+      logoUrl:
         backendJob.companyLogo?.displayUrl ||
         backendJob.companyLogo?.url ||
+        backendJob.companyLogo?.thumb ||
+        (typeof backendJob.companyLogo === "string" && backendJob.companyLogo.startsWith("http")
+          ? backendJob.companyLogo
+          : null),
+      logo:
         backendJob.company?.charAt(0)?.toUpperCase() ||
         "C",
       logoClass: "bg-[#A0E9FF] text-[#159FEF]",
       responsibilities: backendJob.responsibilities || [],
       requirements: backendJob.requirements || [],
       skills: backendJob.skills || [],
+      countries: Array.isArray(backendJob.countries) ? backendJob.countries : [],
     }
     : null;
 
@@ -631,9 +638,23 @@ const JobDetail = () => {
               <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
                 <div className="flex items-start gap-4">
                   <div
-                    className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-xl text-2xl font-bold ${job.logoClass}`}
+                    className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-[#A0E9FF]/40 text-2xl font-bold text-[#159FEF]"
                   >
-                    {job.logo}
+                    {job.logoUrl ? (
+                      <img
+                        src={job.logoUrl}
+                        alt={job.company}
+                        className="h-full w-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                          if (e.currentTarget.parentElement) {
+                            e.currentTarget.parentElement.innerText = job.logo;
+                          }
+                        }}
+                      />
+                    ) : (
+                      job.logo
+                    )}
                   </div>
 
                   <div>
@@ -651,7 +672,40 @@ const JobDetail = () => {
                         <MapPin size={16} />
                         {job.location}
                       </span>
+
+                      {job.domain && (
+                        <span className="rounded-full bg-[#A0E9FF]/40 px-2.5 py-0.5 text-xs font-semibold text-[#159FEF]">
+                          {job.domain}
+                        </span>
+                      )}
                     </div>
+
+                    {job.countries && job.countries.length > 0 && (
+                      <div className="mt-3 flex flex-wrap items-center gap-2">
+                        <span className="text-xs font-medium text-slate-500">
+                          Target Countries:
+                        </span>
+                        {job.countries.map((c, idx) => {
+                          const countryName = c?.name || c?.countryName || "";
+                          const flagUrl = c?.flag || getFlagByCountryName(countryName);
+                          return (
+                            <span
+                              key={idx}
+                              className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700"
+                            >
+                              {flagUrl && (
+                                <img
+                                  src={flagUrl}
+                                  alt={countryName}
+                                  className="h-3.5 w-5 rounded-sm object-cover"
+                                />
+                              )}
+                              <span>{countryName}</span>
+                            </span>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -723,7 +777,7 @@ const JobDetail = () => {
                   </div>
 
                   <p className="mt-1 font-bold text-[#102B36]">
-                    {job.salary}
+                    {job.salary && job.salary.trim() ? job.salary : "Undisclosed"}
                   </p>
                 </div>
 
@@ -914,7 +968,7 @@ const JobDetail = () => {
                       </p>
 
                       <p className="mt-1 text-sm font-semibold text-[#29444F]">
-                        {job.salary}
+                        {job.salary && job.salary.trim() ? job.salary : "Undisclosed"}
                       </p>
                     </div>
                   </div>
@@ -1234,70 +1288,6 @@ const JobDetail = () => {
                             onChange={handleInputChange}
                             required
                             placeholder="+91 00000 00000"
-                            className="w-full rounded-xl border border-[#D9F3FA] py-2.5 pl-9 pr-3 text-sm text-[#29444F] outline-none transition placeholder:text-[#9AAEB5] focus:border-[#30AFFF] focus:ring-2 focus:ring-[#A0E9FF]"
-                          />
-                        </div>
-                      </div>
-
-                      {/* LOCATION */}
-                      <div>
-                        <label className="mb-1.5 block text-xs font-semibold text-[#29444F]">
-                          Current Location (City / State)
-                        </label>
-                        <div className="relative">
-                          <MapPin
-                            size={16}
-                            className="absolute left-3 top-1/2 -translate-y-1/2 text-[#7A969F]"
-                          />
-                          <input
-                            type="text"
-                            name="currentLocation"
-                            value={formData.currentLocation}
-                            onChange={handleInputChange}
-                            placeholder="e.g. Bangalore, Delhi, London..."
-                            className="w-full rounded-xl border border-[#D9F3FA] py-2.5 pl-9 pr-3 text-sm text-[#29444F] outline-none transition placeholder:text-[#9AAEB5] focus:border-[#30AFFF] focus:ring-2 focus:ring-[#A0E9FF]"
-                          />
-                        </div>
-                      </div>
-
-                      {/* EXPECTED SALARY */}
-                      <div>
-                        <label className="mb-1.5 block text-xs font-semibold text-[#29444F]">
-                          Expected Annual Salary *
-                        </label>
-                        <div className="relative">
-                          <DollarSign
-                            size={16}
-                            className="absolute left-3 top-1/2 -translate-y-1/2 text-[#7A969F]"
-                          />
-                          <input
-                            type="text"
-                            name="expectedSalary"
-                            value={formData.expectedSalary}
-                            onChange={handleInputChange}
-                            required
-                            placeholder="e.g. ₹8,00,000 / $60,000"
-                            className="w-full rounded-xl border border-[#D9F3FA] py-2.5 pl-9 pr-3 text-sm text-[#29444F] outline-none transition placeholder:text-[#9AAEB5] focus:border-[#30AFFF] focus:ring-2 focus:ring-[#A0E9FF]"
-                          />
-                        </div>
-                      </div>
-
-                      {/* LINKEDIN */}
-                      <div>
-                        <label className="mb-1.5 block text-xs font-semibold text-[#29444F]">
-                          LinkedIn Profile
-                        </label>
-                        <div className="relative">
-                          <Globe
-                            size={16}
-                            className="absolute left-3 top-1/2 -translate-y-1/2 text-[#7A969F]"
-                          />
-                          <input
-                            type="url"
-                            name="linkedin"
-                            value={formData.linkedin}
-                            onChange={handleInputChange}
-                            placeholder="https://linkedin.com/in/..."
                             className="w-full rounded-xl border border-[#D9F3FA] py-2.5 pl-9 pr-3 text-sm text-[#29444F] outline-none transition placeholder:text-[#9AAEB5] focus:border-[#30AFFF] focus:ring-2 focus:ring-[#A0E9FF]"
                           />
                         </div>

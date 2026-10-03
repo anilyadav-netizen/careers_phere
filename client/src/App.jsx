@@ -176,14 +176,15 @@ function App() {
                   element={<ApplicationDetails />}
                 />
 
+                {/* Unified Redirects: Role Applications -> Applications, Role Opportunities -> Jobs */}
                 <Route
                   path="frontend-applications"
-                  element={<FrontendApplications />}
+                  element={<Applications />}
                 />
 
                 <Route
                   path="role-opportunities"
-                  element={<RoleOpportunities />}
+                  element={<AdminJobs />}
                 />
 
                 {/* SUBSCRIPTIONS */}

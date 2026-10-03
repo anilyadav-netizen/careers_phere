@@ -21,6 +21,8 @@ import {
 } from "lucide-react";
 
 import { getAllJobsUser } from "../redux/slicer/jobSlice";
+import { getCategories } from "../redux/slicer/categorySlice";
+import { getFlagByCountryName } from "../constants/countries";
 
 import {
   saveJob,
@@ -36,8 +38,28 @@ const Jobs = () => {
   // URL FILTERS
   // ============================================================
 
-  const selectedCountry = searchParams.get("country")?.trim() || "";
-  const selectedCategory = searchParams.get("category")?.trim() || "";
+  const urlCountry = searchParams.get("country")?.trim() || "";
+  const urlLocation = searchParams.get("location")?.trim() || "";
+  const urlCategory = searchParams.get("category")?.trim() || "";
+  const urlDomain = searchParams.get("domain")?.trim() || "";
+  const urlJobType = searchParams.get("jobType")?.trim() || "";
+  const urlSearch = searchParams.get("search")?.trim() || "";
+  const urlExperience = searchParams.get("experience")?.trim() || "";
+  const urlCompany = searchParams.get("company")?.trim() || "";
+
+  const selectedCountry = urlCountry;
+  const selectedCategory = urlCategory;
+
+  const hasPreFilledContext = Boolean(
+    urlCountry ||
+    urlLocation ||
+    urlCategory ||
+    urlDomain ||
+    urlJobType ||
+    urlSearch ||
+    urlExperience ||
+    urlCompany
+  );
 
   // ============================================================
   // REDUX
@@ -57,14 +79,19 @@ const Jobs = () => {
     unsaving = false,
   } = useSelector((state) => state.application || {});
 
+  const { categories: reduxCategories = [] } = useSelector(
+    (state) => state.categories || {}
+  );
+
   // ============================================================
   // LOCAL STATES
   // ============================================================
 
-  const [search, setSearch] = useState("");
-  const [location, setLocation] = useState("");
+  const [search, setSearch] = useState(() => urlSearch);
+  const [location, setLocation] = useState(() => urlLocation || urlCountry);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [mobileFilters, setMobileFilters] = useState(false);
+  const [showFiltersManual, setShowFiltersManual] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
   const [sortBy, setSortBy] = useState("relevance");
 
@@ -72,16 +99,20 @@ const Jobs = () => {
   const [savingJobId, setSavingJobId] = useState(null);
 
   const [selectedFilters, setSelectedFilters] = useState({
+    jobType: urlJobType ? [urlJobType] : [],
+    domain: urlDomain ? [urlDomain] : [],
     department: [],
     workMode: [],
-    experience: [],
+    experience: urlExperience ? [urlExperience] : [],
     location: [],
     salary: [],
-    company: [],
+    company: urlCompany ? [urlCompany] : [],
     role: [],
   });
 
   const [openFilters, setOpenFilters] = useState({
+    jobType: true,
+    domain: true,
     department: true,
     workMode: true,
     experience: true,
@@ -91,6 +122,19 @@ const Jobs = () => {
     role: true,
   });
 
+  // Sync state when URL params change (e.g. from Home navigation or back/forward)
+  useEffect(() => {
+    setSearch(urlSearch);
+    setLocation(urlLocation || urlCountry);
+
+    setSelectedFilters((prev) => ({
+      ...prev,
+      domain: urlDomain ? [urlDomain] : [],
+      jobType: urlJobType ? [urlJobType] : [],
+      experience: urlExperience ? [urlExperience] : [],
+    }));
+  }, [urlSearch, urlLocation, urlCountry, urlDomain, urlJobType, urlExperience]);
+
   // ============================================================
   // FETCH JOBS
   // ============================================================
@@ -98,19 +142,60 @@ const Jobs = () => {
   useEffect(() => {
     const payload = {
       page: 1,
-      limit: 10,
+      limit: 50,
     };
 
-    if (selectedCountry) {
-      payload.country = selectedCountry;
+    if (urlCountry) {
+      payload.country = urlCountry;
     }
 
-    if (selectedCategory) {
-      payload.category = selectedCategory;
+    if (urlLocation) {
+      payload.location = urlLocation;
+    }
+
+    if (urlCategory) {
+      payload.category = urlCategory;
+    }
+
+    if (urlDomain) {
+      payload.domain = urlDomain;
+    }
+
+    if (urlJobType) {
+      payload.jobType = urlJobType;
+    }
+
+    if (urlSearch) {
+      payload.search = urlSearch;
+    }
+
+    if (urlExperience) {
+      payload.experience = urlExperience;
+    }
+
+    if (urlCompany) {
+      payload.company = urlCompany;
     }
 
     dispatch(getAllJobsUser(payload));
-  }, [dispatch, selectedCountry, selectedCategory]);
+  }, [
+    dispatch,
+    urlCountry,
+    urlLocation,
+    urlCategory,
+    urlDomain,
+    urlJobType,
+    urlSearch,
+    urlExperience,
+    urlCompany,
+  ]);
+
+  // Fetch categories if not loaded
+  useEffect(() => {
+    if (!reduxCategories || reduxCategories.length === 0) {
+      dispatch(getCategories());
+    }
+  }, [dispatch, reduxCategories]);
 
   // ============================================================
   // NORMALIZE VALUE
@@ -163,8 +248,18 @@ const Jobs = () => {
       return (
         normalizeValue(category?._id) ||
         normalizeValue(category?.id) ||
+        normalizeValue(job?.categoryId?._id) ||
+        normalizeValue(job?.categoryId?.id) ||
         normalizeValue(job?.categoryId) ||
         normalizeValue(job?.categoryID) ||
+        ""
+      );
+    }
+
+    if (job?.categoryId && typeof job.categoryId === "object") {
+      return (
+        normalizeValue(job.categoryId?._id) ||
+        normalizeValue(job.categoryId?.id) ||
         ""
       );
     }
@@ -184,6 +279,7 @@ const Jobs = () => {
   const getCategoryName = (job) => {
     return (
       normalizeValue(job?.categoryName) ||
+      normalizeValue(job?.categoryId?.name) ||
       normalizeValue(job?.category?.name) ||
       normalizeValue(job?.category?.title) ||
       (typeof job?.category === "string"
@@ -268,16 +364,22 @@ const Jobs = () => {
 
       salary:
         normalizeValue(job?.salary) ||
-        "Salary not disclosed",
+        "Undisclosed",
 
       type:
-        normalizeValue(job?.jobType) || "Full Time",
+        normalizeValue(job?.jobType) || "Remote",
+
+      jobType:
+        normalizeValue(job?.jobType) || "Remote",
+
+      domain:
+        normalizeValue(job?.domain) || "",
 
       workMode:
         normalizeValue(job?.workMode) ||
         normalizeValue(job?.workType) ||
         normalizeValue(job?.jobType) ||
-        "Full Time",
+        "Remote",
 
       department: departmentName,
 
@@ -339,6 +441,28 @@ const Jobs = () => {
     return backendJobs.map(mapJob);
   }, [backendJobs]);
 
+  const activeCategoryLabel = useMemo(() => {
+    if (!urlCategory) return "";
+    if (!/^[0-9a-fA-F]{24}$/.test(urlCategory)) {
+      return urlCategory;
+    }
+    const matchedCategory = (Array.isArray(reduxCategories) ? reduxCategories : []).find(
+      (c) => String(c?._id || c?.id) === String(urlCategory)
+    );
+    if (matchedCategory?.name) return matchedCategory.name;
+
+    const matchedJob = jobs.find(
+      (j) =>
+        String(j?.categoryId || j?.rawJob?.categoryId?._id || j?.rawJob?.categoryId) ===
+        String(urlCategory)
+    );
+    if (matchedJob?.department || matchedJob?.categoryName) {
+      return matchedJob.department || matchedJob.categoryName;
+    }
+
+    return "Category";
+  }, [urlCategory, reduxCategories, jobs]);
+
   // ============================================================
   // SYNC SAVED JOBS FROM BACKEND
   // ============================================================
@@ -395,6 +519,29 @@ const Jobs = () => {
 
   const filters = useMemo(() => {
     return {
+      jobType: [
+        ["Remote", "Remote"],
+        ["MNC", "MNC"],
+        ["Banking & Finance", "Banking & Finance"],
+        ["Startup", "Startup"],
+        ["HR", "HR"],
+        ["Engineering", "Engineering"],
+        ["Fortune 500", "Fortune 500"],
+        ["Internship", "Internship"],
+        ["Project Management", "Project Management"],
+        ["Sales", "Sales"],
+        ["Supply Chain", "Supply Chain"],
+      ],
+
+      domain: [
+        ["Frontend", "Frontend"],
+        ["Backend", "Backend"],
+        ["Full Stack", "Full Stack"],
+        ["Android", "Android"],
+        ["UI/UX Designer", "UI/UX Designer"],
+        ["Video Editor", "Video Editor"],
+      ],
+
       department: getDynamicFilter("department"),
 
       workMode: getDynamicFilter("workMode"),
@@ -477,6 +624,8 @@ const Jobs = () => {
 
   const resetFilters = () => {
     setSelectedFilters({
+      jobType: [],
+      domain: [],
       department: [],
       workMode: [],
       experience: [],
@@ -488,6 +637,68 @@ const Jobs = () => {
 
     setSearch("");
     setLocation("");
+  };
+
+  const handleSearchSubmit = () => {
+    const params = new URLSearchParams(searchParams);
+    if (search.trim()) {
+      params.set("search", search.trim());
+    } else {
+      params.delete("search");
+    }
+
+    if (location.trim()) {
+      params.set("location", location.trim());
+      params.set("country", location.trim());
+    } else {
+      params.delete("location");
+      params.delete("country");
+    }
+
+    navigate(`/jobs${params.toString() ? `?${params.toString()}` : ""}`);
+  };
+
+  const removeParam = (paramKey) => {
+    const params = new URLSearchParams(searchParams);
+    params.delete(paramKey);
+    if (paramKey === "country") {
+      params.delete("location");
+      setLocation("");
+    }
+    if (paramKey === "location") {
+      params.delete("country");
+      setLocation("");
+    }
+    if (paramKey === "search") {
+      setSearch("");
+    }
+    if (paramKey === "domain") {
+      setSelectedFilters((prev) => ({ ...prev, domain: [] }));
+    }
+    if (paramKey === "jobType") {
+      setSelectedFilters((prev) => ({ ...prev, jobType: [] }));
+    }
+    if (paramKey === "experience") {
+      setSelectedFilters((prev) => ({ ...prev, experience: [] }));
+    }
+    navigate(`/jobs${params.toString() ? `?${params.toString()}` : ""}`);
+  };
+
+  const clearAllFilters = () => {
+    setSearch("");
+    setLocation("");
+    setSelectedFilters({
+      jobType: [],
+      domain: [],
+      department: [],
+      workMode: [],
+      experience: [],
+      location: [],
+      salary: [],
+      company: [],
+      role: [],
+    });
+    navigate("/jobs");
   };
 
   // ============================================================
@@ -703,20 +914,60 @@ const Jobs = () => {
   const filteredJobs = useMemo(() => {
     let result = [...jobs];
 
+    // Helper to match country or location against a job
+    const matchesJobCountryOrLocation = (job, targetText) => {
+      if (!targetText) return true;
+      const t = targetText.toLowerCase().trim();
+      const jobLoc = normalizeValue(job.location).toLowerCase();
+      const jobCountry = normalizeValue(job.rawJob?.country).toLowerCase();
+      if (jobLoc.includes(t) || jobCountry.includes(t)) {
+        return true;
+      }
+      if (Array.isArray(job.rawJob?.countries)) {
+        return job.rawJob.countries.some((c) => {
+          const cName = (c?.name || c?.countryName || "").toLowerCase().trim();
+          return cName.includes(t) || t.includes(cName);
+        });
+      }
+      return false;
+    };
+
     // ==========================================================
     // COUNTRY FROM URL
     // ==========================================================
 
     if (selectedCountry.trim()) {
-      const countryText =
-        selectedCountry.toLowerCase().trim();
-
-      result = result.filter(
-        (job) =>
-          normalizeValue(job.location)
-            .toLowerCase()
-            .trim() === countryText
+      result = result.filter((job) =>
+        matchesJobCountryOrLocation(job, selectedCountry)
       );
+    }
+
+    // ==========================================================
+    // CATEGORY FROM URL
+    // ==========================================================
+
+    if (selectedCategory.trim()) {
+      const catQuery = selectedCategory.toLowerCase().trim();
+      result = result.filter((job) => {
+        const cId = normalizeValue(
+          job.categoryId ||
+          job.rawJob?.categoryId?._id ||
+          job.rawJob?.categoryId
+        ).toLowerCase();
+
+        const cName = normalizeValue(
+          job.department ||
+          job.categoryName ||
+          job.rawJob?.categoryName ||
+          job.rawJob?.categoryId?.name
+        ).toLowerCase();
+
+        return (
+          cId === catQuery ||
+          cName.includes(catQuery) ||
+          catQuery.includes(cName)
+        );
+      });
     }
 
     // ==========================================================
@@ -741,6 +992,10 @@ const Jobs = () => {
             ?.toLowerCase()
             .includes(searchText) ||
 
+          job.domain
+            ?.toLowerCase()
+            .includes(searchText) ||
+
           job.role
             ?.toLowerCase()
             .includes(searchText) ||
@@ -753,7 +1008,9 @@ const Jobs = () => {
             normalizeValue(skill)
               .toLowerCase()
               .includes(searchText)
-          )
+          ) ||
+
+          matchesJobCountryOrLocation(job, searchText)
         );
       });
     }
@@ -762,14 +1019,54 @@ const Jobs = () => {
     // LOCATION SEARCH
     // ==========================================================
 
-    if (location.trim()) {
-      const locationText =
-        location.toLowerCase().trim();
-
+    if (
+      location.trim() &&
+      location.trim().toLowerCase() !== selectedCountry.trim().toLowerCase()
+    ) {
       result = result.filter((job) =>
-        job.location
-          ?.toLowerCase()
-          .includes(locationText)
+        matchesJobCountryOrLocation(job, location)
+      );
+    }
+
+    // ==========================================================
+    // JOB TYPE (NEW)
+    // ==========================================================
+
+    if (selectedFilters.jobType?.length > 0) {
+      result = result.filter((job) =>
+        selectedFilters.jobType.some((selectedValue) => {
+          const sel = selectedValue.toLowerCase();
+          const jt = (job.jobType || job.type || "").toLowerCase();
+          const wm = (job.workMode || "").toLowerCase();
+          const title = (job.title || "").toLowerCase();
+          return (
+            jt.includes(sel) ||
+            sel.includes(jt) ||
+            wm.includes(sel) ||
+            title.includes(sel)
+          );
+        })
+      );
+    }
+
+    // ==========================================================
+    // DOMAIN (NEW)
+    // ==========================================================
+
+    if (selectedFilters.domain?.length > 0) {
+      result = result.filter((job) =>
+        selectedFilters.domain.some((selectedValue) => {
+          const sel = selectedValue.toLowerCase();
+          const dom = (job.domain || "").toLowerCase();
+          const dept = (job.department || "").toLowerCase();
+          const title = (job.title || "").toLowerCase();
+          return (
+            dom.includes(sel) ||
+            sel.includes(dom) ||
+            dept.includes(sel) ||
+            title.includes(sel)
+          );
+        })
       );
     }
 
@@ -1232,12 +1529,43 @@ const Jobs = () => {
             </span>
           )}
 
+          {job.domain && (
+            <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#30AFFF]/10 text-[#0B6F9F] border border-[#30AFFF]/20">
+              {job.domain}
+            </span>
+          )}
+
           {job.department && (
             <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-slate-50 text-slate-600">
               {job.department}
             </span>
           )}
         </div>
+
+        {/* TARGET COUNTRIES */}
+        {Array.isArray(job.rawJob?.countries) && job.rawJob.countries.length > 0 && (
+          <div className="flex flex-wrap items-center gap-1.5 mt-3">
+            {job.rawJob.countries.map((c, i) => {
+              const cName = c?.name || c?.countryName || "";
+              const flagUrl = c?.flag || getFlagByCountryName(cName);
+              return (
+                <span
+                  key={i}
+                  className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-50 border border-slate-200 text-xs text-slate-700 font-medium"
+                >
+                  {flagUrl && (
+                    <img
+                      src={flagUrl}
+                      alt={cName}
+                      className="w-3.5 h-2.5 rounded-[2px] object-cover"
+                    />
+                  )}
+                  <span>{cName}</span>
+                </span>
+              );
+            })}
+          </div>
+        )}
 
         {/* META */}
 
@@ -1466,6 +1794,11 @@ const Jobs = () => {
                       e.target.value
                     )
                   }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleSearchSubmit();
+                    }
+                  }}
                   onFocus={() =>
                     setMobileSearchOpen(
                       true
@@ -1497,6 +1830,11 @@ const Jobs = () => {
                       e.target.value
                     )
                   }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleSearchSubmit();
+                    }
+                  }}
                   placeholder="Location"
                   className="w-full min-w-0 outline-none text-sm text-slate-700 placeholder:text-slate-400"
                 />
@@ -1506,11 +1844,7 @@ const Jobs = () => {
 
               <button
                 type="button"
-                onClick={() =>
-                  setMobileSearchOpen(
-                    true
-                  )
-                }
+                onClick={handleSearchSubmit}
                 className={`${mobileSearchOpen
                   ? "flex"
                   : "hidden"
@@ -1533,46 +1867,125 @@ const Jobs = () => {
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
 
-        {/* CATEGORY ACTIVE BAR */}
-
-        {selectedCategory && (
-          <div className="mb-5 flex items-center justify-between gap-3 rounded-xl border border-[#30AFFF]/20 bg-[#A0E9FF]/30 px-4 py-3">
-            <div className="flex items-center gap-2 min-w-0">
-              <BriefcaseBusiness
-                size={17}
-                className="text-[#159FEF] shrink-0"
-              />
-
-              <span className="text-sm text-[#159FEF] font-medium truncate">
-                Showing jobs from selected
-                category
+        {/* ACTIVE FILTERS BAR */}
+        {hasPreFilledContext && (
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#30AFFF]/25 bg-gradient-to-r from-[#A0E9FF]/20 via-[#A0E9FF]/10 to-transparent p-4">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#0B6F9F]">
+                Active Filters:
               </span>
+
+              {urlSearch && (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white border border-[#30AFFF]/30 px-3 py-1 text-xs font-medium text-slate-700 shadow-sm">
+                  <span>Keyword: "{urlSearch}"</span>
+                  <button
+                    type="button"
+                    onClick={() => removeParam("search")}
+                    className="text-slate-400 hover:text-red-500"
+                  >
+                    <X size={13} />
+                  </button>
+                </span>
+              )}
+
+              {(urlCountry || urlLocation) && (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white border border-[#30AFFF]/30 px-3 py-1 text-xs font-medium text-slate-700 shadow-sm">
+                  <span>Location: {urlLocation || urlCountry}</span>
+                  <button
+                    type="button"
+                    onClick={() => removeParam("country")}
+                    className="text-slate-400 hover:text-red-500"
+                  >
+                    <X size={13} />
+                  </button>
+                </span>
+              )}
+
+              {urlCategory && (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white border border-[#30AFFF]/30 px-3 py-1 text-xs font-medium text-slate-700 shadow-sm">
+                  <span>Category: {activeCategoryLabel || urlCategory}</span>
+                  <button
+                    type="button"
+                    onClick={() => removeParam("category")}
+                    className="text-slate-400 hover:text-red-500"
+                  >
+                    <X size={13} />
+                  </button>
+                </span>
+              )}
+
+              {urlDomain && (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white border border-[#30AFFF]/30 px-3 py-1 text-xs font-medium text-slate-700 shadow-sm">
+                  <span>Domain: {urlDomain}</span>
+                  <button
+                    type="button"
+                    onClick={() => removeParam("domain")}
+                    className="text-slate-400 hover:text-red-500"
+                  >
+                    <X size={13} />
+                  </button>
+                </span>
+              )}
+
+              {urlJobType && (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white border border-[#30AFFF]/30 px-3 py-1 text-xs font-medium text-slate-700 shadow-sm">
+                  <span>Type: {urlJobType}</span>
+                  <button
+                    type="button"
+                    onClick={() => removeParam("jobType")}
+                    className="text-slate-400 hover:text-red-500"
+                  >
+                    <X size={13} />
+                  </button>
+                </span>
+              )}
+
+              {urlExperience && (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white border border-[#30AFFF]/30 px-3 py-1 text-xs font-medium text-slate-700 shadow-sm">
+                  <span>Exp: {urlExperience}</span>
+                  <button
+                    type="button"
+                    onClick={() => removeParam("experience")}
+                    className="text-slate-400 hover:text-red-500"
+                  >
+                    <X size={13} />
+                  </button>
+                </span>
+              )}
+
+              {urlCompany && (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white border border-[#30AFFF]/30 px-3 py-1 text-xs font-medium text-slate-700 shadow-sm">
+                  <span>Company: {urlCompany}</span>
+                  <button
+                    type="button"
+                    onClick={() => removeParam("company")}
+                    className="text-slate-400 hover:text-red-500"
+                  >
+                    <X size={13} />
+                  </button>
+                </span>
+              )}
             </div>
 
-            <button
-              type="button"
-              onClick={() => {
-                const params =
-                  new URLSearchParams(
-                    searchParams
-                  );
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setShowFiltersManual((prev) => !prev)}
+                className="hidden lg:inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 hover:border-[#30AFFF] transition"
+              >
+                <SlidersHorizontal size={13} className="text-[#30AFFF]" />
+                {(!hasPreFilledContext || showFiltersManual) ? "Hide Filters" : "Show All Filters"}
+              </button>
 
-                params.delete(
-                  "category"
-                );
-
-                navigate(
-                  `/jobs${params.toString()
-                    ? `?${params.toString()}`
-                    : ""
-                  }`
-                );
-              }}
-              className="shrink-0 flex items-center gap-1.5 text-xs font-semibold text-[#159FEF] hover:text-[#30AFFF]"
-            >
-              <X size={14} />
-              Clear
-            </button>
+              <button
+                type="button"
+                onClick={clearAllFilters}
+                className="inline-flex items-center gap-1 rounded-xl bg-[#30AFFF]/10 border border-[#30AFFF]/30 px-3 py-1.5 text-xs font-bold text-[#159FEF] hover:bg-[#30AFFF]/20 transition"
+              >
+                <X size={13} />
+                Clear All
+              </button>
+            </div>
           </div>
         )}
 
@@ -1580,45 +1993,59 @@ const Jobs = () => {
 
         <div className="flex items-center justify-between gap-4 mb-5">
            <div>
-    <p className="text-sm text-slate-500">
-      Showing{" "}
-      <span className="font-semibold text-slate-700">
-        {filteredJobs.length}
-      </span>{" "}
-      jobs
-      {filteredJobs.length > 0 && (
-        <>
-          {" "}
-          of{" "}
-          <span className="font-semibold text-slate-700">
-            {total}
-          </span>
-        </>
-      )}
-    </p>
-  </div>
+            <p className="text-sm text-slate-500">
+              Showing{" "}
+              <span className="font-semibold text-slate-700">
+                {filteredJobs.length}
+              </span>{" "}
+              jobs
+              {filteredJobs.length > 0 && (
+                <>
+                  {" "}
+                  of{" "}
+                  <span className="font-semibold text-slate-700">
+                    {total}
+                  </span>
+                </>
+              )}
+            </p>
+          </div>
 
-          {/* MOBILE FILTER */}
+          <div className="flex items-center gap-2">
+            {hasPreFilledContext && (
+              <button
+                type="button"
+                onClick={() => setShowFiltersManual((prev) => !prev)}
+                className="hidden lg:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:border-[#30AFFF] transition"
+              >
+                <SlidersHorizontal size={14} className="text-[#30AFFF]" />
+                {showFiltersManual ? "Hide Filters" : "Filters"}
+              </button>
+            )}
 
-          <button
-            type="button"
-            onClick={() =>
-              setMobileFilters(true)
-            }
-            className="lg:hidden flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 text-sm font-semibold"
-          >
-            <SlidersHorizontal
-              size={17}
-            />
-            Filters
-          </button>
+            {/* MOBILE FILTER */}
+
+            <button
+              type="button"
+              onClick={() =>
+                setMobileFilters(true)
+              }
+              className="lg:hidden flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 text-sm font-semibold"
+            >
+              <SlidersHorizontal
+                size={17}
+              />
+              Filters
+            </button>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6">
+        <div className={`grid grid-cols-1 ${(!hasPreFilledContext || showFiltersManual) ? "lg:grid-cols-[280px_1fr]" : ""} gap-6`}>
 
           {/* DESKTOP FILTER */}
 
-          <aside className="hidden lg:block">
+          {(!hasPreFilledContext || showFiltersManual) && (
+            <aside className="hidden lg:block">
             <div className="bg-white border border-slate-200 rounded-2xl p-5 sticky top-24">
 
               <div className="flex items-center justify-between mb-2">
@@ -1636,6 +2063,26 @@ const Jobs = () => {
                   Reset
                 </button>
               </div>
+
+              <FilterSection
+                title="Job Type"
+                filterKey="jobType"
+              >
+                <FilterContent
+                  filterKey="jobType"
+                  items={filters.jobType}
+                />
+              </FilterSection>
+
+              <FilterSection
+                title="Domain"
+                filterKey="domain"
+              >
+                <FilterContent
+                  filterKey="domain"
+                  items={filters.domain}
+                />
+              </FilterSection>
 
               <FilterSection
                 title="Department"
@@ -1720,6 +2167,7 @@ const Jobs = () => {
               </FilterSection>
             </div>
           </aside>
+          )}
 
           {/* JOB LIST */}
 
@@ -2032,6 +2480,26 @@ const Jobs = () => {
             {/* FILTER CONTENT */}
 
             <div className="px-5">
+
+              <FilterSection
+                title="Job Type"
+                filterKey="jobType"
+              >
+                <FilterContent
+                  filterKey="jobType"
+                  items={filters.jobType}
+                />
+              </FilterSection>
+
+              <FilterSection
+                title="Domain"
+                filterKey="domain"
+              >
+                <FilterContent
+                  filterKey="domain"
+                  items={filters.domain}
+                />
+              </FilterSection>
 
               <FilterSection
                 title="Department"

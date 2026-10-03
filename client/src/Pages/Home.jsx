@@ -12,17 +12,15 @@ import FAQ from '../components/FAQ'
 import GlobalJourneyBanner from '../components/GlobalJourneyBarnney'
 import CareerJourneyBanner from '../components/CareerJourneyBanner'
 import FlagSection from '../components/FlagSection'
+import CompaniesHiringSection from '../components/CompaniesHiringSection'
 import Hero from '../components/Hero'
-
-
-
-
 
 const Home = () => {
   return (
     <div>
       <AbroadBanner />
       <FlagSection />
+      <CompaniesHiringSection />
       <JobCategories />
       <GlobalJourneyBanner />
       <CarrierWork />

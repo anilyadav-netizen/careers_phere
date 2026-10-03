@@ -783,14 +783,27 @@ const Applications = () => {
                               </p>
                             </td>
 
-                            {/* Job */}
+                            {/* Job & Domain */}
                             <td className="px-3 py-2.5">
-                              <div className="flex items-start gap-1.5">
-                                <BriefcaseBusiness className="w-3.5 h-3.5 text-blue-500 mt-0.5 flex-shrink-0" />
-
-                                <p className="text-sm font-medium text-slate-700 truncate max-w-[130px]">
-                                  {jobTitle}
-                                </p>
+                              <div className="flex flex-col gap-1 items-start">
+                                <div className="flex items-start gap-1.5">
+                                  <BriefcaseBusiness className="w-3.5 h-3.5 text-blue-500 mt-0.5 flex-shrink-0" />
+                                  <p className="text-sm font-medium text-slate-700 truncate max-w-[130px]">
+                                    {jobTitle}
+                                  </p>
+                                </div>
+                                {(application.job?.domain || application.isRoleApplication) && (
+                                  <div className="flex items-center gap-1">
+                                    <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                                      {application.job?.domain || "Role"}
+                                    </span>
+                                    {application.isRoleApplication && (
+                                      <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                        Landing Page
+                                      </span>
+                                    )}
+                                  </div>
+                                )}
                               </div>
                             </td>
 

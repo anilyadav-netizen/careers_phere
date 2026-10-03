@@ -16,11 +16,49 @@ import {
   Users,
   Wifi,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { getFlagByCountryName } from "../constants/countries";
+
+const BASE_COUNTRIES = [
+  { name: "United States", flag: "https://flagcdn.com/w320/us.png" },
+  { name: "United Kingdom", flag: "https://flagcdn.com/w320/gb.png" },
+  { name: "Canada", flag: "https://flagcdn.com/w320/ca.png" },
+  { name: "Australia", flag: "https://flagcdn.com/w320/au.png" },
+  { name: "Germany", flag: "https://flagcdn.com/w320/de.png" },
+  { name: "India", flag: "https://flagcdn.com/w320/in.png" },
+  { name: "Netherlands", flag: "https://flagcdn.com/w320/nl.png" },
+  { name: "Switzerland", flag: "https://flagcdn.com/w320/ch.png" },
+  { name: "New Zealand", flag: "https://flagcdn.com/w320/nz.png" },
+  { name: "Malaysia", flag: "https://flagcdn.com/w320/my.png" },
+  { name: "Singapore", flag: "https://flagcdn.com/w320/sg.png" },
+  { name: "Indonesia", flag: "https://flagcdn.com/w320/id.png" },
+  { name: "Ireland", flag: "https://flagcdn.com/w320/ie.png" },
+  { name: "Sweden", flag: "https://flagcdn.com/w320/se.png" },
+  { name: "Norway", flag: "https://flagcdn.com/w320/no.png" },
+  { name: "Denmark", flag: "https://flagcdn.com/w320/dk.png" },
+  { name: "Finland", flag: "https://flagcdn.com/w320/fi.png" },
+  { name: "Italy", flag: "https://flagcdn.com/w320/it.png" },
+  { name: "Spain", flag: "https://flagcdn.com/w320/es.png" },
+  { name: "UAE", flag: "https://flagcdn.com/w320/ae.png" },
+  { name: "South Korea", flag: "https://flagcdn.com/w320/kr.png" },
+  { name: "France", flag: "https://flagcdn.com/w320/fr.png" },
+  { name: "Belgium", flag: "https://flagcdn.com/w320/be.png" },
+  { name: "Austria", flag: "https://flagcdn.com/w320/at.png" },
+  { name: "Portugal", flag: "https://flagcdn.com/w320/pt.png" },
+  { name: "Bulgaria", flag: "https://flagcdn.com/w320/bg.png" },
+  { name: "Albania", flag: "https://flagcdn.com/w320/al.png" },
+  { name: "Malta", flag: "https://flagcdn.com/w320/mt.png" },
+  { name: "Slovakia", flag: "https://flagcdn.com/w320/sk.png" },
+  { name: "Siberia", flag: "https://flagcdn.com/w320/ru.png" },
+  { name: "Sri Lanka", flag: "https://flagcdn.com/w320/lk.png" },
+  { name: "Hong Kong", flag: "https://flagcdn.com/w320/hk.png" },
+];
 
 const FlagSection = () => {
   const navigate = useNavigate();
+  const { jobs = [] } = useSelector((state) => state.jobs || {});
 
   const [keyword, setKeyword] = useState("");
   const [experience, setExperience] = useState("");
@@ -37,65 +75,60 @@ const FlagSection = () => {
   const experienceRef = useRef(null);
   const countryRef = useRef(null);
 
-  const countries = [
-    { name: "United States", flag: "https://flagcdn.com/w320/us.png" },
-    { name: "United Kingdom", flag: "https://flagcdn.com/w320/gb.png" },
-    { name: "Canada", flag: "https://flagcdn.com/w320/ca.png" },
-    { name: "Australia", flag: "https://flagcdn.com/w320/au.png" },
-    { name: "Germany", flag: "https://flagcdn.com/w320/de.png" },
-    // { name: "Japan", flag: "https://flagcdn.com/w320/jp.png" },
-    { name: "India", flag: "https://flagcdn.com/w320/in.png" },
-    { name: "Netherlands", flag: "https://flagcdn.com/w320/nl.png" },
-    { name: "Switzerland", flag: "https://flagcdn.com/w320/ch.png" },
-    { name: "New Zealand", flag: "https://flagcdn.com/w320/nz.png" },
-    { name: "Malaysia", flag: "https://flagcdn.com/w320/my.png" },
-    { name: "Singapore", flag: "https://flagcdn.com/w320/sg.png" },
-    { name: "Indonesia", flag: "https://flagcdn.com/w320/id.png" },
-    { name: "Ireland", flag: "https://flagcdn.com/w320/ie.png" },
-    { name: "Sweden", flag: "https://flagcdn.com/w320/se.png" },
-    { name: "Norway", flag: "https://flagcdn.com/w320/no.png" },
-    { name: "Denmark", flag: "https://flagcdn.com/w320/dk.png" },
-    { name: "Finland", flag: "https://flagcdn.com/w320/fi.png" },
-    { name: "Italy", flag: "https://flagcdn.com/w320/it.png" },
-    { name: "Spain", flag: "https://flagcdn.com/w320/es.png" },
-    { name: "UAE", flag: "https://flagcdn.com/w320/ae.png" },
-    { name: "South Korea", flag: "https://flagcdn.com/w320/kr.png" },
-    { name: "France", flag: "https://flagcdn.com/w320/fr.png" },
-    { name: "Belgium", flag: "https://flagcdn.com/w320/be.png" },
-    { name: "Austria", flag: "https://flagcdn.com/w320/at.png" },
-    { name: "Portugal", flag: "https://flagcdn.com/w320/pt.png" },
+  // Dynamic country list merging BASE_COUNTRIES + admin-added countries from jobs
+  const countries = useMemo(() => {
+    const list = [...BASE_COUNTRIES];
+    const seen = new Set(list.map((c) => c.name.toLowerCase()));
 
-    // Added countries
-    { name: "Bulgaria", flag: "https://flagcdn.com/w320/bg.png" },
-    { name: "Albania", flag: "https://flagcdn.com/w320/al.png" },
-    { name: "Malta", flag: "https://flagcdn.com/w320/mt.png" },
-    { name: "Slovakia", flag: "https://flagcdn.com/w320/sk.png" },
-    { name: "Siberia", flag: "https://flagcdn.com/w320/ru.png" },
-    { name: "Sri Lanka", flag: "https://flagcdn.com/w320/lk.png" },
-    { name: "Hong Kong", flag: "https://flagcdn.com/w320/hk.png" },
-  ];
+    (Array.isArray(jobs) ? jobs : []).forEach((job) => {
+      if (Array.isArray(job.countries)) {
+        job.countries.forEach((c) => {
+          const cName = (c?.name || c?.countryName || "").trim();
+          if (cName && !seen.has(cName.toLowerCase())) {
+            seen.add(cName.toLowerCase());
+            const flag =
+              c.flag ||
+              getFlagByCountryName(cName) ||
+              `https://flagcdn.com/w320/${cName.slice(0, 2).toLowerCase()}.png`;
+            list.push({ name: cName, flag });
+          }
+        });
+      } else if (job.country && typeof job.country === "string") {
+        const cName = job.country.trim();
+        if (cName && !seen.has(cName.toLowerCase())) {
+          seen.add(cName.toLowerCase());
+          const flag =
+            getFlagByCountryName(cName) ||
+            `https://flagcdn.com/w320/${cName.slice(0, 2).toLowerCase()}.png`;
+          list.push({ name: cName, flag });
+        }
+      }
+    });
+
+    return list;
+  }, [jobs]);
 
   // Build pages of 4 and triple them for seamless infinite loop
   const PAGE_SIZE = 4;
-  const basePages = [];
-  for (let i = 0; i < countries.length; i += PAGE_SIZE) {
-    basePages.push(countries.slice(i, i + PAGE_SIZE));
-  }
-  // Pad the last page if it has fewer than 4 items so loops stay visually even
-  const lastPage = basePages[basePages.length - 1];
-  if (lastPage.length < PAGE_SIZE) {
-    const padded = [...lastPage];
-    let fillIdx = 0;
-    while (padded.length < PAGE_SIZE) {
-      padded.push(countries[fillIdx % countries.length]);
-      fillIdx++;
+  const { basePages, loopPages, totalPages } = useMemo(() => {
+    const pages = [];
+    for (let i = 0; i < countries.length; i += PAGE_SIZE) {
+      pages.push(countries.slice(i, i + PAGE_SIZE));
     }
-    basePages[basePages.length - 1] = padded;
-  }
-
-  const totalPages = basePages.length;
-  // Triple the pages: [clone] [real] [clone]
-  const loopPages = [...basePages, ...basePages, ...basePages];
+    const last = pages[pages.length - 1];
+    if (last && last.length < PAGE_SIZE) {
+      const padded = [...last];
+      let fillIdx = 0;
+      while (padded.length < PAGE_SIZE) {
+        padded.push(countries[fillIdx % countries.length]);
+        fillIdx++;
+      }
+      pages[pages.length - 1] = padded;
+    }
+    const count = pages.length;
+    const triple = [...pages, ...pages, ...pages];
+    return { basePages: pages, loopPages: triple, totalPages: count };
+  }, [countries]);
 
   const experienceOptions = [
     { label: "Fresher", value: "Fresher" },
@@ -107,17 +140,17 @@ const FlagSection = () => {
   ];
 
   const categories = [
-    { icon: Wifi, label: "Remote" },
-    { icon: Building2, label: "MNC" },
-    { icon: Landmark, label: "Banking & ..." },
-    { icon: Rocket, label: "Startup" },
-    { icon: Users, label: "HR" },
-    { icon: Code, label: "Engineering" },
-    { icon: Award, label: "Fortune 500" },
-    { icon: GraduationCap, label: "Internship" },
-    { icon: Briefcase, label: "Project Mg..." },
-    { icon: ShoppingCart, label: "Sales" },
-    { icon: Truck, label: "Supply Ch..." },
+    { icon: Wifi, label: "Remote", value: "Remote" },
+    { icon: Building2, label: "MNC", value: "MNC" },
+    { icon: Landmark, label: "Banking & ...", value: "Banking & Finance" },
+    { icon: Rocket, label: "Startup", value: "Startup" },
+    { icon: Users, label: "HR", value: "HR" },
+    { icon: Code, label: "Engineering", value: "Engineering" },
+    { icon: Award, label: "Fortune 500", value: "Fortune 500" },
+    { icon: GraduationCap, label: "Internship", value: "Internship" },
+    { icon: Briefcase, label: "Project Mg...", value: "Project Management" },
+    { icon: ShoppingCart, label: "Sales", value: "Sales" },
+    { icon: Truck, label: "Supply Ch...", value: "Supply Chain" },
   ];
 
   /* ================= OUTSIDE CLICK ================= */
@@ -207,10 +240,17 @@ const FlagSection = () => {
     setMobileCountryIndex(totalPages + dotIndex);
   };
 
+  /* ================= CATEGORY CLICK ================= */
+
+  const handleCategoryClick = (category) => {
+    const val = category.value || category.label;
+    navigate(`/jobs?jobType=${encodeURIComponent(val)}`);
+  };
+
   /* ================= COUNTRY CARD CLICK ================= */
 
   const handleCountryClick = (country) => {
-    navigate(`/jobs?country=${encodeURIComponent(country.name)}`);
+    navigate(`/jobs?location=${encodeURIComponent(country.name)}&country=${encodeURIComponent(country.name)}`);
   };
 
   /* ================= COUNTRY SELECT ================= */
@@ -219,7 +259,7 @@ const FlagSection = () => {
     setSelectedCountry(country.name);
     setCountryOpen(false);
 
-    navigate(`/jobs?country=${encodeURIComponent(country.name)}`);
+    navigate(`/jobs?location=${encodeURIComponent(country.name)}&country=${encodeURIComponent(country.name)}`);
   };
 
   /* ================= SEARCH ================= */
@@ -237,6 +277,7 @@ const FlagSection = () => {
 
     if (selectedCountry) {
       params.set("country", selectedCountry);
+      params.set("location", selectedCountry);
     }
 
     navigate(`/jobs${params.toString() ? `?${params.toString()}` : ""}`);
@@ -245,8 +286,9 @@ const FlagSection = () => {
   /* ================= COUNTRY FLAG ================= */
 
   const getCountryFlag = (countryName) => {
-    const country = countries.find((item) => item.name === countryName);
-    return country ? country.flag : null;
+    if (!countryName) return null;
+    const country = countries.find((item) => item.name.toLowerCase() === countryName.toLowerCase());
+    return country ? country.flag : getFlagByCountryName(countryName) || null;
   };
 
   const remainingCountries = countries.length - 4;
@@ -597,6 +639,7 @@ const FlagSection = () => {
                 <button
                   key={category.label}
                   type="button"
+                  onClick={() => handleCategoryClick(category)}
                   className="group inline-flex items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2 py-2.5 text-[10px] font-semibold text-slate-700 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-[#30AFFF]/40 hover:bg-[#30AFFF]/5 hover:text-[#30AFFF] hover:shadow-md sm:gap-3 sm:rounded-lg sm:px-5 sm:py-4 sm:text-xs md:px-6 md:py-4 md:text-sm"
                 >
                   <Icon

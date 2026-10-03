@@ -21,13 +21,14 @@ import {
   X,
   XCircle,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   getApplicationByIdAdmin,
   updateApplicationStatus,
 } from "../../redux/slicer/jobApplicationSlice";
+import api from "../../redux/api";
 import Toast from "../components/Toast";
 
 const ApplicationDetails = () => {
@@ -134,8 +135,13 @@ const ApplicationDetails = () => {
     application?.portfolioWebsite ||
     null;
 
-  const resumeFileName =
+  const rawResume =
     application?.applicationData?.resume || application?.resume || null;
+
+  const resumeFileName =
+    typeof rawResume === "string"
+      ? rawResume
+      : rawResume?.filename || rawResume?.url || (application?._id ? "resume.pdf" : null);
 
   const jobTitle =
     application?.job?.title ||
@@ -152,12 +158,28 @@ const ApplicationDetails = () => {
 
   const appliedDate = application?.appliedAt || application?.createdAt;
 
-  const resumeDownloadUrl = resumeFileName
-    ? resumeFileName.startsWith("http://") ||
-      resumeFileName.startsWith("https://")
-      ? resumeFileName
-      : `/api/admin/applications/${application?._id}/resume`
-    : null;
+  const apiBaseURL = api.defaults.baseURL || "http://localhost:5069/api";
+
+  const resumeDownloadUrl = useMemo(() => {
+    const appId = application?._id || applicationId;
+    if (!appId) return null;
+
+    if (
+      typeof resumeFileName === "string" &&
+      (resumeFileName.startsWith("http://") || resumeFileName.startsWith("https://"))
+    ) {
+      return resumeFileName;
+    }
+
+    if (rawResume?.url && (rawResume.url.startsWith("http://") || rawResume.url.startsWith("https://"))) {
+      return rawResume.url;
+    }
+
+    if (application?.isRoleApplication) {
+      return `${apiBaseURL}/frontend-applications/${appId}/resume`;
+    }
+    return `${apiBaseURL}/admin/applications/${appId}/resume`;
+  }, [application, applicationId, resumeFileName, rawResume, apiBaseURL]);
 
   const handleDocumentPreview = (documentType, fileName, fileUrl) => {
     if (!fileName && !fileUrl) return;
@@ -498,21 +520,33 @@ const ApplicationDetails = () => {
 
                 <div className="flex items-center gap-2 pt-2">
                   <a
-                    href={resumeDownloadUrl}
+                    href={resumeDownloadUrl || "#"}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700 transition-colors shadow-xs"
+                    onClick={(e) => {
+                      if (resumeDownloadUrl) {
+                        e.preventDefault();
+                        window.open(resumeDownloadUrl, "_blank", "noopener,noreferrer");
+                      }
+                    }}
+                    className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700 transition-colors shadow-xs cursor-pointer"
                   >
                     <Eye className="w-3.5 h-3.5" />
                     View Resume
                   </a>
 
                   <a
-                    href={resumeDownloadUrl}
+                    href={resumeDownloadUrl || "#"}
                     download
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center p-2 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors"
+                    onClick={(e) => {
+                      if (resumeDownloadUrl) {
+                        e.preventDefault();
+                        window.open(resumeDownloadUrl, "_blank", "noopener,noreferrer");
+                      }
+                    }}
+                    className="inline-flex items-center justify-center p-2 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer"
                     title="Download Resume"
                   >
                     <DownloadCloud className="w-4 h-4" />

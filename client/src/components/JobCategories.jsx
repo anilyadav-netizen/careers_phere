@@ -32,13 +32,16 @@ const JobCategories = () => {
   // ============================================================
   const handleCategoryClick = (category) => {
     const categoryId = category?._id || category?.id;
+    const categoryName = category?.name || "";
 
-    if (!categoryId) {
-      console.error("Category ID missing:", category);
-      return;
+    const params = new URLSearchParams();
+    if (categoryId) {
+      params.set("category", categoryId);
+    } else if (categoryName) {
+      params.set("category", categoryName);
     }
 
-    navigate(`/jobs?category=${encodeURIComponent(categoryId)}`);
+    navigate(`/jobs${params.toString() ? `?${params.toString()}` : ""}`);
   };
 
   return (

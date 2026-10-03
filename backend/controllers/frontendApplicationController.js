@@ -41,12 +41,11 @@ exports.submitApplication = async (req, res) => {
       opportunityRole,
     } = req.body;
 
-    // Check required textual fields (matched to RoleApplyModal form)
+    // Check required textual fields (matched to user apply form)
     const requiredFields = {
       fullName: "Full name",
       email: "Email address",
       phone: "Phone number",
-      expectedSalary: "Expected annual salary",
       aboutYou: "About you",
     };
 
@@ -76,13 +75,13 @@ exports.submitApplication = async (req, res) => {
       });
     }
 
-    // Validate salary is numeric
-    const parsedSalary = Number(expectedSalary);
-    if (isNaN(parsedSalary) || parsedSalary < 0) {
-      return res.status(400).json({
-        success: false,
-        message: "Expected salary must be a valid positive number",
-      });
+    // Parse salary if provided, otherwise default to 0
+    let parsedSalary = 0;
+    if (expectedSalary !== undefined && expectedSalary !== null && String(expectedSalary).trim() !== "") {
+      const num = Number(expectedSalary);
+      if (!isNaN(num) && num >= 0) {
+        parsedSalary = num;
+      }
     }
 
     const application = await FrontendApplication.create({

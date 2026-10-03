@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const RoleOpportunity = require("../models/RoleOpportunity");
+const Job = require("../models/Job");
 const { uploadToImgBB } = require("../utils/imgbb");
 
 const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
@@ -442,7 +443,58 @@ exports.getPublicOpportunities = async (req, res) => {
     let opportunities = await RoleOpportunity.find(query).sort({
       featured: -1,
       createdAt: -1,
-    });
+    }).lean();
+
+    // Also query Job model for jobs posted with this domain/roleCategory
+    const jobQuery = { status: "active" };
+    if (roleCategory && roleCategory !== "all") {
+      jobQuery.domain = new RegExp(roleCategory.trim().replace(" Developer", ""), "i");
+    }
+    if (country) {
+      jobQuery.$or = [
+        { country: new RegExp(country.trim(), "i") },
+        { location: new RegExp(country.trim(), "i") },
+        { "countries.countryName": new RegExp(country.trim(), "i") },
+      ];
+    }
+    if (search) {
+      const searchRegex = new RegExp(search.trim(), "i");
+      jobQuery.$or = [
+        { title: searchRegex },
+        { company: searchRegex },
+        { skills: searchRegex },
+        { location: searchRegex },
+      ];
+    }
+
+    const matchingJobs = await Job.find(jobQuery).sort({ isFeatured: -1, createdAt: -1 }).lean();
+
+    // Map Job objects to match the opportunity shape expected by landing pages
+    const mappedJobsAsOpportunities = matchingJobs.map((j) => ({
+      _id: j._id,
+      companyName: j.company,
+      companyLogo: j.companyLogo?.displayUrl || j.companyLogo?.url || "",
+      roleCategory: j.domain || roleCategory || "Frontend Developer",
+      roleTitle: j.title,
+      countries: j.countries && j.countries.length > 0
+        ? j.countries
+        : j.country
+        ? [{ countryName: j.country, flag: "" }]
+        : [{ countryName: j.location || "Remote", flag: "" }],
+      salary: j.salary,
+      salaryCurrency: j.salaryCurrency || "USD",
+      skills: j.skills || [],
+      workModes: [j.jobType || "Remote"],
+      description: j.description || "",
+      isActive: j.status === "active",
+      featured: Boolean(j.isFeatured),
+      isJobRecord: true,
+      jobType: j.jobType,
+      createdAt: j.createdAt,
+    }));
+
+    // Prepend newly created domain jobs to opportunities
+    opportunities = [...mappedJobsAsOpportunities, ...opportunities];
 
     // Auto-seed default opportunities if none found for roleCategory query
     if (opportunities.length === 0 && !search && !country && roleCategory && roleCategory !== "all") {

@@ -43,7 +43,8 @@ export const createJob = createAsyncThunk(
           key === "responsibilities" ||
           key === "requirements" ||
           key === "skills" ||
-          key === "tags"
+          key === "tags" ||
+          key === "countries"
         ) {
           formData.append(key, JSON.stringify(value || []));
           return;
@@ -52,6 +53,18 @@ export const createJob = createAsyncThunk(
         // Boolean values
         if (key === "isFeatured" || key === "isUrgent") {
           formData.append(key, String(value));
+          return;
+        }
+
+        // Category ID safety
+        if (key === "categoryId" || key === "category") {
+          let catVal = value;
+          if (typeof catVal === "object" && catVal !== null) {
+            catVal = catVal._id || catVal.id;
+          }
+          if (catVal && String(catVal) !== "[object Object]") {
+            formData.append(key, String(catVal));
+          }
           return;
         }
 
@@ -151,7 +164,8 @@ export const updateJob = createAsyncThunk(
           key === "responsibilities" ||
           key === "requirements" ||
           key === "skills" ||
-          key === "tags"
+          key === "tags" ||
+          key === "countries"
         ) {
           formData.append(key, JSON.stringify(value || []));
           return;
@@ -160,6 +174,18 @@ export const updateJob = createAsyncThunk(
         // Boolean values
         if (key === "isFeatured" || key === "isUrgent") {
           formData.append(key, String(value));
+          return;
+        }
+
+        // Category ID safety
+        if (key === "categoryId" || key === "category") {
+          let catVal = value;
+          if (typeof catVal === "object" && catVal !== null) {
+            catVal = catVal._id || catVal.id;
+          }
+          if (catVal && String(catVal) !== "[object Object]") {
+            formData.append(key, String(catVal));
+          }
           return;
         }
 

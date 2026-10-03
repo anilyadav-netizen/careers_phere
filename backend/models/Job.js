@@ -35,8 +35,44 @@ const JobSchema = new mongoose.Schema(
     },
     jobType: {
       type: String,
-      enum: ["Full Time", "Part Time", "Contract", "Internship", "Remote"],
-      default: "Full Time",
+      enum: [
+        "Remote",
+        "MNC",
+        "Banking & Finance",
+        "Startup",
+        "HR",
+        "Engineering",
+        "Fortune 500",
+        "Internship",
+        "Project Management",
+        "Sales",
+        "Supply Chain",
+        "Full Time",
+        "Part Time",
+        "Contract",
+      ],
+      default: "Remote",
+    },
+    domain: {
+      type: String,
+      trim: true,
+      index: true,
+      default: "",
+    },
+    countries: {
+      type: [
+        {
+          name: { type: String, trim: true, default: "" },
+          countryName: { type: String, trim: true, default: "" },
+          flag: { type: String, trim: true, default: "" },
+        },
+      ],
+      default: [],
+    },
+    salaryCurrency: {
+      type: String,
+      trim: true,
+      default: "USD",
     },
     experience: {
       type: String,
@@ -51,8 +87,8 @@ const JobSchema = new mongoose.Schema(
     },
     salary: {
       type: String,
-      required: [true, "Salary is required"],
       trim: true,
+      default: "Undisclosed",
     },
     description: {
       type: String,

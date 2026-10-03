@@ -92,7 +92,8 @@ const FrontendApplicationSchema = new mongoose.Schema(
     },
     expectedSalary: {
       type: Number,
-      required: [true, "Expected annual salary is required"],
+      required: false,
+      default: 0,
       min: [0, "Salary cannot be negative"],
     },
     salaryCurrency: {

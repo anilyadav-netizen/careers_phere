@@ -1,6 +1,8 @@
 const Job = require("../models/Job");
 const Category = require("../models/Category");
 const JobApplication = require("../models/JobApplication");
+const FrontendApplication = require("../models/FrontendApplication");
+const RoleOpportunity = require("../models/RoleOpportunity");
 const SavedJob = require("../models/SavedJob");
 const { uploadToImgBB, deleteFromImgBB } = require("../utils/imgbb");
 const {
@@ -40,6 +42,18 @@ const parseArray = (value, fieldName) => {
   throw new Error(fieldName + " must be an array");
 };
 
+const parseCountries = (value) => {
+  const arr = parseArray(value, "countries");
+  return arr.map((item) => {
+    if (typeof item === "string") {
+      return { name: item.trim(), countryName: item.trim(), flag: "" };
+    }
+    const countryName = (item.name || item.countryName || "").trim();
+    const flag = (item.flag || "").trim();
+    return { name: countryName, countryName, flag };
+  });
+};
+
 const parseBoolean = (value, defaultValue) => {
   if (value === undefined || value === null || value === "") {
     return defaultValue;
@@ -58,6 +72,45 @@ const parseBoolean = (value, defaultValue) => {
 
 const isValidObjectId = (id) => {
   return /^[0-9a-fA-F]{24}$/.test(String(id));
+};
+
+const extractCleanCategoryId = (val) => {
+  if (!val) return null;
+  if (Array.isArray(val)) val = val[0];
+  if (typeof val === "object" && val !== null) {
+    val = val._id || val.id || null;
+  }
+  if (typeof val === "string") {
+    val = val.trim();
+    if (val.startsWith("{") && val.endsWith("}")) {
+      try {
+        const p = JSON.parse(val);
+        val = p._id || p.id || val;
+      } catch (e) {}
+    }
+  }
+  if (!val || String(val) === "[object Object]") return null;
+  return String(val).trim();
+};
+
+const resolveCategoryDoc = async (rawCategoryId) => {
+  const cleanId = extractCleanCategoryId(rawCategoryId);
+  if (!cleanId) return null;
+
+  if (isValidObjectId(cleanId)) {
+    const doc = await Category.findById(cleanId);
+    if (doc) return doc;
+  }
+
+  // Fallback: look up by name or slug
+  const docByName = await Category.findOne({
+    $or: [
+      { name: new RegExp(`^${cleanId}$`, "i") },
+      { slug: new RegExp(`^${cleanId}$`, "i") },
+    ],
+  });
+
+  return docByName;
 };
 
 // ============================================================
@@ -235,6 +288,9 @@ exports.createJob = async (req, res) => {
       location,
       country,
       jobType,
+      domain,
+      countries,
+      salaryCurrency,
       experience,
       salary,
       description,
@@ -271,30 +327,14 @@ exports.createJob = async (req, res) => {
       });
     }
 
-    const selectedCategoryId = categoryId || category;
+    const rawCategoryId = categoryId || category;
 
     console.log(
       "Selected Category ID:",
-      selectedCategoryId
+      rawCategoryId
     );
 
-    if (!selectedCategoryId) {
-      return res.status(400).json({
-        success: false,
-        message: "Category is required",
-      });
-    }
-
-    if (!isValidObjectId(selectedCategoryId)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid category ID",
-      });
-    }
-
-    const categoryDoc = await Category.findById(
-      selectedCategoryId
-    );
+    const categoryDoc = await resolveCategoryDoc(rawCategoryId);
 
     console.log("Category Found:", categoryDoc);
 
@@ -304,6 +344,8 @@ exports.createJob = async (req, res) => {
         message: "Invalid category selected",
       });
     }
+
+    const selectedCategoryId = categoryDoc._id;
 
     const parsedResponsibilities = parseArray(
       responsibilities,
@@ -382,10 +424,13 @@ exports.createJob = async (req, res) => {
         ? String(country).trim()
         : getJobCountry({ location }),
 
-      jobType: jobType || "Full Time",
+      jobType: jobType || "Remote",
+      domain: domain ? String(domain).trim() : "",
+      countries: parseCountries(countries),
+      salaryCurrency: salaryCurrency ? String(salaryCurrency).trim() : "USD",
       experience: experience || "0-3 Yrs",
 
-      salary,
+      salary: salary && String(salary).trim() ? String(salary).trim() : "Undisclosed",
       description,
 
       responsibilities: parsedResponsibilities,
@@ -454,6 +499,8 @@ exports.getAllJobsAdmin = async (req, res) => {
       status,
       category,
       categoryId,
+      domain,
+      jobType,
       search,
       sort,
     } = req.query;
@@ -464,18 +511,29 @@ exports.getAllJobsAdmin = async (req, res) => {
       filter.status = status;
     }
 
-    const selectedCategoryId =
+    if (domain) {
+      filter.domain = new RegExp(`^${domain.trim()}$`, "i");
+    }
+
+    if (jobType) {
+      filter.jobType = jobType;
+    }
+
+    const rawCategoryId =
       categoryId || category;
 
-    if (selectedCategoryId) {
-      if (!isValidObjectId(selectedCategoryId)) {
-        return res.status(400).json({
-          success: false,
-          message: "Invalid category ID",
-        });
+    if (rawCategoryId) {
+      const cleanCatId = extractCleanCategoryId(rawCategoryId);
+      if (cleanCatId) {
+        const catDoc = await resolveCategoryDoc(cleanCatId);
+        if (catDoc) {
+          filter.categoryId = catDoc._id;
+        } else if (isValidObjectId(cleanCatId)) {
+          filter.categoryId = cleanCatId;
+        } else {
+          filter.categoryName = new RegExp(cleanCatId, "i");
+        }
       }
-
-      filter.categoryId = selectedCategoryId;
     }
 
     if (search) {
@@ -664,6 +722,9 @@ exports.updateJob = async (req, res) => {
       location,
       country,
       jobType,
+      domain,
+      countries,
+      salaryCurrency,
       experience,
       salary,
       description,
@@ -679,66 +740,50 @@ exports.updateJob = async (req, res) => {
       tags,
     } = req.body;
 
-    const selectedCategoryId =
+    const rawCategoryId =
       categoryId || category;
 
-    if (selectedCategoryId) {
-      if (!isValidObjectId(selectedCategoryId)) {
-        return res.status(400).json({
-          success: false,
-          message: "Invalid category ID",
-        });
-      }
+    if (rawCategoryId) {
+      const newCategory = await resolveCategoryDoc(rawCategoryId);
 
-      const oldCategoryId =
-        job.categoryId
-          ? job.categoryId.toString()
-          : null;
+      if (newCategory) {
+        const oldCategoryId =
+          job.categoryId
+            ? job.categoryId.toString()
+            : null;
 
-      if (
-        !oldCategoryId ||
-        selectedCategoryId !== oldCategoryId
-      ) {
-        const newCategory =
-          await Category.findById(
-            selectedCategoryId
-          );
-
-        if (!newCategory) {
-          return res.status(400).json({
-            success: false,
-            message:
-              "Invalid category selected",
-          });
-        }
-
-        if (job.categoryId) {
-          const oldCategory =
-            await Category.findById(
-              job.categoryId
-            );
-
-          if (oldCategory) {
-            oldCategory.jobCount =
-              Math.max(
-                0,
-                (oldCategory.jobCount || 0) - 1
+        if (
+          !oldCategoryId ||
+          newCategory._id.toString() !== oldCategoryId
+        ) {
+          if (job.categoryId) {
+            const oldCategory =
+              await Category.findById(
+                job.categoryId
               );
 
-            await oldCategory.save();
+            if (oldCategory) {
+              oldCategory.jobCount =
+                Math.max(
+                  0,
+                  (oldCategory.jobCount || 0) - 1
+                );
+
+              await oldCategory.save();
+            }
           }
+
+          newCategory.jobCount =
+            (newCategory.jobCount || 0) + 1;
+
+          await newCategory.save();
+
+          job.categoryId =
+            newCategory._id;
+
+          job.categoryName =
+            newCategory.name;
         }
-
-        newCategory.jobCount =
-          (newCategory.jobCount || 0) + 1;
-
-        await newCategory.save();
-
-        job.categoryId =
-          newCategory._id;
-
-        job.categoryName =
-          newCategory.name;
       }
     }
 
@@ -771,12 +816,24 @@ exports.updateJob = async (req, res) => {
       job.jobType = jobType;
     }
 
+    if (domain !== undefined) {
+      job.domain = String(domain || "").trim();
+    }
+
+    if (countries !== undefined) {
+      job.countries = parseCountries(countries);
+    }
+
+    if (salaryCurrency !== undefined) {
+      job.salaryCurrency = String(salaryCurrency || "").trim();
+    }
+
     if (experience !== undefined) {
       job.experience = experience;
     }
 
     if (salary !== undefined) {
-      job.salary = salary;
+      job.salary = salary && String(salary).trim() ? String(salary).trim() : "Undisclosed";
     }
 
     if (description !== undefined) {
@@ -1194,8 +1251,12 @@ exports.getAllJobsUser = async (
     const {
       category,
       categoryId,
+      domain,
       jobType,
       experience,
+      country,
+      location,
+      company,
       search,
       sort,
       page = 1,
@@ -1206,24 +1267,67 @@ exports.getAllJobsUser = async (
       status: "active",
     };
 
-    const selectedCategoryId =
+    if (company && company.trim()) {
+      filter.$and = filter.$and || [];
+      filter.$and.push({
+        company: new RegExp(company.trim(), "i"),
+      });
+    }
+
+    if (domain) {
+      filter.domain = new RegExp(`^${domain.trim()}$`, "i");
+    }
+
+    const targetLocation = (country || location || "").trim();
+    if (targetLocation) {
+      const locRegex = new RegExp(targetLocation, "i");
+      filter.$and = filter.$and || [];
+      filter.$and.push({
+        $or: [
+          { country: locRegex },
+          { location: locRegex },
+          { "countries.name": locRegex },
+          { "countries.countryName": locRegex },
+        ],
+      });
+    }
+
+    const rawCategoryId =
       categoryId || category;
 
-    if (selectedCategoryId) {
-      if (!isValidObjectId(selectedCategoryId)) {
-        return res.status(400).json({
-          success: false,
-          message:
-            "Invalid category ID",
-        });
+    if (rawCategoryId) {
+      const cleanCatId = extractCleanCategoryId(rawCategoryId);
+      if (cleanCatId) {
+        const catDoc = await resolveCategoryDoc(cleanCatId);
+        filter.$and = filter.$and || [];
+        if (catDoc) {
+          filter.$and.push({
+            $or: [
+              { categoryId: catDoc._id },
+              { category: catDoc._id },
+              { categoryName: new RegExp(`^${catDoc.name}$`, "i") },
+            ],
+          });
+        } else if (isValidObjectId(cleanCatId)) {
+          filter.$and.push({
+            $or: [
+              { categoryId: cleanCatId },
+              { category: cleanCatId },
+            ],
+          });
+        } else {
+          filter.$and.push({
+            $or: [
+              { categoryName: new RegExp(cleanCatId, "i") },
+              { department: new RegExp(cleanCatId, "i") },
+            ],
+          });
+        }
       }
-
-      filter.categoryId =
-        selectedCategoryId;
     }
 
     if (jobType) {
-      filter.jobType = jobType;
+      filter.jobType = new RegExp(`^${jobType.trim()}$`, "i");
     }
 
     if (experience) {
@@ -1231,43 +1335,46 @@ exports.getAllJobsUser = async (
     }
 
     if (search) {
-      filter.$or = [
-        {
-          title: {
-            $regex: search,
-            $options: "i",
+      filter.$and = filter.$and || [];
+      filter.$and.push({
+        $or: [
+          {
+            title: {
+              $regex: search,
+              $options: "i",
+            },
           },
-        },
-        {
-          company: {
-            $regex: search,
-            $options: "i",
+          {
+            company: {
+              $regex: search,
+              $options: "i",
+            },
           },
-        },
-        {
-          description: {
-            $regex: search,
-            $options: "i",
+          {
+            description: {
+              $regex: search,
+              $options: "i",
+            },
           },
-        },
-        {
-          location: {
-            $regex: search,
-            $options: "i",
+          {
+            location: {
+              $regex: search,
+              $options: "i",
+            },
           },
-        },
-        {
-          country: {
-            $regex: search,
-            $options: "i",
+          {
+            country: {
+              $regex: search,
+              $options: "i",
+            },
           },
-        },
-        {
-          skills: {
-            $in: [new RegExp(search, "i")],
+          {
+            skills: {
+              $in: [new RegExp(search, "i")],
+            },
           },
-        },
-      ];
+        ],
+      });
     }
 
     let sortOption = {
@@ -2309,7 +2416,7 @@ exports.getJobApplicationsAdmin =
   };
 
 // ============================================================
-// ALL APPLICATIONS ADMIN
+// ALL APPLICATIONS ADMIN (UNIFIED: JOB APPLICATIONS + ROLE APPLICATIONS)
 // ============================================================
 
 exports.getAllApplicationsAdmin =
@@ -2320,10 +2427,12 @@ exports.getAllApplicationsAdmin =
         job,
       } = req.query;
 
-      const filter = {};
+      const jobFilter = {};
+      const roleFilter = {};
 
       if (status) {
-        filter.status = status;
+        jobFilter.status = status;
+        roleFilter.status = status;
       }
 
       if (job) {
@@ -2335,30 +2444,76 @@ exports.getAllApplicationsAdmin =
           });
         }
 
-        filter.job = job;
+        jobFilter.job = job;
       }
 
-      const applications =
-        await JobApplication.find(
-          filter
-        )
-          .populate(
-            "applicant",
-            "name email mobile"
-          )
-          .populate(
-            "job",
-            "title company location country"
-          )
-          .sort({
-            createdAt: -1,
-          });
+      // Fetch standard JobApplications
+      const standardApplications = await JobApplication.find(jobFilter)
+        .populate("applicant", "name email mobile")
+        .populate("job", "title company location country domain jobType")
+        .sort({ createdAt: -1 })
+        .lean();
+
+      // If filtering by specific regular job ID, we only return regular job applications
+      let roleApplications = [];
+      if (!job) {
+        roleApplications = await FrontendApplication.find(roleFilter)
+          .select("-resume.data")
+          .sort({ createdAt: -1 })
+          .lean();
+      }
+
+      // Format FrontendApplication into unified application schema
+      const mappedRoleApplications = roleApplications.map((roleApp) => ({
+        _id: roleApp._id,
+        isRoleApplication: true,
+        status: roleApp.status || "pending",
+        appliedAt: roleApp.createdAt,
+        createdAt: roleApp.createdAt,
+        updatedAt: roleApp.updatedAt,
+        applicant: null,
+        job: {
+          _id: roleApp.opportunityId || roleApp._id,
+          title: roleApp.opportunityRole || roleApp.role || "Role Application",
+          company: roleApp.companyName || "CareerNova Partner",
+          location: roleApp.currentLocation || "Remote",
+          country: roleApp.currentCountry || "Global",
+          domain: roleApp.role || "Frontend Developer",
+          jobType: "Remote",
+        },
+        applicationData: {
+          name: roleApp.fullName,
+          email: roleApp.email,
+          phone: roleApp.phone,
+          experience: roleApp.experience,
+          currentLocation: roleApp.currentLocation || roleApp.currentCountry || "",
+          expectedSalary: roleApp.expectedSalary ? String(roleApp.expectedSalary) : "",
+          noticePeriod: roleApp.noticePeriod || "",
+          linkedin: roleApp.linkedin || "",
+          portfolio: roleApp.portfolio || "",
+          additionalInfo: roleApp.aboutYou || "",
+          skills: roleApp.frontendSkills
+            ? roleApp.frontendSkills.split(",").map((s) => s.trim()).filter(Boolean)
+            : [],
+          resume: roleApp.resume
+            ? {
+                filename: roleApp.resume.filename,
+                mimetype: roleApp.resume.mimetype,
+                size: roleApp.resume.size,
+              }
+            : null,
+        },
+      }));
+
+      // Combine and sort by createdAt descending
+      const allApplications = [...standardApplications, ...mappedRoleApplications].sort(
+        (a, b) => new Date(b.createdAt || b.appliedAt) - new Date(a.createdAt || a.appliedAt)
+      );
 
       return res.status(200).json({
         success: true,
-        count:
-          applications.length,
-        data: applications,
+        count: allApplications.length,
+        data: allApplications,
       });
     } catch (error) {
       console.error(
@@ -2394,7 +2549,7 @@ exports.getApplicationByIdAdmin =
         });
       }
 
-      const application =
+      let application =
         await JobApplication.findById(
           req.params.id
         )
@@ -2404,14 +2559,54 @@ exports.getApplicationByIdAdmin =
           )
           .populate(
             "job",
-            "title company location country categoryName"
+            "title company location country categoryName domain jobType"
           );
 
       if (!application) {
-        return res.status(404).json({
-          success: false,
-          message:
-            "Application not found",
+        // Fallback: Check FrontendApplication (role application)
+        const roleApp = await FrontendApplication.findById(req.params.id);
+        if (!roleApp) {
+          return res.status(404).json({
+            success: false,
+            message: "Application not found",
+          });
+        }
+
+        return res.status(200).json({
+          success: true,
+          data: {
+            _id: roleApp._id,
+            isRoleApplication: true,
+            status: roleApp.status || "pending",
+            fullName: roleApp.fullName,
+            email: roleApp.email,
+            phoneNumber: roleApp.phone,
+            totalExperience: roleApp.experience,
+            experienceType: "Relevant Experience",
+            currentLocation: roleApp.currentLocation || roleApp.currentCountry || "",
+            expectedSalary: roleApp.expectedSalary ? String(roleApp.expectedSalary) : "",
+            noticePeriod: roleApp.noticePeriod || "",
+            linkedInProfile: roleApp.linkedin || "",
+            portfolioWebsite: roleApp.portfolio || "",
+            additionalInformation: roleApp.aboutYou || "",
+            coverLetter: "",
+            categoryName: roleApp.role || "Role Application",
+            domain: roleApp.role,
+            skills: roleApp.frontendSkills
+              ? roleApp.frontendSkills.split(",").map((s) => s.trim()).filter(Boolean)
+              : [],
+            resume: roleApp.resume?.filename || "",
+            job: {
+              title: roleApp.opportunityRole || roleApp.role || "Role Opportunity",
+              company: roleApp.companyName || "CareerNova Partner",
+              location: roleApp.currentLocation || "Remote",
+              country: roleApp.currentCountry || "Global",
+              domain: roleApp.role,
+              jobType: "Remote",
+            },
+            appliedAt: roleApp.createdAt,
+            createdAt: roleApp.createdAt,
+          },
         });
       }
 
@@ -2549,16 +2744,43 @@ exports.updateApplicationStatus =
         });
       }
 
-      const application =
+      let application =
         await JobApplication.findById(
           req.params.id
         );
 
       if (!application) {
-        return res.status(404).json({
-          success: false,
-          message:
-            "Application not found",
+        // Fallback: Check FrontendApplication (role application)
+        const roleApp = await FrontendApplication.findById(req.params.id);
+        if (!roleApp) {
+          return res.status(404).json({
+            success: false,
+            message:
+              "Application not found",
+          });
+        }
+
+        roleApp.status = status;
+        await roleApp.save();
+
+        if (roleApp.email) {
+          sendRoleApplicationStatusUpdateEmail({
+            email: roleApp.email,
+            name: roleApp.fullName || "Candidate",
+            roleTitle: roleApp.opportunityRole || roleApp.role || "Role Application",
+            status: status,
+          }).catch((emailErr) => {
+            console.error(
+              "Role application status email notification failed:",
+              emailErr.message || emailErr
+            );
+          });
+        }
+
+        return res.status(200).json({
+          success: true,
+          message: `Application status updated to ${status}`,
+          data: roleApp,
         });
       }
 
@@ -2636,30 +2858,55 @@ exports.downloadApplicationResume = async (req, res) => {
       });
     }
 
-    const application = await JobApplication.findById(id);
+    let application = await JobApplication.findById(id);
 
-    if (
-      !application ||
-      !application.applicationData ||
-      !application.applicationData.resume ||
-      !application.applicationData.resume.data
-    ) {
-      return res.status(404).json({
-        success: false,
-        message: "Resume file not found",
-      });
+    if (application) {
+      const resObj =
+        application.applicationData?.resume || application.resume;
+
+      if (resObj && resObj.data) {
+        const { filename, mimetype, data } = resObj;
+        res.setHeader("Content-Type", mimetype || "application/pdf");
+        res.setHeader(
+          "Content-Disposition",
+          `inline; filename="${encodeURIComponent(filename || 'resume.pdf')}"`
+        );
+        return res.send(data);
+      }
+
+      if (resObj?.url && (resObj.url.startsWith("http://") || resObj.url.startsWith("https://"))) {
+        return res.redirect(resObj.url);
+      }
+
+      if (typeof resObj === "string" && (resObj.startsWith("http://") || resObj.startsWith("https://"))) {
+        return res.redirect(resObj);
+      }
     }
 
-    const { filename, mimetype, data } =
-      application.applicationData.resume;
+    // Fallback: Check FrontendApplication
+    const roleApp = await FrontendApplication.findById(id);
+    if (roleApp) {
+      if (roleApp.resume && roleApp.resume.data) {
+        const { filename, mimetype, data } = roleApp.resume;
 
-    res.setHeader("Content-Type", mimetype || "application/pdf");
-    res.setHeader(
-      "Content-Disposition",
-      `inline; filename="${encodeURIComponent(filename || 'resume.pdf')}"`
-    );
+        res.setHeader("Content-Type", mimetype || "application/pdf");
+        res.setHeader(
+          "Content-Disposition",
+          `inline; filename="${encodeURIComponent(filename || 'resume.pdf')}"`
+        );
 
-    return res.send(data);
+        return res.send(data);
+      }
+
+      if (roleApp.resume?.url && (roleApp.resume.url.startsWith("http://") || roleApp.resume.url.startsWith("https://"))) {
+        return res.redirect(roleApp.resume.url);
+      }
+    }
+
+    return res.status(404).json({
+      success: false,
+      message: "Resume file not found",
+    });
   } catch (error) {
     console.error("Download application resume error:", error);
     return res.status(500).json({
@@ -2694,10 +2941,22 @@ exports.deleteApplication =
         );
 
       if (!application) {
-        return res.status(404).json({
-          success: false,
+        // Fallback: Check FrontendApplication
+        const roleApp = await FrontendApplication.findById(req.params.id);
+        if (!roleApp) {
+          return res.status(404).json({
+            success: false,
+            message:
+              "Application not found",
+          });
+        }
+
+        await roleApp.deleteOne();
+
+        return res.status(200).json({
+          success: true,
           message:
-            "Application not found",
+            "Application deleted successfully",
         });
       }
 

@@ -1,4 +1,3 @@
-// src/admin/pages/Jobs.jsx
 import {
   AlertCircle,
   AlertTriangle,
@@ -6,6 +5,8 @@ import {
   Building2,
   Calendar,
   CheckCircle2,
+  Globe2,
+  Image as ImageIcon,
   IndianRupee,
   MapPin,
   Pencil,
@@ -15,12 +16,14 @@ import {
   Save,
   Search,
   Trash2,
+  Upload,
   Users,
   X,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { CountrySelectManager } from "../components/CountrySelectManager";
 import {
   deleteJob,
   getAllJobsAdmin,
@@ -188,10 +191,15 @@ const Jobs = () => {
       // Create a copy without the id field since it's sent in the URL
       const { id, _id, ...jobData } = updatedJob;
 
-      // Make sure category is sent as categoryId
+      let catId = jobData.categoryId || jobData.category;
+      if (typeof catId === "object" && catId !== null) {
+        catId = catId._id || catId.id;
+      }
+
+      // Make sure category is sent as clean string categoryId
       const submitData = {
         ...jobData,
-        categoryId: jobData.category || jobData.categoryId,
+        categoryId: catId ? String(catId) : undefined,
       };
 
       // Remove the category field if it exists (use categoryId instead)
@@ -505,11 +513,25 @@ const Jobs = () => {
                         </div>
                       </td>
 
-                      {/* Category */}
+                      {/* Category & Domain & Type */}
                       <td className="px-4 py-4 min-w-[180px]">
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 whitespace-nowrap">
-                          {getJobCategoryName(job)}
-                        </span>
+                        <div className="flex flex-col gap-1 items-start">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 whitespace-nowrap">
+                            {getJobCategoryName(job)}
+                          </span>
+                          <div className="flex flex-wrap gap-1">
+                            {job.domain && (
+                              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[11px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200 whitespace-nowrap">
+                                {job.domain}
+                              </span>
+                            )}
+                            {job.jobType && (
+                              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-slate-600 whitespace-nowrap">
+                                {job.jobType}
+                              </span>
+                            )}
+                          </div>
+                        </div>
                       </td>
 
                       {/* Location */}
@@ -694,14 +716,47 @@ const Jobs = () => {
   );
 };
 
+const DOMAIN_OPTIONS = [
+  "Frontend",
+  "Backend",
+  "Full Stack",
+  "Android",
+  "UI/UX Designer",
+  "Video Editor",
+];
+
+const JOB_TYPE_OPTIONS = [
+  "Remote",
+  "MNC",
+  "Banking & Finance",
+  "Startup",
+  "HR",
+  "Engineering",
+  "Fortune 500",
+  "Internship",
+  "Project Management",
+  "Sales",
+  "Supply Chain",
+];
+
 // Job Modal Component (Edit only)
 const JobModal = ({ mode, job, categories, onClose, onSave, existingJobs }) => {
+  const initialCategoryId =
+    (typeof job?.categoryId === "object" && job?.categoryId !== null
+      ? job.categoryId._id || job.categoryId.id
+      : job?.categoryId) ||
+    (typeof job?.category === "object" && job?.category !== null
+      ? job.category._id || job.category.id
+      : job?.category) ||
+    "";
+
   const [formData, setFormData] = useState({
     title: job?.title || "",
     company: job?.company || "",
-    categoryId: job?.categoryId || job?.category || "",
+    categoryId: String(initialCategoryId || ""),
     location: job?.location || "",
-    jobType: job?.jobType || "Full Time",
+    domain: job?.domain || "Frontend",
+    jobType: job?.jobType || "Remote",
     experience: job?.experience || "0-3 Yrs",
     salary: job?.salary || "",
     description: job?.description || "",
@@ -709,15 +764,36 @@ const JobModal = ({ mode, job, categories, onClose, onSave, existingJobs }) => {
     requirements: job?.requirements || [""],
     skills: job?.skills || [],
     status: job?.status || "active",
+    countries: job?.countries || [],
   });
+
+  const [logoFile, setLogoFile] = useState(null);
+  const [logoPreview, setLogoPreview] = useState(
+    job?.companyLogo?.displayUrl || job?.companyLogo?.url || ""
+  );
   const [newSkill, setNewSkill] = useState("");
   const [errors, setErrors] = useState({});
   const [isSaving, setIsSaving] = useState(false);
 
+  const handleLogoChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Logo file size must be less than 5MB");
+      return;
+    }
+    setLogoFile(file);
+    setLogoPreview(URL.createObjectURL(file));
+  };
+
+  const removeLogo = () => {
+    setLogoFile(null);
+    setLogoPreview("");
+  };
+
   const hasSelectedCategory = categories.some(
     (category) =>
-      category.id === formData.categoryId ||
-      category._id === formData.categoryId,
+      String(category._id || category.id) === String(formData.categoryId),
   );
 
   const validate = () => {
@@ -727,7 +803,6 @@ const JobModal = ({ mode, job, categories, onClose, onSave, existingJobs }) => {
       newErrors.company = "Company name is required";
     if (!formData.categoryId) newErrors.categoryId = "Category is required";
     if (!formData.location.trim()) newErrors.location = "Location is required";
-    if (!formData.salary.trim()) newErrors.salary = "Salary is required";
     if (!formData.description.trim())
       newErrors.description = "Job description is required";
 
@@ -757,29 +832,41 @@ const JobModal = ({ mode, job, categories, onClose, onSave, existingJobs }) => {
     try {
       // Find selected category
       const selectedCategory = categories.find(
-        (c) => c.id === formData.categoryId || c._id === formData.categoryId,
+        (c) =>
+          String(c._id || c.id) === String(formData.categoryId) ||
+          c.name?.toLowerCase() === String(formData.categoryId).toLowerCase(),
       );
 
       // Get the actual category ID
       const categoryObjectId =
-        selectedCategory?._id || selectedCategory?.id || formData.categoryId;
+        selectedCategory?._id ||
+        selectedCategory?.id ||
+        (typeof formData.categoryId === "object" && formData.categoryId !== null
+          ? formData.categoryId?._id || formData.categoryId?.id
+          : formData.categoryId);
 
       const jobData = {
         title: formData.title.trim(),
         company: formData.company.trim(),
-        categoryId: categoryObjectId, // Use categoryId (not category)
+        categoryId: categoryObjectId ? String(categoryObjectId) : undefined,
         categoryName:
           selectedCategory?.name || job?.categoryName || "Deleted Category",
         location: formData.location.trim(),
+        domain: formData.domain,
         jobType: formData.jobType,
         experience: formData.experience,
-        salary: formData.salary.trim(),
+        salary: formData.salary.trim() || "Undisclosed",
         description: formData.description.trim(),
         responsibilities: formData.responsibilities.filter((r) => r.trim()),
         requirements: formData.requirements.filter((r) => r.trim()),
         skills: formData.skills,
         status: formData.status,
+        countries: formData.countries,
       };
+
+      if (logoFile) {
+        jobData.companyLogo = logoFile;
+      }
 
       // If it's an edit, include the job ID
       if (job?.id || job?._id) {
@@ -936,11 +1023,14 @@ const JobModal = ({ mode, job, categories, onClose, onSave, existingJobs }) => {
                         {job?.categoryName || "Deleted Category"}
                       </option>
                     )}
-                  {categories.map((cat) => (
-                    <option key={cat.id} value={cat.id}>
-                      {cat.name}
-                    </option>
-                  ))}
+                  {categories.map((cat) => {
+                    const catId = cat._id || cat.id;
+                    return (
+                      <option key={catId} value={catId}>
+                        {cat.name}
+                      </option>
+                    );
+                  })}
                 </select>
                 {errors.categoryId && (
                   <p className="text-xs text-red-600 mt-1">
@@ -969,6 +1059,83 @@ const JobModal = ({ mode, job, categories, onClose, onSave, existingJobs }) => {
                 )}
               </div>
 
+              {/* Company Logo in Edit Modal */}
+              <div className="sm:col-span-2 p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                <label className="block text-xs font-semibold text-slate-700 mb-2">
+                  Company Logo
+                </label>
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 rounded-xl border border-slate-200 bg-white flex items-center justify-center overflow-hidden shrink-0 relative group">
+                    {logoPreview ? (
+                      <>
+                        <img
+                          src={logoPreview}
+                          alt="Logo Preview"
+                          className="w-full h-full object-contain p-1"
+                        />
+                        <button
+                          type="button"
+                          onClick={removeLogo}
+                          className="absolute inset-0 bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                          title="Remove logo"
+                        >
+                          <Trash2 className="w-4 h-4 text-red-300" />
+                        </button>
+                      </>
+                    ) : (
+                      <ImageIcon className="w-6 h-6 text-slate-400" />
+                    )}
+                  </div>
+                  <div>
+                    <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold cursor-pointer shadow-xs transition">
+                      <Upload className="w-3.5 h-3.5 text-blue-600" />
+                      <span>{logoPreview ? "Change Logo" : "Upload Logo"}</span>
+                      <input
+                        type="file"
+                        accept="image/png, image/jpeg, image/webp"
+                        onChange={handleLogoChange}
+                        className="hidden"
+                      />
+                    </label>
+                    <p className="text-[11px] text-slate-500 mt-1">
+                      PNG, JPG, or WEBP up to 5MB.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Countries Selector in Edit Modal */}
+              <div className="sm:col-span-2">
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Eligible Countries & Flags
+                </label>
+                <CountrySelectManager
+                  countries={formData.countries}
+                  onChange={(updated) =>
+                    setFormData({ ...formData, countries: updated })
+                  }
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Domain (Landing Page Category) *
+                </label>
+                <select
+                  value={formData.domain}
+                  onChange={(e) =>
+                    setFormData({ ...formData, domain: e.target.value })
+                  }
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none text-sm"
+                >
+                  {DOMAIN_OPTIONS.map((domain) => (
+                    <option key={domain} value={domain}>
+                      {domain}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">
                   Job Type *
@@ -980,8 +1147,11 @@ const JobModal = ({ mode, job, categories, onClose, onSave, existingJobs }) => {
                   }
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none text-sm"
                 >
-                  <option value="Full Time">Full Time</option>
-                  <option value="Part Time">Part Time</option>
+                  {JOB_TYPE_OPTIONS.map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -1005,7 +1175,7 @@ const JobModal = ({ mode, job, categories, onClose, onSave, existingJobs }) => {
 
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Salary *
+                  Salary (Optional - Defaults to "Undisclosed")
                 </label>
                 <input
                   type="text"
@@ -1013,14 +1183,9 @@ const JobModal = ({ mode, job, categories, onClose, onSave, existingJobs }) => {
                   onChange={(e) =>
                     setFormData({ ...formData, salary: e.target.value })
                   }
-                  className={`w-full px-4 py-2.5 rounded-xl border ${
-                    errors.salary ? "border-red-300" : "border-slate-200"
-                  } focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none text-sm`}
-                  placeholder="e.g., ₹5-9 LPA"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none text-sm"
+                  placeholder="e.g., ₹5-9 LPA (Leave blank for 'Undisclosed')"
                 />
-                {errors.salary && (
-                  <p className="text-xs text-red-600 mt-1">{errors.salary}</p>
-                )}
               </div>
 
               <div>
