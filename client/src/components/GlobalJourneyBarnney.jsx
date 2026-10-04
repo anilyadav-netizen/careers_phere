@@ -15,7 +15,7 @@ const GlobalJourneyBanner = () => {
   const bunnyVideoUrl =
     "https://player.mediadelivery.net/play/769180/e3144a3a-a45d-494f-a9c7-142c6bdef4dd";
 
-  const destinations = ["Australia", "USA", "UAE", "Europe"];
+  const destinations = ["Australia", "USA", "Japan", "Europe"];
 
   const benefits = [
     "Verified Opportunities",
@@ -126,17 +126,15 @@ const GlobalJourneyBanner = () => {
             <div className="relative min-h-[300px] p-3 sm:min-h-[360px] sm:p-4 md:min-h-[420px] lg:min-h-[480px] lg:p-5">
               {/* Bunny Player Wrapper */}
               <div className="relative flex h-full min-h-[280px] w-full items-center justify-center overflow-hidden rounded-xl border border-slate-800 bg-slate-950 shadow-2xl sm:min-h-[340px] sm:rounded-2xl md:min-h-[390px] lg:min-h-full">
-                {/* Bunny Stream Player */}
                 <iframe
                   src={bunnyVideoUrl}
                   loading="lazy"
                   className="absolute inset-0 h-full w-full border-0"
-                  allow="accelerometer; gyroscope; encrypted-media; picture-in-picture;"
+                  allow="accelerometer;  encrypted-media; picture-in-picture;"
                   allowFullScreen
                   title="CareerNova Overview Video"
                 />
 
-                {/* Top Floating Badge */}
                 <div className="pointer-events-none absolute left-3 right-3 top-3 z-10 flex items-center justify-between sm:left-4 sm:right-4 sm:top-4">
                   <div className="flex items-center gap-2 rounded-full border border-white/20 bg-slate-900/70 px-3 py-1.5 shadow-lg backdrop-blur-md">
                     <Sparkles
