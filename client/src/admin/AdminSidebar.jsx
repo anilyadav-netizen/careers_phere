@@ -8,6 +8,7 @@ import {
   Layers,
   LayoutDashboard,
   LogOut,
+  Mail,
   Settings,
   ShieldCheck,
   UserRound,
@@ -50,6 +51,11 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
       name: "Applications",
       path: "/admin/applications",
       icon: FileText,
+    },
+    {
+      name: "Enquiries",
+      path: "/admin/enquiries",
+      icon: Mail,
     },
     {
       name: "Testimonial",

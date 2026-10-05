@@ -10,20 +10,47 @@ import {
   Send,
   Users,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { submitEnquiry, resetSubmitState } from "../redux/slicer/enquirySlice";
+import { Loader2, AlertCircle } from "lucide-react";
 
 import { FaInstagram, FaLinkedinIn, FaTwitter } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const ContactUs = () => {
+  const dispatch = useDispatch();
+  const { submitLoading, submitSuccess, submitError } = useSelector(
+    (state) => state.enquiries || {}
+  );
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     subject: "",
     message: "",
   });
 
-  const [submitted, setSubmitted] = useState(false);
+  useEffect(() => {
+    dispatch(resetSubmitState());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (submitSuccess) {
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        subject: "",
+        message: "",
+      });
+      const timer = setTimeout(() => {
+        dispatch(resetSubmitState());
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [submitSuccess, dispatch]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,21 +61,9 @@ const ContactUs = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    setSubmitted(true);
-
-    setFormData({
-      name: "",
-      email: "",
-      subject: "",
-      message: "",
-    });
-
-    setTimeout(() => {
-      setSubmitted(false);
-    }, 4000);
+    dispatch(submitEnquiry(formData));
   };
 
   return (
@@ -322,7 +337,7 @@ const ContactUs = () => {
             </div>
 
             {/* Success */}
-            {submitted && (
+            {submitSuccess && (
               <div className="mb-5 flex items-start gap-3 rounded-xl border border-green-200 bg-green-50 p-4">
                 <CheckCircle2
                   size={20}
@@ -335,7 +350,27 @@ const ContactUs = () => {
                   </p>
 
                   <p className="mt-1 text-xs text-green-700">
-                    Thank you for contacting CareerNova.
+                    Thank you for contacting CareerNova. Our team will get back to you shortly.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Error */}
+            {submitError && (
+              <div className="mb-5 flex items-start gap-3 rounded-xl border border-rose-200 bg-rose-50 p-4">
+                <AlertCircle
+                  size={20}
+                  className="mt-0.5 shrink-0 text-rose-600"
+                />
+
+                <div>
+                  <p className="text-sm font-bold text-rose-800">
+                    Failed to send message
+                  </p>
+
+                  <p className="mt-1 text-xs text-rose-700">
+                    {submitError}
                   </p>
                 </div>
               </div>
@@ -351,7 +386,7 @@ const ContactUs = () => {
                     htmlFor="name"
                     className="mb-2 block text-sm font-semibold text-gray-700"
                   >
-                    Full Name
+                    Full Name <span className="text-rose-500">*</span>
                   </label>
 
                   <input
@@ -372,7 +407,7 @@ const ContactUs = () => {
                     htmlFor="email"
                     className="mb-2 block text-sm font-semibold text-gray-700"
                   >
-                    Email Address
+                    Email Address <span className="text-rose-500">*</span>
                   </label>
 
                   <input
@@ -388,25 +423,48 @@ const ContactUs = () => {
                 </div>
               </div>
 
-              {/* Subject */}
-              <div>
-                <label
-                  htmlFor="subject"
-                  className="mb-2 block text-sm font-semibold text-gray-700"
-                >
-                  Subject
-                </label>
+              {/* Phone + Subject */}
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                {/* Phone */}
+                <div>
+                  <label
+                    htmlFor="phone"
+                    className="mb-2 block text-sm font-semibold text-gray-700"
+                  >
+                    Phone Number <span className="text-xs font-normal text-gray-400">(Optional)</span>
+                  </label>
 
-                <input
-                  id="subject"
-                  name="subject"
-                  type="text"
-                  required
-                  value={formData.subject}
-                  onChange={handleChange}
-                  placeholder="How can we help you?"
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 outline-none transition-all placeholder:text-gray-400 focus:border-[#30AFFF] focus:bg-white focus:ring-4 focus:ring-[#30AFFF]/10"
-                />
+                  <input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    placeholder="+91 98765 43210"
+                    className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 outline-none transition-all placeholder:text-gray-400 focus:border-[#30AFFF] focus:bg-white focus:ring-4 focus:ring-[#30AFFF]/10"
+                  />
+                </div>
+
+                {/* Subject */}
+                <div>
+                  <label
+                    htmlFor="subject"
+                    className="mb-2 block text-sm font-semibold text-gray-700"
+                  >
+                    Subject
+                  </label>
+
+                  <input
+                    id="subject"
+                    name="subject"
+                    type="text"
+                    required
+                    value={formData.subject}
+                    onChange={handleChange}
+                    placeholder="How can we help you?"
+                    className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 outline-none transition-all placeholder:text-gray-400 focus:border-[#30AFFF] focus:bg-white focus:ring-4 focus:ring-[#30AFFF]/10"
+                  />
+                </div>
               </div>
 
               {/* Message */}
@@ -415,7 +473,7 @@ const ContactUs = () => {
                   htmlFor="message"
                   className="mb-2 block text-sm font-semibold text-gray-700"
                 >
-                  Message
+                  Message <span className="text-rose-500">*</span>
                 </label>
 
                 <textarea
@@ -433,13 +491,23 @@ const ContactUs = () => {
               {/* Submit */}
               <button
                 type="submit"
-                className="group flex w-full items-center justify-center gap-2 rounded-xl bg-[#30AFFF] px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#30AFFF]/20 transition-all duration-300 hover:bg-[#159FEF] hover:shadow-xl hover:shadow-[#30AFFF]/30"
+                disabled={submitLoading}
+                className="group flex w-full items-center justify-center gap-2 rounded-xl bg-[#30AFFF] px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#30AFFF]/20 transition-all duration-300 hover:bg-[#159FEF] hover:shadow-xl hover:shadow-[#30AFFF]/30 disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                Send Message
-                <Send
-                  size={17}
-                  className="transition-transform duration-300 group-hover:translate-x-1"
-                />
+                {submitLoading ? (
+                  <>
+                    <Loader2 size={17} className="animate-spin" />
+                    <span>Sending Message...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Send Message</span>
+                    <Send
+                      size={17}
+                      className="transition-transform duration-300 group-hover:translate-x-1"
+                    />
+                  </>
+                )}
               </button>
             </form>
           </div>

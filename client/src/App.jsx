@@ -37,6 +37,7 @@ import { SubscriptionProvider } from "./admin/context/SubscriptionContext";
 
 import ApplicationDetails from "./admin/pages/ApplicationDetails";
 import Applications from "./admin/pages/Applications";
+import Enquiries from "./admin/pages/Enquiries";
 import FrontendApplications from "./admin/pages/FrontendApplications";
 import RoleOpportunities from "./admin/pages/RoleOpportunities";
 
@@ -180,6 +181,9 @@ function App() {
                   path="applications/:applicationId"
                   element={<ApplicationDetails />}
                 />
+
+                {/* ENQUIRIES */}
+                <Route path="enquiries" element={<Enquiries />} />
 
                 {/* Unified Redirects: Role Applications -> Applications, Role Opportunities -> Jobs */}
                 <Route

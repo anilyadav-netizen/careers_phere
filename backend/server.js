@@ -21,6 +21,7 @@ const frontendApplicationRoutes = require("./routes/frontendApplicationRoutes");
 const roleOpportunityRoutes = require("./routes/roleOpportunityRoutes");
 const jobTypeRoutes = require("./routes/jobTypeRoutes");
 const videoRoutes = require("./routes/videoRoutes");
+const enquiryRoutes = require("./routes/enquiryRoutes");
 
 const errorHandler = require("./middleware/error");
 const {
@@ -60,6 +61,8 @@ app.use("/api/frontend-applications", frontendApplicationRoutes);
 app.use("/api/role-opportunities", roleOpportunityRoutes);
 app.use("/api/job-types", jobTypeRoutes);
 app.use("/api/video", videoRoutes);
+app.use("/api/enquiries", enquiryRoutes);
+app.use("/api/contact", enquiryRoutes);
 
 // ==========================
 // HEALTH CHECK

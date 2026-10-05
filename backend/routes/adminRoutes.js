@@ -74,6 +74,14 @@ const {
   getUserStats,
 } = require("../controllers/adminUserController");
 
+const {
+  getAllEnquiriesAdmin,
+  getEnquiryStatsAdmin,
+  getEnquiryByIdAdmin,
+  updateEnquiryStatusAdmin,
+  deleteEnquiryAdmin,
+} = require("../controllers/enquiryController");
+
 const { protectAdmin } = require("../middleware/adminAuth");
 const { uploadImage, handleUploadError } = require("../middleware/upload");
 
@@ -164,5 +172,13 @@ router.delete("/users/:id", deleteUserAdmin);
 // router.patch("/users/:id/toggle-verified", toggleUserVerified);
 
 router.delete("/users/bulk", bulkDeleteUsers);
+
+// ============ ENQUIRY MANAGEMENT ============
+
+router.get("/enquiries", getAllEnquiriesAdmin);
+router.get("/enquiries/stats", getEnquiryStatsAdmin);
+router.get("/enquiries/:id", getEnquiryByIdAdmin);
+router.patch("/enquiries/:id/status", updateEnquiryStatusAdmin);
+router.delete("/enquiries/:id", deleteEnquiryAdmin);
 
 module.exports = router;
