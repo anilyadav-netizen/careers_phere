@@ -38,6 +38,7 @@ import { SubscriptionProvider } from "./admin/context/SubscriptionContext";
 import ApplicationDetails from "./admin/pages/ApplicationDetails";
 import Applications from "./admin/pages/Applications";
 import Enquiries from "./admin/pages/Enquiries";
+import HeroSectionManagement from "./admin/pages/HeroSectionManagement";
 import FrontendApplications from "./admin/pages/FrontendApplications";
 import RoleOpportunities from "./admin/pages/RoleOpportunities";
 
@@ -149,6 +150,9 @@ function App() {
                 {/* DASHBOARD */}
 
                 <Route index element={<AdminDashboard />} />
+
+                {/* HERO SECTION MANAGEMENT */}
+                <Route path="hero-section" element={<HeroSectionManagement />} />
 
                 {/* USERS */}
 

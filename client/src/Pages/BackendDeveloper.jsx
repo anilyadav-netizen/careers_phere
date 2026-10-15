@@ -1,5 +1,6 @@
 import React, { useReducer, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import RoleApplyModal from "../components/RoleApplyModal";
 import RoleOpportunitiesEmptyState from "../components/RoleOpportunitiesEmptyState";
 import { fetchPublicOpportunities } from "../redux/slicer/roleOpportunitySlice";
@@ -55,6 +56,7 @@ const reducer = (state, action) => {
 };
 
 const BackendDeveloper = () => {
+  const navigate = useNavigate();
   const [state, dispatch] = useReducer(reducer, initialState);
   const { openFaq } = state;
   const reduxDispatch = useDispatch();
@@ -201,7 +203,11 @@ const BackendDeveloper = () => {
   ];
 
   const openApply = (opp = null) => {
-    setSelectedOpportunity(opp && opp._id ? opp : null);
+    if (opp && (opp._id || opp.id)) {
+      navigate(`/jobs/${opp._id || opp.id}`);
+      return;
+    }
+    setSelectedOpportunity(null);
     setSelectedCountry(null);
     setIsApplyModalOpen(true);
   };
@@ -802,7 +808,7 @@ const BackendDeveloper = () => {
                         onClick={() => openApply(opp)}
                         className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-3.5 py-2 text-[10px] font-bold text-white shadow-sm hover:bg-[#159FEF] transition cursor-pointer"
                       >
-                        Apply
+                        Apply Now
                         <ArrowRight size={13} />
                       </button>
                     </div>

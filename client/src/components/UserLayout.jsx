@@ -4,7 +4,6 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import ScrollToTop from "./ScrollToTop";
 import FloatingVideoWidget from "./FloatingVideoWidget";
-import WelcomePopup from "./WelcomePopup";
 
 const UserLayout = () => {
   return (
@@ -15,10 +14,7 @@ const UserLayout = () => {
 
       <Outlet />
 
-      {/* Welcome popup for first-time visitors */}
-      <WelcomePopup />
-
-      {/* Floating bunny video - non-intrusive, independent z-layer */}
+      {/* Floating video widget */}
       <FloatingVideoWidget />
 
       <Footer />

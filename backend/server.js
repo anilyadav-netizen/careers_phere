@@ -22,6 +22,7 @@ const roleOpportunityRoutes = require("./routes/roleOpportunityRoutes");
 const jobTypeRoutes = require("./routes/jobTypeRoutes");
 const videoRoutes = require("./routes/videoRoutes");
 const enquiryRoutes = require("./routes/enquiryRoutes");
+const heroRoutes = require("./routes/heroRoutes");
 
 const errorHandler = require("./middleware/error");
 const {
@@ -63,6 +64,7 @@ app.use("/api/job-types", jobTypeRoutes);
 app.use("/api/video", videoRoutes);
 app.use("/api/enquiries", enquiryRoutes);
 app.use("/api/contact", enquiryRoutes);
+app.use("/api/hero", heroRoutes);
 
 // ==========================
 // HEALTH CHECK

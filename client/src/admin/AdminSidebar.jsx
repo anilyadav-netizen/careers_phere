@@ -11,6 +11,7 @@ import {
   Mail,
   Settings,
   ShieldCheck,
+  Sparkles,
   UserRound,
   Users,
   X,
@@ -25,6 +26,11 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
       name: "Dashboard",
       path: "/admin",
       icon: LayoutDashboard,
+    },
+    {
+      name: "Hero Section",
+      path: "/admin/hero-section",
+      icon: Sparkles,
     },
     {
       name: "Users",

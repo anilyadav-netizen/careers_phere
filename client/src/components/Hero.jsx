@@ -14,6 +14,8 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchHeroSection } from "../redux/slicer/heroSlice";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation, EffectFade } from "swiper/modules";
@@ -24,6 +26,22 @@ import "swiper/css/navigation";
 import "swiper/css/effect-fade";
 
 const Hero = () => {
+  const dispatch = useDispatch();
+  const { data: heroData } = useSelector((state) => state.hero);
+
+  useEffect(() => {
+    dispatch(fetchHeroSection());
+  }, [dispatch]);
+
+  const customHeroImage =
+    heroData?.image?.displayUrl || heroData?.image?.url || "";
+  const heroHeading =
+    heroData?.heading || "Build Your Career\nBeyond Borders";
+  const heroSubheading =
+    heroData?.subheading ||
+    "Discover international job opportunities from trusted companies around the world. Build your profile, get matched with the right roles, and take your career to the country you've always dreamed of.";
+  const heroBadge = heroData?.badgeText || "Global Jobs • 50+ Countries";
+
   const [typed, setTyped] = useState("");
   const fullText = "Dream Job";
   const [isTyping, setIsTyping] = useState(true);
@@ -710,11 +728,11 @@ const Hero = () => {
                 <Globe2 size={15} />
 
                 <span className="hidden sm:inline">
-                  Global Jobs • 50+ Countries
+                  {heroBadge}
                 </span>
 
                 <span className="sm:hidden">
-                  Global Jobs
+                  {heroBadge.split("•")[0]?.trim() || heroBadge}
                 </span>
               </div>
 
@@ -744,12 +762,35 @@ const Hero = () => {
                   2xl:text-[5rem]
                 "
               >
-                Build Your Career
-                <br />
-
-                <span className="shimmer-text">
-                  Beyond Borders
-                </span>
+                {heroHeading.includes("\n") ? (
+                  heroHeading.split("\n").map((line, i, arr) => (
+                    <React.Fragment key={i}>
+                      {i === arr.length - 1 ? (
+                        <span className="shimmer-text">{line}</span>
+                      ) : (
+                        <>
+                          {line}
+                          <br />
+                        </>
+                      )}
+                    </React.Fragment>
+                  ))
+                ) : (
+                  (() => {
+                    const words = heroHeading.trim().split(" ");
+                    if (words.length > 2) {
+                      const first = words.slice(0, -2).join(" ");
+                      const last = words.slice(-2).join(" ");
+                      return (
+                        <>
+                          {first}{" "}
+                          <span className="shimmer-text">{last}</span>
+                        </>
+                      );
+                    }
+                    return <span className="shimmer-text">{heroHeading}</span>;
+                  })()
+                )}
               </h1>
 
               {/* DESCRIPTION */}
@@ -776,11 +817,7 @@ const Hero = () => {
                   xl:leading-8
                 "
               >
-                Discover international job opportunities from
-                trusted companies around the world. Build your
-                profile, get matched with the right roles, and
-                take your career to the country you've always
-                dreamed of.
+                {heroSubheading}
               </p>
 
               {/* INTERNATIONAL FEATURES */}
@@ -1229,155 +1266,166 @@ const Hero = () => {
                   <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-blue-600/20 to-indigo-600/20 blur-2xl sm:rounded-3xl" />
 
                   <div className="relative overflow-hidden rounded-2xl shadow-2xl ring-1 ring-white/20 sm:rounded-3xl">
-                    <Swiper
-                      modules={[
-                        Autoplay,
-                        Pagination,
-                        Navigation,
-                        EffectFade,
-                      ]}
-                      effect="fade"
-                      fadeEffect={{
-                        crossFade: true,
-                      }}
-                      slidesPerView={1}
-                      loop={true}
-                      speed={1000}
-                      autoplay={{
-                        delay: 4000,
-                        disableOnInteraction: false,
-                        pauseOnMouseEnter: true,
-                      }}
-                      pagination={{
-                        clickable: true,
-                      }}
-                      navigation={true}
-                      className="hero-swiper aspect-[4/3] w-full"
-                    >
-                      {abroadSlides.map((slide, index) => (
-                        <SwiperSlide key={index}>
-                          <div className="relative h-full w-full bg-slate-100">
-                            {/* IMAGE */}
+                    {customHeroImage ? (
+                      <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-900">
+                        <img
+                          src={customHeroImage}
+                          alt="Hero Section Visual"
+                          className="h-full w-full object-cover"
+                        />
+                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                      </div>
+                    ) : (
+                      <Swiper
+                        modules={[
+                          Autoplay,
+                          Pagination,
+                          Navigation,
+                          EffectFade,
+                        ]}
+                        effect="fade"
+                        fadeEffect={{
+                          crossFade: true,
+                        }}
+                        slidesPerView={1}
+                        loop={true}
+                        speed={1000}
+                        autoplay={{
+                          delay: 4000,
+                          disableOnInteraction: false,
+                          pauseOnMouseEnter: true,
+                        }}
+                        pagination={{
+                          clickable: true,
+                        }}
+                        navigation={true}
+                        className="hero-swiper aspect-[4/3] w-full"
+                      >
+                        {abroadSlides.map((slide, index) => (
+                          <SwiperSlide key={index}>
+                            <div className="relative h-full w-full bg-slate-100">
+                              {/* IMAGE */}
 
-                            <img
-                              src={slide.image}
-                              alt={`${slide.city}, ${slide.country}`}
-                              className="
-                                h-full
-                                w-full
-                                object-contain
-                                bg-slate-100
-                              "
-                            />
+                              <img
+                                src={slide.image}
+                                alt={`${slide.city}, ${slide.country}`}
+                                className="
+                                  h-full
+                                  w-full
+                                  object-contain
+                                  bg-slate-100
+                                "
+                              />
 
-                            {/* Overlay */}
+                              {/* Overlay */}
 
-                            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
 
-                            {/* COUNTRY LABEL */}
+                              {/* COUNTRY LABEL */}
 
-                            <div
-                              className="
-                                absolute
-                                left-4
-                                top-4
-                                flex
-                                items-center
-                                gap-2
-                                rounded-full
-                                border
-                                border-white/30
-                                bg-black/30
-                                px-3
-                                py-1.5
-                                text-white
-                                shadow-lg
-                                backdrop-blur-md
+                              <div
+                                className="
+                                  absolute
+                                  left-4
+                                  top-4
+                                  flex
+                                  items-center
+                                  gap-2
+                                  rounded-full
+                                  border
+                                  border-white/30
+                                  bg-black/30
+                                  px-3
+                                  py-1.5
+                                  text-white
+                                  shadow-lg
+                                  backdrop-blur-md
 
-                                sm:left-5
-                                sm:top-5
-                                sm:px-4
-                                sm:py-2
-                              "
-                            >
-                              <span className="text-base sm:text-lg">
-                                {slide.icon}
-                              </span>
+                                  sm:left-5
+                                  sm:top-5
+                                  sm:px-4
+                                  sm:py-2
+                                "
+                              >
+                                <span className="text-base sm:text-lg">
+                                  {slide.icon}
+                                </span>
 
-                              <span className="text-[10px] font-semibold sm:text-xs">
-                                {slide.country}
-                              </span>
-                            </div>
-
-                            {/* SLIDE CONTENT */}
-
-                            <div
-                              className="
-                                absolute
-                                bottom-8
-                                left-4
-                                right-4
-                                text-white
-
-                                sm:bottom-10
-                                sm:left-6
-                                sm:right-6
-
-                                md:bottom-12
-                                md:left-8
-                                md:right-8
-                              "
-                            >
-                              <div className="mb-1 flex items-center gap-1.5">
-                                <MapPin
-                                  size={13}
-                                  className="text-blue-300 sm:h-4 sm:w-4"
-                                />
-
-                                <span className="text-[10px] font-medium text-blue-100 sm:text-xs">
-                                  {slide.city}
+                                <span className="text-[10px] font-semibold sm:text-xs">
+                                  {slide.country}
                                 </span>
                               </div>
 
-                              <h2
+                              {/* SLIDE CONTENT */}
+
+                              <div
                                 className="
-                                  max-w-xl
-                                  text-lg
-                                  font-black
-                                  leading-tight
+                                  absolute
+                                  bottom-8
+                                  left-4
+                                  right-4
+                                  text-white
 
-                                  sm:text-2xl
+                                  sm:bottom-10
+                                  sm:left-6
+                                  sm:right-6
 
-                                  md:text-3xl
-
-                                  lg:text-4xl
+                                  md:bottom-12
+                                  md:left-8
+                                  md:right-8
                                 "
                               >
-                                {slide.title}
-                              </h2>
+                                <div className="mb-1 flex items-center gap-1.5">
+                                  <MapPin
+                                    size={13}
+                                    className="text-blue-300 sm:h-4 sm:w-4"
+                                  />
 
-                              <p
-                                className="
-                                  mt-1
-                                  max-w-lg
-                                  text-[10px]
-                                  leading-4
-                                  text-white/80
+                                  <span className="text-[10px] font-medium text-blue-100 sm:text-xs">
+                                    {slide.city}
+                                  </span>
+                                </div>
 
-                                  sm:mt-2
-                                  sm:text-xs
-                                  sm:leading-5
+                                <h2
+                                  className="
+                                    max-w-xl
+                                    text-lg
+                                    font-black
+                                    leading-tight
 
-                                  md:text-sm
-                                "
-                              >
-                                {slide.description}
-                              </p>
+                                    sm:text-2xl
+
+                                    md:text-3xl
+
+                                    lg:text-4xl
+                                  "
+                                >
+                                  {slide.title}
+                                </h2>
+
+                                <p
+                                  className="
+                                    mt-1
+                                    max-w-lg
+                                    text-[10px]
+                                    leading-4
+                                    text-white/80
+
+                                    sm:mt-2
+                                    sm:text-xs
+                                    sm:leading-5
+
+                                    md:text-sm
+                                  "
+                                >
+                                  {slide.description}
+                                </p>
+                              </div>
                             </div>
-                          </div>
-                        </SwiperSlide>
-                      ))}
-                    </Swiper>
+                          </SwiperSlide>
+                        ))}
+                      </Swiper>
+                    )}
 
                     {/* =================================================
                         TOP FLOATING CARD

@@ -2,6 +2,7 @@ import {
   ArrowRight,
   Building2,
   CheckCircle2,
+  ChevronDown,
   Globe2,
   Sparkles,
 } from "lucide-react";
@@ -13,6 +14,17 @@ import { getAllJobsUser } from "../redux/slicer/jobSlice";
 
 // Curated fallbacks in case admin has not added many jobs yet
 const FALLBACK_COMPANIES = [
+  {
+    name: "Amazon",
+    logoUrl: "https://www.amazon.com/favicon.ico",
+    countries: [
+      { name: "United States", flag: "https://flagcdn.com/w160/us.png" },
+      { name: "India", flag: "https://flagcdn.com/w160/in.png" },
+      { name: "Australia", flag: "https://flagcdn.com/w160/au.png" },
+    ],
+    jobCount: 11,
+    category: "E-Commerce & AWS",
+  },
   {
     name: "Google",
     logoUrl: "https://www.google.com/favicon.ico",
@@ -34,17 +46,6 @@ const FALLBACK_COMPANIES = [
     ],
     jobCount: 6,
     category: "Software & Cloud",
-  },
-  {
-    name: "Amazon",
-    logoUrl: "https://www.amazon.com/favicon.ico",
-    countries: [
-      { name: "United States", flag: "https://flagcdn.com/w160/us.png" },
-      { name: "India", flag: "https://flagcdn.com/w160/in.png" },
-      { name: "Australia", flag: "https://flagcdn.com/w160/au.png" },
-    ],
-    jobCount: 11,
-    category: "E-Commerce & AWS",
   },
   {
     name: "Meta",
@@ -91,6 +92,18 @@ const CompaniesHiringSection = () => {
 
   const jobs = useSelector((state) => state.jobs?.jobs) || EMPTY_JOBS;
   const [selectedCountry, setSelectedCountry] = useState("all");
+  const [showAllCompanies, setShowAllCompanies] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Responsive screen size tracking (Mobile < 640px)
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Sirf ek baar fetch (pehle [jobs] dependency se empty response pe loop ka risk tha)
   const hasFetched = useRef(false);
@@ -135,7 +148,7 @@ const CompaniesHiringSection = () => {
     return Array.from(countryMap.values());
   }, [jobs]);
 
-  // Aggregate companies from active jobs
+  // Aggregate companies from active jobs and rank descending by job count
   const companyList = useMemo(() => {
     const companyMap = new Map();
 
@@ -202,19 +215,36 @@ const CompaniesHiringSection = () => {
     });
 
     const dynamicCompanies = Array.from(companyMap.values());
-    return dynamicCompanies.length > 0 ? dynamicCompanies : FALLBACK_COMPANIES;
+    const rawList = dynamicCompanies.length > 0 ? dynamicCompanies : FALLBACK_COMPANIES;
+
+    // Rank companies descending by job count; ties broken alphabetically by name
+    return [...rawList].sort(
+      (a, b) => (b.jobCount || 0) - (a.jobCount || 0) || a.name.localeCompare(b.name)
+    );
   }, [jobs]);
 
-  // Filter companies based on selected country
+  // Filter companies based on selected country and preserve descending sort
   const filteredCompanies = useMemo(() => {
-    if (selectedCountry === "all") return companyList;
+    let list = companyList;
+    if (selectedCountry !== "all") {
+      list = companyList.filter((comp) =>
+        comp.countries.some(
+          (c) => c.name.toLowerCase() === selectedCountry.toLowerCase(),
+        ),
+      );
+    }
 
-    return companyList.filter((comp) =>
-      comp.countries.some(
-        (c) => c.name.toLowerCase() === selectedCountry.toLowerCase(),
-      ),
+    return [...list].sort(
+      (a, b) => (b.jobCount || 0) - (a.jobCount || 0) || a.name.localeCompare(b.name)
     );
   }, [companyList, selectedCountry]);
+
+  // Responsive slicing: Top 10 on desktop, top 6 on mobile
+  const displayLimit = isMobile ? 6 : 10;
+  const hasMoreCompanies = filteredCompanies.length > displayLimit;
+  const displayedCompanies = showAllCompanies
+    ? filteredCompanies
+    : filteredCompanies.slice(0, displayLimit);
 
   // Click handler to open /jobs for that company
   const handleCompanyClick = (companyName) => {
@@ -335,7 +365,7 @@ const CompaniesHiringSection = () => {
 
         {/* Company Cards Grid (compact) */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5 sm:gap-3">
-          {filteredCompanies.map((comp) => (
+          {displayedCompanies.map((comp) => (
             <button
               type="button"
               key={comp.name}
@@ -407,6 +437,28 @@ const CompaniesHiringSection = () => {
             </button>
           ))}
         </div>
+
+        {/* View All Companies / Show Less Toggle Button */}
+        {hasMoreCompanies && (
+          <div className="mt-8 flex justify-center">
+            <button
+              type="button"
+              onClick={() => setShowAllCompanies((prev) => !prev)}
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-[#30AFFF]/40 text-xs sm:text-sm font-bold text-[#0B6F9F] hover:bg-[#30AFFF] hover:text-white transition-all duration-300 shadow-xs hover:shadow-md group cursor-pointer"
+            >
+              <span>
+                {showAllCompanies
+                  ? "Show Less"
+                  : `View All Companies (${filteredCompanies.length})`}
+              </span>
+              <ChevronDown
+                className={`w-4 h-4 transition-transform duration-300 ${
+                  showAllCompanies ? "rotate-180" : "group-hover:translate-y-0.5"
+                }`}
+              />
+            </button>
+          </div>
+        )}
 
         {filteredCompanies.length === 0 && (
           <div className="text-center py-8 bg-white rounded-2xl border border-slate-200 p-6">

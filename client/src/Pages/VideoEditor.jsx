@@ -21,6 +21,7 @@ import {
   Wand2,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FaInstagram, FaLinkedinIn, FaVimeoV, FaYoutube } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import RoleApplyModal from "../components/RoleApplyModal";
@@ -29,6 +30,7 @@ import { fetchPublicOpportunities } from "../redux/slicer/roleOpportunitySlice";
 
 const VideoEditor = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { publicList: opportunities = [], publicLoading } = useSelector(
     (state) => state.roleOpportunities || {},
   );
@@ -76,7 +78,11 @@ const VideoEditor = () => {
   // Global Opportunities Apply button
   // Same modal opens as "Open Application Form"
   const goToApplicationForm = (opp = null) => {
-    setSelectedOpportunity(opp && opp._id ? opp : null);
+    if (opp && (opp._id || opp.id)) {
+      navigate(`/jobs/${opp._id || opp.id}`);
+      return;
+    }
+    setSelectedOpportunity(null);
     setIsApplyModalOpen(true);
     setMenuOpen(false);
   };
@@ -896,7 +902,7 @@ const VideoEditor = () => {
                           onClick={() => goToApplicationForm(opp)}
                           className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-3.5 py-2 text-[10px] font-bold text-white hover:bg-[#30AFFF] transition cursor-pointer"
                         >
-                          Apply
+                          Apply Now
                           <ArrowRight size={13} className="shrink-0" />
                         </button>
                       </div>

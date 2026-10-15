@@ -79,6 +79,11 @@ const WelcomePopup = () => {
     } catch {
       // ignore storage error
     }
+    try {
+      window.dispatchEvent(new CustomEvent("careernova:unmute_video"));
+    } catch {
+      // ignore
+    }
     setIsOpen(false);
     navigate(route);
   };

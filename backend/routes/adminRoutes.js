@@ -82,6 +82,18 @@ const {
   deleteEnquiryAdmin,
 } = require("../controllers/enquiryController");
 
+const {
+  getAllHeroBannersAdmin,
+  getHeroBannerByIdAdmin,
+  createHeroBannerAdmin,
+  updateHeroBannerAdmin,
+  deleteHeroBannerAdmin,
+  toggleHeroBannerStatusAdmin,
+  reorderHeroBannersAdmin,
+  getHeroSection,
+  updateHeroSectionAdmin,
+} = require("../controllers/heroController");
+
 const { protectAdmin } = require("../middleware/adminAuth");
 const { uploadImage, handleUploadError } = require("../middleware/upload");
 
@@ -180,5 +192,19 @@ router.get("/enquiries/stats", getEnquiryStatsAdmin);
 router.get("/enquiries/:id", getEnquiryByIdAdmin);
 router.patch("/enquiries/:id/status", updateEnquiryStatusAdmin);
 router.delete("/enquiries/:id", deleteEnquiryAdmin);
+
+// ============ HERO SECTION MANAGEMENT ============
+
+router.get("/hero", getHeroSection);
+router.put("/hero", uploadImage, handleUploadError, updateHeroSectionAdmin);
+router.post("/hero", uploadImage, handleUploadError, updateHeroSectionAdmin);
+
+router.get("/hero/banners", getAllHeroBannersAdmin);
+router.post("/hero/banners", uploadImage, handleUploadError, createHeroBannerAdmin);
+router.put("/hero/banners/reorder", reorderHeroBannersAdmin);
+router.get("/hero/banners/:id", getHeroBannerByIdAdmin);
+router.put("/hero/banners/:id", uploadImage, handleUploadError, updateHeroBannerAdmin);
+router.delete("/hero/banners/:id", deleteHeroBannerAdmin);
+router.patch("/hero/banners/:id/toggle", toggleHeroBannerStatusAdmin);
 
 module.exports = router;

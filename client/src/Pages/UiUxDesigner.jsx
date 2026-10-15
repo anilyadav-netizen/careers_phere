@@ -19,6 +19,7 @@ import {
   Users,
 } from "lucide-react";
 import { useEffect, useReducer, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { SiFigma, SiFramer, SiMiro, SiNotion, SiSketch } from "react-icons/si";
 import { useDispatch, useSelector } from "react-redux";
 import RoleApplyModal from "../components/RoleApplyModal";
@@ -46,6 +47,7 @@ const reducer = (state, action) => {
 };
 
 const UiUxDesigner = () => {
+  const navigate = useNavigate();
   const [state, dispatch] = useReducer(reducer, initialState);
   const { openFaq } = state;
   const reduxDispatch = useDispatch();
@@ -76,7 +78,11 @@ const UiUxDesigner = () => {
   }, []);
 
   const openApply = (opp = null) => {
-    setSelectedOpportunity(opp && opp._id ? opp : null);
+    if (opp && (opp._id || opp.id)) {
+      navigate(`/jobs/${opp._id || opp.id}`);
+      return;
+    }
+    setSelectedOpportunity(null);
     setSelectedMarket(null);
     setIsApplyModalOpen(true);
   };
@@ -747,7 +753,7 @@ const UiUxDesigner = () => {
                           onClick={() => openApply(opp)}
                           className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-3.5 py-2 text-[10px] font-bold text-white hover:bg-[#159FEF] transition cursor-pointer shadow-xs"
                         >
-                          Apply
+                          Apply Now
                           <ArrowRight size={13} className="shrink-0" />
                         </button>
                       </div>

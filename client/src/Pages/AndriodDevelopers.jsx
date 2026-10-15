@@ -22,6 +22,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useEffect, useReducer, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FaAndroid, FaGithub, FaLinkedinIn } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import RoleApplyModal from "../components/RoleApplyModal";
@@ -55,6 +56,7 @@ const reducer = (state, action) => {
 };
 
 const AndroidDeveloper = () => {
+  const navigate = useNavigate();
   const [state, dispatch] = useReducer(reducer, initialState);
   const { openFaq, selectedOpportunity } = state;
   const reduxDispatch = useDispatch();
@@ -300,6 +302,10 @@ const AndroidDeveloper = () => {
   };
 
   const handleOpportunitySelect = (opportunity) => {
+    if (opportunity && (opportunity._id || opportunity.id)) {
+      navigate(`/jobs/${opportunity._id || opportunity.id}`);
+      return;
+    }
     dispatch({ type: "SET_OPPORTUNITY", payload: opportunity });
     setIsApplyModalOpen(true);
   };
@@ -753,7 +759,7 @@ const AndroidDeveloper = () => {
                           onClick={() => handleOpportunitySelect(opp)}
                           className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#30AFFF] px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[#159FEF] transition cursor-pointer"
                         >
-                          Apply
+                          Apply Now
                           <ArrowRight size={13} />
                         </button>
                       </div>

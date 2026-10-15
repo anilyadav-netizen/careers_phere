@@ -14,6 +14,7 @@ import roleOpportunityReducer from "../redux/slicer/roleOpportunitySlice";
 import jobTypeReducer from "../redux/slicer/jobTypeSlice";
 import videoReducer from "../redux/slicer/videoSlice";
 import enquiryReducer from "../redux/slicer/enquirySlice";
+import heroReducer from "../redux/slicer/heroSlice";
 
 export const store = configureStore({
   reducer: {
@@ -32,5 +33,6 @@ export const store = configureStore({
     roleOpportunities: roleOpportunityReducer,
     video: videoReducer,
     enquiries: enquiryReducer,
+    hero: heroReducer,
   },
 });
