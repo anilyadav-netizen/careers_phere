@@ -24,8 +24,6 @@ import {
   Clock3,
   DollarSign,
   FileText,
-  Globe,
-  IdCard,
   Mail,
   MapPin,
   Phone,
@@ -119,27 +117,28 @@ const JobDetail = () => {
 
   const job = backendJob
     ? {
-      ...backendJob,
-      id: backendJob._id || backendJob.id,
-      type: backendJob.jobType || "Full Time",
-      posted: backendJob.daysAgo || "Recently",
-      applicants: backendJob.applicantCount ?? 0,
-      logoUrl:
-        backendJob.companyLogo?.displayUrl ||
-        backendJob.companyLogo?.url ||
-        backendJob.companyLogo?.thumb ||
-        (typeof backendJob.companyLogo === "string" && backendJob.companyLogo.startsWith("http")
-          ? backendJob.companyLogo
-          : null),
-      logo:
-        backendJob.company?.charAt(0)?.toUpperCase() ||
-        "C",
-      logoClass: "bg-[#A0E9FF] text-[#159FEF]",
-      responsibilities: backendJob.responsibilities || [],
-      requirements: backendJob.requirements || [],
-      skills: backendJob.skills || [],
-      countries: Array.isArray(backendJob.countries) ? backendJob.countries : [],
-    }
+        ...backendJob,
+        id: backendJob._id || backendJob.id,
+        type: backendJob.jobType || "Full Time",
+        posted: backendJob.daysAgo || "Recently",
+        applicants: backendJob.applicantCount ?? 0,
+        logoUrl:
+          backendJob.companyLogo?.displayUrl ||
+          backendJob.companyLogo?.url ||
+          backendJob.companyLogo?.thumb ||
+          (typeof backendJob.companyLogo === "string" &&
+          backendJob.companyLogo.startsWith("http")
+            ? backendJob.companyLogo
+            : null),
+        logo: backendJob.company?.charAt(0)?.toUpperCase() || "C",
+        logoClass: "bg-[#A0E9FF] text-[#159FEF]",
+        responsibilities: backendJob.responsibilities || [],
+        requirements: backendJob.requirements || [],
+        skills: backendJob.skills || [],
+        countries: Array.isArray(backendJob.countries)
+          ? backendJob.countries
+          : [],
+      }
     : null;
 
   // =========================================================
@@ -279,8 +278,6 @@ const JobDetail = () => {
     try {
       const result = await dispatch(getProfile()).unwrap();
 
-      console.log("Profile fetched from backend:", result);
-
       const profileData =
         result?.data?.user || result?.data || result?.user || result;
 
@@ -291,21 +288,11 @@ const JobDetail = () => {
       setFormData((prev) => ({
         ...prev,
 
-        name: getProfileValue(
-          profileData,
-          "name",
-          "fullName",
-          "firstName",
-        ),
+        name: getProfileValue(profileData, "name", "fullName", "firstName"),
 
         email: getProfileValue(profileData, "email"),
 
-        phone: getProfileValue(
-          profileData,
-          "phone",
-          "mobile",
-          "phoneNumber",
-        ),
+        phone: getProfileValue(profileData, "phone", "mobile", "phoneNumber"),
 
         currentLocation: getProfileValue(
           profileData,
@@ -324,11 +311,7 @@ const JobDetail = () => {
           "salary",
         ),
 
-        linkedin: getProfileValue(
-          profileData,
-          "linkedin",
-          "linkedinUrl",
-        ),
+        linkedin: getProfileValue(profileData, "linkedin", "linkedinUrl"),
 
         coverLetter: getProfileValue(
           profileData,
@@ -347,8 +330,8 @@ const JobDetail = () => {
 
       alert(
         error ||
-        profileError ||
-        "Unable to load your profile. Please try again.",
+          profileError ||
+          "Unable to load your profile. Please try again.",
       );
     } finally {
       setLoadingSavedDetails(false);
@@ -424,10 +407,6 @@ const JobDetail = () => {
     setApplicationBlockMessage("");
 
     try {
-      console.log("========== SUBMIT APPLICATION ==========");
-      console.log("JOB ID:", job._id);
-      console.log("FORM DATA:", formData);
-
       const data = new FormData();
 
       data.append("jobId", job._id);
@@ -453,10 +432,7 @@ const JobDetail = () => {
       }
 
       for (const [key, value] of data.entries()) {
-        console.log(
-          key,
-          value instanceof File ? value.name : value,
-        );
+        console.log(key, value instanceof File ? value.name : value);
       }
 
       const result = await dispatch(applyToJob(data)).unwrap();
@@ -492,9 +468,7 @@ const JobDetail = () => {
         error?.code === "ALREADY_APPLIED" ||
         error?.response?.data?.code === "ALREADY_APPLIED"
       ) {
-        setApplicationBlockMessage(
-          "You have already applied to this job.",
-        );
+        setApplicationBlockMessage("You have already applied to this job.");
         return;
       }
 
@@ -588,9 +562,7 @@ const JobDetail = () => {
     return (
       <main className="min-h-screen bg-[#F7FCFF] px-4 py-10">
         <div className="mx-auto max-w-2xl rounded-2xl border border-[#D9F3FA] bg-white p-8 text-center shadow-sm">
-          <h1 className="text-2xl font-bold text-[#102B36]">
-            Job not found
-          </h1>
+          <h1 className="text-2xl font-bold text-[#102B36]">Job not found</h1>
 
           <p className="mt-2 text-sm text-[#526F7A]">
             {jobError || "This job may no longer be available."}
@@ -637,9 +609,7 @@ const JobDetail = () => {
             <div className="rounded-2xl border border-[#D9F3FA] bg-white p-5 shadow-sm sm:p-7">
               <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
                 <div className="flex items-start gap-4">
-                  <div
-                    className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-[#A0E9FF]/40 text-2xl font-bold text-[#159FEF]"
-                  >
+                  <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-[#A0E9FF]/40 text-2xl font-bold text-[#159FEF]">
                     {job.logoUrl ? (
                       <img
                         src={job.logoUrl}
@@ -687,7 +657,8 @@ const JobDetail = () => {
                         </span>
                         {job.countries.map((c, idx) => {
                           const countryName = c?.name || c?.countryName || "";
-                          const flagUrl = c?.flag || getFlagByCountryName(countryName);
+                          const flagUrl =
+                            c?.flag || getFlagByCountryName(countryName);
                           return (
                             <span
                               key={idx}
@@ -717,13 +688,13 @@ const JobDetail = () => {
                     onClick={handleSaveToggle}
                     disabled={saving || unsaving}
                     title={isSaved ? "Unsave Job" : "Save Job"}
-                    className={`flex h-10 w-10 items-center justify-center rounded-lg border transition ${isSaved
-                      ? "border-[#30AFFF] bg-[#A0E9FF] text-[#159FEF]"
-                      : "border-[#D9F3FA] bg-white text-[#6B8792] hover:border-[#30AFFF] hover:text-[#30AFFF]"
-                      } ${saving || unsaving
-                        ? "cursor-not-allowed opacity-60"
-                        : ""
-                      }`}
+                    className={`flex h-10 w-10 items-center justify-center rounded-lg border transition ${
+                      isSaved
+                        ? "border-[#30AFFF] bg-[#A0E9FF] text-[#159FEF]"
+                        : "border-[#D9F3FA] bg-white text-[#6B8792] hover:border-[#30AFFF] hover:text-[#30AFFF]"
+                    } ${
+                      saving || unsaving ? "cursor-not-allowed opacity-60" : ""
+                    }`}
                   >
                     {saving || unsaving ? (
                       <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#30AFFF] border-t-transparent" />
@@ -750,10 +721,7 @@ const JobDetail = () => {
 
               <div className="mt-6 flex flex-wrap gap-3">
                 <div className="flex items-center gap-2 rounded-lg bg-[#F1FBFE] px-3 py-2 text-sm text-[#526F7A]">
-                  <BriefcaseBusiness
-                    size={17}
-                    className="text-[#30AFFF]"
-                  />
+                  <BriefcaseBusiness size={17} className="text-[#30AFFF]" />
                   {job.experience}
                 </div>
 
@@ -777,7 +745,9 @@ const JobDetail = () => {
                   </div>
 
                   <p className="mt-1 font-bold text-[#102B36]">
-                    {job.salary && job.salary.trim() ? job.salary : "Undisclosed"}
+                    {job.salary && job.salary.trim()
+                      ? job.salary
+                      : "Undisclosed"}
                   </p>
                 </div>
 
@@ -787,9 +757,7 @@ const JobDetail = () => {
                     Posted
                   </div>
 
-                  <p className="mt-1 font-bold text-[#102B36]">
-                    {job.posted}
-                  </p>
+                  <p className="mt-1 font-bold text-[#102B36]">{job.posted}</p>
                 </div>
 
                 <div className="pt-4 sm:px-4 sm:pt-0">
@@ -850,9 +818,7 @@ const JobDetail = () => {
             {/* REQUIREMENTS */}
 
             <div className="mt-6 rounded-2xl border border-[#D9F3FA] bg-white p-5 shadow-sm sm:p-7">
-              <h2 className="text-xl font-bold text-[#102B36]">
-                Requirements
-              </h2>
+              <h2 className="text-xl font-bold text-[#102B36]">Requirements</h2>
 
               <div className="mt-5 space-y-4">
                 {job.requirements?.length > 0 ? (
@@ -880,9 +846,7 @@ const JobDetail = () => {
             {/* SKILLS */}
 
             <div className="mt-6 rounded-2xl border border-[#D9F3FA] bg-white p-5 shadow-sm sm:p-7">
-              <h2 className="text-xl font-bold text-[#102B36]">
-                Skills
-              </h2>
+              <h2 className="text-xl font-bold text-[#102B36]">Skills</h2>
 
               <div className="mt-5 flex flex-wrap gap-2">
                 {job.skills?.length > 0 ? (
@@ -895,9 +859,7 @@ const JobDetail = () => {
                     </span>
                   ))
                 ) : (
-                  <p className="text-sm text-[#6B8792]">
-                    No skills specified.
-                  </p>
+                  <p className="text-sm text-[#6B8792]">No skills specified.</p>
                 )}
               </div>
             </div>
@@ -968,7 +930,9 @@ const JobDetail = () => {
                       </p>
 
                       <p className="mt-1 text-sm font-semibold text-[#29444F]">
-                        {job.salary && job.salary.trim() ? job.salary : "Undisclosed"}
+                        {job.salary && job.salary.trim()
+                          ? job.salary
+                          : "Undisclosed"}
                       </p>
                     </div>
                   </div>
@@ -1026,9 +990,7 @@ const JobDetail = () => {
                   Apply for {job.title}
                 </h2>
 
-                <p className="mt-1 text-sm text-[#526F7A]">
-                  {job.company}
-                </p>
+                <p className="mt-1 text-sm text-[#526F7A]">{job.company}</p>
               </div>
 
               <button
@@ -1182,7 +1144,8 @@ const JobDetail = () => {
                           </h3>
 
                           <p className="mt-2 text-sm leading-6 text-[#526F7A]">
-                            Fill in the quick application form directly without creating an account.
+                            Fill in the quick application form directly without
+                            creating an account.
                           </p>
                         </button>
 
@@ -1201,7 +1164,8 @@ const JobDetail = () => {
                           </h3>
 
                           <p className="mt-2 text-sm leading-6 text-[#526F7A]">
-                            Create a free account to track applications, save jobs, and speed up future applications.
+                            Create a free account to track applications, save
+                            jobs, and speed up future applications.
                           </p>
                         </button>
                       </div>
@@ -1222,7 +1186,8 @@ const JobDetail = () => {
                         Quick Application
                       </h4>
                       <p className="mt-0.5 text-xs text-[#526F7A]">
-                        Please enter your details, expected compensation, skills, and upload your resume.
+                        Please enter your details, expected compensation,
+                        skills, and upload your resume.
                       </p>
                     </div>
 
@@ -1314,10 +1279,7 @@ const JobDetail = () => {
                           Resume / CV * (.pdf, .doc, .docx)
                         </label>
                         <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-[#BDEAF5] bg-white p-4 text-center transition hover:border-[#30AFFF] hover:bg-[#F1FBFE]">
-                          <Upload
-                            size={20}
-                            className="text-[#30AFFF]"
-                          />
+                          <Upload size={20} className="text-[#30AFFF]" />
                           <span className="mt-2 text-xs font-semibold text-[#29444F]">
                             {formData.resume
                               ? formData.resume.name
@@ -1411,4 +1373,3 @@ const JobDetail = () => {
 };
 
 export default JobDetail;
-

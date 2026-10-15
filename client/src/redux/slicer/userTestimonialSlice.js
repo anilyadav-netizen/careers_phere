@@ -9,25 +9,17 @@ export const getTestimonials = createAsyncThunk(
   "testimonials/getTestimonials",
   async (_, { rejectWithValue }) => {
     try {
-      console.log("🔵 Fetching testimonials...");
-
       const response = await api.get("/testimonials");
-
-      console.log("🟢 Full Axios Response:", response);
-      console.log("🟢 Response Data:", response.data);
-      console.log("🟢 Testimonials Array:", response.data?.data);
 
       return response.data;
     } catch (error) {
-      console.error("🔴 Get Testimonials Error:", error);
-
       return rejectWithValue(
         error.response?.data?.message ||
           error.message ||
-          "Failed to fetch testimonials"
+          "Failed to fetch testimonials",
       );
     }
-  }
+  },
 );
 
 // =====================================================
@@ -65,8 +57,6 @@ const userTestimonialSlice = createSlice({
       .addCase(getTestimonials.pending, (state) => {
         state.loading = true;
         state.error = null;
-
-        console.log("🟡 Testimonials loading...");
       })
 
       // ============================
@@ -76,10 +66,6 @@ const userTestimonialSlice = createSlice({
       .addCase(getTestimonials.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
-
-        console.log("🟢 Testimonials fulfilled:");
-        console.log("🟢 Payload:", action.payload);
-        console.log("🟢 Array:", action.payload?.data);
 
         // IMPORTANT:
         // API response:
@@ -94,11 +80,6 @@ const userTestimonialSlice = createSlice({
         state.testimonials = Array.isArray(action.payload?.data)
           ? action.payload.data
           : [];
-
-        console.log(
-          "🟢 Redux testimonials stored:",
-          state.testimonials
-        );
       })
 
       // ============================
@@ -117,13 +98,12 @@ const userTestimonialSlice = createSlice({
 
         console.error(
           "🔴 Testimonials rejected:",
-          action.payload || action.error
+          action.payload || action.error,
         );
       });
   },
 });
 
-export const { clearTestimonialsError } =
-  userTestimonialSlice.actions;
+export const { clearTestimonialsError } = userTestimonialSlice.actions;
 
 export default userTestimonialSlice.reducer;
