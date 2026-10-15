@@ -54,12 +54,6 @@ const AdminLogin = () => {
         }),
       );
 
-      console.log("========== LOGIN RESULT ==========");
-      console.log("LOGIN RESULT:", loginResult);
-      console.log("LOGIN PAYLOAD:", loginResult.payload);
-      console.log("LOGIN DATA:", loginResult.payload?.data);
-      console.log("==================================");
-
       // Login failed
       if (!loginUser.fulfilled.match(loginResult)) {
         setAdminError(loginResult.payload || "Login failed.");
@@ -70,12 +64,6 @@ const AdminLogin = () => {
       // STEP 2: GET PROFILE FROM BACKEND
       // =========================================
       const profileResult = await dispatch(getProfile());
-
-      console.log("========== PROFILE RESULT ==========");
-      console.log("PROFILE RESULT:", profileResult);
-      console.log("PROFILE PAYLOAD:", profileResult.payload);
-      console.log("PROFILE DATA:", profileResult.payload?.data);
-      console.log("====================================");
 
       // Profile failed
       if (!getProfile.fulfilled.match(profileResult)) {
@@ -90,15 +78,6 @@ const AdminLogin = () => {
 
       const loggedInUser = profileData?.user || profileData;
 
-      console.log("========== ADMIN USER ==========");
-      console.log("USER:", loggedInUser);
-      console.log("USER ID:", loggedInUser?._id || loggedInUser?.id);
-      console.log("USER NAME:", loggedInUser?.name);
-      console.log("USER EMAIL:", loggedInUser?.email);
-      console.log("USER ROLE:", loggedInUser?.role);
-      console.log("IS ADMIN:", loggedInUser?.isAdmin);
-      console.log("================================");
-
       // =========================================
       // STEP 4: NORMALIZE ROLE
       // =========================================
@@ -106,26 +85,14 @@ const AdminLogin = () => {
         .trim()
         .toLowerCase();
 
-      console.log("NORMALIZED ROLE:", role);
-
       // =========================================
       // STEP 5: ADMIN CHECK
       // =========================================
       if (role !== "admin" && loggedInUser?.isAdmin !== true) {
-        console.log("Not an admin. Role received:", role);
-
         setAdminError("You are not authorized to access the admin panel.");
 
         return;
       }
-
-      // =========================================
-      // STEP 6: ADMIN LOGIN SUCCESS
-      // =========================================
-      console.log("==============================");
-      console.log("ADMIN LOGIN SUCCESS");
-      console.log("REDIRECTING TO /admin");
-      console.log("==============================");
 
       const redirectPath = location.state?.from?.pathname || "/admin";
 
