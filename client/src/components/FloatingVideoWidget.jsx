@@ -3,6 +3,9 @@
 import { Volume2, VolumeX, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+const IFRAME_ID = "careernova-floating-video";
+
+// Unlock browser AudioContext
 const unlockAudioContext = () => {
   try {
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -19,42 +22,76 @@ const unlockAudioContext = () => {
 
 const FloatingVideoWidget = () => {
   const [isOpen, setIsOpen] = useState(true);
-  // Starts muted as browser requires initial silent autoplay; immediately unlocked on load/interaction
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
   const iframeRef = useRef(null);
-  const timersRef = useRef([]);
+  const playerJsInstanceRef = useRef(null);
 
-  // Video URL with autoplay, loop, and preload
+  // Modern Bunny Stream Player URL with muted=false so sound starts immediately
   const videoSrc =
-    "https://iframe.mediadelivery.net/embed/769180/7d317061-5646-4a41-89ff-4e4faa54b595" +
+    "https://player.mediadelivery.net/embed/769180/7d317061-5646-4a41-89ff-4e4faa54b595" +
     "?autoplay=true&loop=true&preload=true&muted=false";
 
-  // Dispatch commands to the Bunny Stream iframe across Player.js, Plyr, and native message protocols
+  // Dispatch multi-protocol commands directly to Bunny Stream iframe
   const sendCommand = useCallback((method, value) => {
     const win = iframeRef.current?.contentWindow;
     if (!win) return;
 
-    // 1. Player.js standard protocol
+    // 1. Player.js official format with player_id
     win.postMessage(
       JSON.stringify({
         context: "player.js",
         version: "0.0.11",
         method,
+        player_id: IFRAME_ID,
         ...(value !== undefined ? { value } : {}),
       }),
       "*",
     );
 
-    // 2. Direct JSON method format
+    // 2. Direct JSON method format with player_id
     win.postMessage(
       JSON.stringify({
         method,
+        player_id: IFRAME_ID,
         ...(value !== undefined ? { value } : {}),
       }),
       "*",
     );
 
-    // 3. Plyr native command event format
+    // 3. Alternative setMuted variations
+    if (method === "unmute") {
+      win.postMessage(
+        JSON.stringify({
+          context: "player.js",
+          version: "0.0.11",
+          method: "setMuted",
+          value: false,
+          player_id: IFRAME_ID,
+        }),
+        "*",
+      );
+      win.postMessage(
+        JSON.stringify({
+          method: "setMuted",
+          value: false,
+          player_id: IFRAME_ID,
+        }),
+        "*",
+      );
+    } else if (method === "mute") {
+      win.postMessage(
+        JSON.stringify({
+          context: "player.js",
+          version: "0.0.11",
+          method: "setMuted",
+          value: true,
+          player_id: IFRAME_ID,
+        }),
+        "*",
+      );
+    }
+
+    // 4. Plyr command format (underlying Bunny engine)
     win.postMessage(
       JSON.stringify({
         event: "command",
@@ -64,55 +101,86 @@ const FloatingVideoWidget = () => {
       "*",
     );
 
-    // 4. Bunny Stream native command format
+    // 5. Bunny Stream native command objects
     if (method === "play") {
       win.postMessage({ command: "activate" }, "*");
       win.postMessage({ command: "play" }, "*");
-      win.postMessage({ command: "toggleControls", parameter: false }, "*");
     } else if (method === "unmute") {
+      win.postMessage({ command: "unmute" }, "*");
+      win.postMessage({ command: "setVolume", parameter: 1.0 }, "*");
       win.postMessage({ command: "increaseVolume", parameter: 1.0 }, "*");
     }
   }, []);
 
-  const clearTimers = () => {
-    timersRef.current.forEach(clearTimeout);
-    timersRef.current = [];
-  };
-
-  // Immediate and aggressive unmuting with 100% volume
+  // Unmute video and enforce 100% volume
   const unmuteVideo = useCallback(() => {
     unlockAudioContext();
 
-    sendCommand("play");
+    if (playerJsInstanceRef.current) {
+      try {
+        playerJsInstanceRef.current.setMuted(false);
+        playerJsInstanceRef.current.unmute();
+        playerJsInstanceRef.current.setVolume(100);
+      } catch {
+        /* fallback to postMessage */
+      }
+    }
+
+    // PostMessage broadcasts across all formats
     sendCommand("unmute");
-    sendCommand("setVolume", 100); // PlayerJS setVolume expects 0-100 (100 = 100% full volume)
+    sendCommand("setVolume", 100);
+    sendCommand("setVolume", 1.0);
 
     setIsMuted(false);
   }, [sendCommand]);
 
+  // Only called when the user explicitly clicks the Mute button
   const muteVideo = useCallback(() => {
+    if (playerJsInstanceRef.current) {
+      try {
+        playerJsInstanceRef.current.setMuted(true);
+        playerJsInstanceRef.current.mute();
+        playerJsInstanceRef.current.setVolume(0);
+      } catch {
+        /* ignore */
+      }
+    }
+
     sendCommand("mute");
     sendCommand("setVolume", 0);
     setIsMuted(true);
   }, [sendCommand]);
 
-  // Attempt playback with sound immediately and on progressive intervals
-  const attemptUnmutedAutoplay = useCallback(() => {
-    clearTimers();
+  // Connect Player.js instance and ensure unmuted playback
+  const setupPlayer = useCallback(() => {
+    if (typeof window === "undefined" || !iframeRef.current) return;
 
-    const kick = () => {
-      unmuteVideo();
-    };
+    if (window.playerjs) {
+      try {
+        const player = new window.playerjs.Player(iframeRef.current);
+        playerJsInstanceRef.current = player;
 
-    kick();
+        player.on("ready", () => {
+          player.setMuted(false);
+          player.unmute();
+          player.setVolume(100);
+          player.play();
+          setIsMuted(false);
+        });
 
-    // Aggressively re-dispatch unmute commands as the iframe and player bundle load
-    [50, 150, 300, 600, 1000, 1500, 2200, 3200].forEach((t) =>
-      timersRef.current.push(setTimeout(kick, t)),
-    );
-  }, [unmuteVideo]);
+        player.on("play", () => {
+          player.setMuted(false);
+          player.unmute();
+          player.setVolume(100);
+          setIsMuted(false);
+        });
+      } catch (err) {
+        console.warn("Player.js init fallback:", err);
+      }
+    }
+  }, []);
 
-  // Listen to Player.js events from Bunny Stream
+  // Listen to ready/play messages from Bunny Stream player via postMessage
   useEffect(() => {
     if (!isOpen) return;
 
@@ -122,9 +190,11 @@ const FloatingVideoWidget = () => {
       try {
         const data = typeof e.data === "string" ? JSON.parse(e.data) : e.data;
 
-        if (data?.context === "player.js") {
+        if (data?.context === "player.js" || data?.event) {
           if (data?.event === "ready" || data?.event === "play") {
-            unmuteVideo();
+            sendCommand("unmute");
+            sendCommand("setVolume", 100);
+            setIsMuted(false);
           }
         }
       } catch {
@@ -136,11 +206,10 @@ const FloatingVideoWidget = () => {
 
     return () => {
       window.removeEventListener("message", onMessage);
-      clearTimers();
     };
-  }, [isOpen, unmuteVideo]);
+  }, [isOpen, sendCommand]);
 
-  // Listen for custom unmute broadcast from WelcomePopup or other triggers
+  // Listen for custom unmute broadcast from WelcomePopup
   useEffect(() => {
     const handleCustomUnmute = () => {
       unmuteVideo();
@@ -151,7 +220,7 @@ const FloatingVideoWidget = () => {
       window.removeEventListener("careernova:unmute_video", handleCustomUnmute);
   }, [unmuteVideo]);
 
-  // Fallback: Immediate unmute on the very first user interaction anywhere on the website
+  // Universal gesture listener: Unmute on any user interaction
   useEffect(() => {
     if (!isOpen) return;
 
@@ -175,8 +244,14 @@ const FloatingVideoWidget = () => {
     };
 
     events.forEach((ev) => {
-      window.addEventListener(ev, onFirstInteraction, { capture: true, passive: true });
-      document.addEventListener(ev, onFirstInteraction, { capture: true, passive: true });
+      window.addEventListener(ev, onFirstInteraction, {
+        capture: true,
+        passive: true,
+      });
+      document.addEventListener(ev, onFirstInteraction, {
+        capture: true,
+        passive: true,
+      });
     });
 
     return () => {
@@ -187,14 +262,15 @@ const FloatingVideoWidget = () => {
     };
   }, [isOpen, unmuteVideo]);
 
-  // Trigger unmuted autoplay on initial mount
+  // Initialize on mount
   useEffect(() => {
     if (isOpen) {
-      attemptUnmutedAutoplay();
+      setupPlayer();
+      unmuteVideo();
     }
-  }, [isOpen, attemptUnmutedAutoplay]);
+  }, [isOpen, setupPlayer, unmuteVideo]);
 
-  // Toggle button handler
+  // Sound toggle button click handler
   const handleToggleSound = (e) => {
     e?.stopPropagation();
     if (isMuted) {
@@ -255,7 +331,7 @@ const FloatingVideoWidget = () => {
         type="button"
         onClick={handleToggleSound}
         aria-label={isMuted ? "Unmute audio" : "Mute audio"}
-        title={isMuted ? "Click to unmute" : "Mute"}
+        title={isMuted ? "Click to unmute" : "Mute audio"}
         className="
           absolute
           left-4
@@ -267,17 +343,18 @@ const FloatingVideoWidget = () => {
           items-center
           justify-center
           rounded-full
-          bg-black/75
+          bg-black/80
           text-white
           border
-          border-white/20
-          shadow-lg
+          border-white/25
+          shadow-xl
           backdrop-blur-md
           transition-all
           duration-200
           hover:scale-105
           hover:bg-black
           active:scale-95
+          cursor-pointer
 
           sm:left-2
           sm:top-2
@@ -310,17 +387,18 @@ const FloatingVideoWidget = () => {
           items-center
           justify-center
           rounded-full
-          bg-black/75
+          bg-black/80
           text-white
           border
-          border-white/20
-          shadow-lg
+          border-white/25
+          shadow-xl
           backdrop-blur-md
           transition-all
           duration-200
           hover:scale-105
           hover:bg-black
           active:scale-95
+          cursor-pointer
 
           sm:right-2
           sm:top-2
@@ -332,7 +410,7 @@ const FloatingVideoWidget = () => {
         <X className="w-5 h-5 sm:w-3.5 sm:h-3.5" />
       </button>
 
-      {/* Tap anywhere on video to unmute with full volume */}
+      {/* Tap anywhere on video to unmute (only shown if muted) */}
       {isMuted && (
         <div
           onClick={(e) => {
@@ -352,14 +430,19 @@ const FloatingVideoWidget = () => {
       {/* Responsive Video Container */}
       <div className="relative w-full h-full max-w-full max-h-full flex items-center justify-center overflow-hidden">
         <iframe
+          id={IFRAME_ID}
           ref={iframeRef}
           src={videoSrc}
           loading="eager"
-          onLoad={() => attemptUnmutedAutoplay()}
+          onLoad={() => {
+            setupPlayer();
+            unmuteVideo();
+          }}
           style={{ width: "100%", height: "100%", border: 0 }}
           className="w-full h-full block border-0 m-0 p-0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+          allow="accelerometer; autoplay *; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
           allowFullScreen
+          referrerPolicy="strict-origin-when-cross-origin"
           title="CareerNova Overview Video"
         />
       </div>
